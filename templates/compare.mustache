@@ -1,0 +1,24 @@
+<div>
+  <a href="#" id="collapse-all">Collapse all diffs</a>
+</div>
+
+<section id="compare">
+{{{ diff }}}
+</section>
+<script>
+  $("#collapse-all").click(function () {
+    var str = $(this).html();
+
+    if (str.match(/Collapse/)) {
+      $(this).html(str.replace(/Collapse/, "Expand"));
+      $("section div pre").hide();
+    } else {
+      $(this).html(str.replace(/Expand/, "Collapse"));
+      $("section div pre").show();
+    }
+
+    return false;
+  });
+
+  $("section div h3").click(function () { $(this).parent("div").find("pre").toggle("blind"); });
+</script>

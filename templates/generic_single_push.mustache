@@ -1,0 +1,47 @@
+<!-- Stacks info -->
+<section id="info-bar" class="clearfix">
+    <ul>
+        <li class="heading">Version: </li>
+        <li>Production &ndash; <span class="{{stack}}_production_version">{{production_version}}</span> </li>
+    </ul>
+</section>
+
+
+<aside class="pushers">
+    <div class="stack-box">
+        <h2><span>01.</span>Deploy {{stack}}</h2>
+        <form action="/dispatch" method="post" class="PRODUCTION">
+            <input type="hidden" name="method" value="{{stack}}_rsync">
+            <input type="hidden" name="stack" value="{{stack}}">
+            
+            <p class="stack-status">
+                <a href="/diff/{{stack}}/{{production_build}}/{{head_build}}" target="_blank">
+                    <span class="{{stack}}_production_build">{{production_build}}</span>
+                    &rarr;
+                    <span class="{{stack}}_head_build">{{head_build}}</span>
+                </a>
+            </p>
+            {{#message_box?}}
+            <p class="form"><label for="msg">Message:</label></p>
+            <p class="form"><input type="text" name="msg" value="" class="textfield" id="msg"></p>
+            {{/message_box?}}
+            <p class="stack-push"><button class="button {{#disabled}} button-disabled" disabled="disabled{{/disabled}}" type="submit">Deploy {{stack}}</button></p>            
+        </form>
+    </div>
+</aside>
+
+<section id="main" class="info">
+    <!-- heading -->
+    <div class="heading clearfix">
+        <h2>Info</h2>
+        <span class="option">
+            {{< scroll_control }}
+        </span>
+    </div>
+    
+    <!-- log -->
+    <div class="log-main">
+        {{< log }}
+    </div>
+
+</section>

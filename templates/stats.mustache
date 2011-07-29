@@ -1,0 +1,54 @@
+<!-- content -->
+<section id="main" class="info stats">
+    <!-- heading -->
+    <div class="heading clearfix">
+        <h2>Deployments Per Day (US/Eastern)</h2>
+    </div>
+    <div class="stats-main">
+        <div id="placeholder" style="width:940px;height:300px;"></div> 
+        <script>var data = {}</script>
+
+        <p id="choices"></p>
+
+        {{# per_day}}
+        <div class="stats">
+            <h3>{{stack}}</h3>
+            <table class="stats">
+                <tr>
+                    <th>Day</th>
+                    <th>Count</th>
+                </tr>
+                {{# data}}
+                <tr>
+                    <td>{{date}}</td>
+                    <td class="count">{{count}}</td>
+                </tr>
+                {{/ data}}
+            </table>
+            <script type="text/javascript" charset="utf-8">
+                data["{{stack}}"] = {data: {{json}}, label: "{{stack}}"}
+            </script>
+        </div>
+        {{/ per_day}}
+    </div>
+    
+</section>
+
+<script type="text/javascript" charset="utf-8">
+    function drawGraphs() {
+        var d = [];
+
+        $("#choices").find("input:checked").each(function() {
+            var key = $(this).attr("name");
+            if (key && data[key]) { d.push(data[key]); }
+        });
+
+        $.plot($("#placeholder"), d, {
+            xaxis: { mode: "time", timeformat: "%y/%m/%d" },
+            legend: { position: "nw" },
+            // points: { show: true },
+            lines: { show: true }
+        })
+    }
+</script>
+<script src="/js/stats_load.js"></script>

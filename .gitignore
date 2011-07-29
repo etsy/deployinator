@@ -1,0 +1,10 @@
+bin/*
+sinatra*.log
+tmp/*.txt
+log/*.log
+run_logs/*.html
+run_logs/current*
+.powenv
+.rvmrc*
+.bundle/
+vendor/bundle

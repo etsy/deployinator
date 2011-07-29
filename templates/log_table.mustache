@@ -1,0 +1,36 @@
+<table id="log">
+    <thead>
+        <tr>
+            <th>Stack</th>
+            <th>When</th>
+            <th>Info</th>
+            <th>Who</th>
+            <th>Message</th>
+            <th>Diff</th>
+            {{# show_counts? }}
+            <th>+/-</th>
+            {{/ show_counts? }}
+        </tr>
+    </thead>
+    <tbody>
+        {{# log_lines }}
+        <tr class="{{env}}">
+            <td>{{stack}}</td>
+            <td><span title="{{time}}" class="timestamp" data-timestamp="{{time_secs}}">{{timestamp}}</span></td>
+            <td>{{env}}</td>
+            <td>{{who}}</td>
+            <td>{{{msg}}}</td>
+            <td>
+                {{# new}}
+                <a href="/diff/{{stack}}/{{old}}/{{new}}" target="_blank">diff</a>
+                {{/ new}}
+            </td>
+            {{# show_counts? }}
+            <td>
+                {{counts}}
+            </td>
+            {{/ show_counts? }}
+        </tr>
+        {{/ log_lines }}
+    </tbody>
+</table>

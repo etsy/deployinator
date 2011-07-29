@@ -1,0 +1,14 @@
+<ol id="log">
+    {{# log_lines }}
+    <li class="{{env}} {{stack}}">
+        {{stack}} &ndash;
+        <span title="{{time}}" data-timestamp="{{time_secs}}" class="timestamp">{{timestamp}}</span> |
+        <span class="env">{{env}}</span> |
+        {{who}} |
+        {{{msg}}}
+        {{# new}}
+        <a href="/diff/{{stack}}/{{old}}/{{new}}" target="_blank">diff</a>
+        {{/ new}}
+    </li>
+    {{/ log_lines }}
+</ol>

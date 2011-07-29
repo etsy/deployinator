@@ -1,0 +1,77 @@
+<!-- content -->
+<section id="main" class="info stats">
+    <!-- heading -->
+    <div class="heading clearfix">
+        <h2>Time from Commit to Push (seconds)</h2>
+    </div>
+    <div class="stats-main">
+
+        <div id="placeholder" style="width:940px;height:300px;"></div> 
+        <script>var data = {}</script>
+
+        <div id="overview" style="width:200px;height:120px;"></div>
+        <div id="overview-legend" style="margin-left:10px"></div>
+
+        <p id="choices"></p>
+    </div>
+</section>
+
+<script>
+{{# time_to_deploy}}
+data["{{stack}}"] = {data: {{data}}, label: "{{stack}}"}
+{{/ time_to_deploy}}
+</script>
+
+<script type="text/javascript" charset="utf-8">
+    var ranges;
+    var options = {
+        bars: { show: true},
+        legend: { show: false },
+        selection: { mode: "xy" }
+    }
+    function drawGraphs() {
+        var d = [];
+        
+        $("#choices").find("input:checked").each(function() {
+            var key = $(this).attr("name");
+            if (key && data[key]) { d.push(data[key]); }
+        });
+            
+        var overview = $.plot($("#overview"), d, {
+            legend: { show: true, container: $("#overview-legend") },
+            selection: { mode: "xy" },
+            bars: { show: true },
+            yaxis: { ticks: 3 },
+            xaxis: { ticks: 5 }
+        })
+            
+        var plot = $.plot($("#placeholder"), d, options);
+            
+        $("#placeholder").bind("plotselected", function (event, cRanges) {
+            ranges = cRanges;
+            // clamp the zooming to prevent eternal zoom
+            if (ranges.xaxis.to - ranges.xaxis.from < 0.00001)
+                ranges.xaxis.to = ranges.xaxis.from + 0.00001;
+            if (ranges.yaxis.to - ranges.yaxis.from < 0.00001)
+                ranges.yaxis.to = ranges.yaxis.from + 0.00001;
+            
+            // do the zooming
+            console.log(d.slice(d.indexOf(Math.floor(ranges.xaxis.from)), d.indexOf(Math.ceil(ranges.xaxis.to))));
+            plot = $.plot($("#placeholder"), d.slice(d.slice(d.indexOf(Math.floor(ranges.xaxis.from)), d.indexOf(Math.ceil(ranges.xaxis.to)))),
+                $.extend(true, {}, options, {
+                    xaxis: { min: ranges.xaxis.from, max: ranges.xaxis.to },
+                    yaxis: { min: ranges.yaxis.from, max: ranges.yaxis.to }
+            }));
+              
+            // don't fire event on the overview to prevent eternal loop
+            overview.setSelection(ranges, true);
+        });
+        
+        $("#overview").bind("plotselected", function (event, ranges) {
+            plot.setSelection(ranges);
+        });
+        
+        plot.setSelection(ranges);
+    }
+</script>
+<script src="/js/stats_load.js"></script>
