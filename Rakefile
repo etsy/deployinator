@@ -50,7 +50,13 @@ module Deployinator
     module #{Mustache.classify(stack)}
       def #{stack}_production_version
         # %x{curl http://my-app.com/version.txt}
-        "1234-abc"
+        "cf44aab-20110729-230910-UTC"
+      end
+
+      def #{stack}_head_build
+        # the build version you're about to push
+        # %x{git ls-remote #\{your_git_repo_url\} HEAD | cut -c1-7}.chomp
+        "11666e3"
       end
 
       def #{stack}_rsync(options={})
