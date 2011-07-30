@@ -46,7 +46,7 @@ module Deployinator
     end
 
     def env
-      ENV["RACK_ENV"] || ENV["RAILS_ENV"] || "development"
+      ENV["RACK_ENV"] || ENV["RAILS_ENV"] || "test"
     end
 
     # Base root path

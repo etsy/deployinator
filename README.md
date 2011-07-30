@@ -18,15 +18,19 @@ Install
 Deployinator is a standard [Rack][1] app (mostly [Sinatra][2]).
 Point your rack-capable web server at the `config.ru`, and it should mostly work. All dependencies are managed with [bundler][3], so a `bundle install` should get you set up mostly.
 
-It has been tested with ruby 1.8.6, 1.8.7 and 1.9.2. For local development, you can use [Pow!](http://pow.cx/). In that case, you'd want to do the following:
+It has been tested with ruby 1.8.6, 1.8.7 and 1.9.2. For local development, you can use [Pow!](http://pow.cx/). Assuming you are using OSX, you'd want to do the following:
 
-* install pow
+* `curl get.pow.cx | sh`
 * `cd ~/.pow`
 * `ln -s /path/to/deployinator`
 * `cd /path/to/deployinator`
 * `bundle install`
-* `echo "export HTTP_X_USERNAME=$user\nexport HTTP_X_GROUPS=foo" > .powenv`
+* `echo "export HTTP_X_USERNAME=$USER\nexport HTTP_X_GROUPS=foo" > .powenv`
 * visit [deployinator.dev](http://deployinator.dev) in your browser
+
+If you are using RVM you may need to echo the ruby version like so:
+
+* `echo "rvm ruby-1.9.3-head" > .rvmrc`
 
 
 Authentication
