@@ -99,7 +99,7 @@ Pony.options = {
 
 
 Helpers
--------------
+=======
 
 There are a few helpers built in that you can use after creating a new stack to assist you
 
