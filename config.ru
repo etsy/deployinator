@@ -1,4 +1,4 @@
-require './libraries'
+require './lib/libraries'
 
 if Deployinator.log_file?
   log = File.new(Deployinator.log_file, "a")
