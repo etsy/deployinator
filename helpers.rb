@@ -322,7 +322,7 @@ module Deployinator
           env = "production" if env.match(/prod|webs/)
         end
 
-        # ping grpahite!
+        # ping graphite!
         time = args["time"] || Time.now
         %x{echo "deploys.#{args["stack"]}.#{env} 1 #{time.to_i}" | nc #{Deployinator.graphite_host} #{Deployinator.graphite_port || 2003}}
       end

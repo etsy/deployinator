@@ -8,3 +8,4 @@ run_logs/current*
 .rvmrc*
 .bundle/
 vendor/bundle
+.yardoc

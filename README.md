@@ -1,14 +1,22 @@
-<pre>  
+<pre>
                   _________               ______                _____                 _____
                   ______  /_____ ________ ___  /______ _____  _____(_)_______ ______ ___  /_______ ________
                   _  __  / _  _ \___  __ \__  / _  __ \__  / / /__  / __  __ \_  __ `/_  __/_  __ \__  ___/
                   / /_/ /  /  __/__  /_/ /_  /  / /_/ /_  /_/ / _  /  _  / / // /_/ / / /_  / /_/ /_  / 
                   \__,_/   \___/ _  .___/ /_/   \____/ _\__, /  /_/   /_/ /_/ \__,_/  \__/  \____/ /_/ 
                                  /_/                   /____/             Deploy with style!
-</pre>  
+</pre>
+
+Deployinator - Deploy code like Etsy
+====================================
+
+Deployinator is a deployment framework extracted from [Etsy][etsy]. We've been using it since late 2009 / early 2010.
+
+Here is a [blog post][dep] explaining our rationale behind it and how it helps us out.
+
 
 Stacks
-======
+------
 
 Deployments are grouped by "stacks". You might have a "web" and "search" stack.
 
@@ -18,7 +26,7 @@ You can map a button to each of these environments,  to create multi-stage pushe
 
 
 Install
-=======
+-------
 
 Deployinator is a standard [Rack][1] app (mostly [Sinatra][2]).
 Point your rack-capable web server at the `config.ru`, and it should mostly work. All dependencies are managed with [bundler][3], so a `bundle install` should get your gems set up.
@@ -43,7 +51,7 @@ You may want to tell Pow to restart before each request for development:
 
 
 Authentication
-================
+--------------
 
 At Etsy, we use an internal SSO similar to [GodAuth][4], which sets http headers that are checked in deployinator.
 
@@ -53,7 +61,7 @@ There are a list of urls that don't require authentication, those are currently 
 
 
 Creating a new stack
-====================
+--------------------
 
 To create a new stack, run the rake task "new_stack"
 
@@ -61,7 +69,7 @@ To create a new stack, run the rake task "new_stack"
 
 
 Configuration
-=============
+-------------
 
 Configuration settings live in config/*.rb. For example, your config/development.rb might look like this:
 
@@ -99,11 +107,11 @@ Pony.options = {
 
 
 Helpers
-=======
+-------
 
 There are a few helpers built in that you can use after creating a new stack to assist you
 
-## run_cmd
+### run_cmd
 
 Shell out to run a command line program.
 Includes timing information streams and logs the output of the command.
@@ -113,14 +121,14 @@ For example you could wrap your capistrano deploy:
     run_cmd %Q{cap deploy}
 
 
-## log_and_stream 
+### log_and_stream 
 
 Output information to the log file, and the streaming output handler.
 The real time output console renders HTML so you should use markup here.
 
     log_and_stream "starting deploy<br>"
 
-## log_and_shout
+### log_and_shout
 
 Output an announcement message with build related information.  
 Also includes hooks for Email and IRC.
@@ -142,7 +150,8 @@ The supported keys for log_and_shout are:
 * __:irc_channels__ - comma separated list of IRC channels
 * __:send_email__ - true if you want it to email the announcement (make sure to define settings in config)
 
-### IRC bot announcements
+
+#### IRC bot announcements
 
 The IRC bot works by Deployinator issuing a POST request with the announcement to your internal web page, which should in turn initiate the bot communication. The page must accept at least a _message_ parameter which deployinator populates.
 
@@ -154,9 +163,23 @@ which accepts a POST request with the _message_ key and _channels_ key.  The _ch
 Its up to you to implement what happens with the _message_ and _channels_ POST request parameters, so you can plug in more than just IRC bot communication here.
 
 
+Contributing
+------------
+
+Once you've made your great commits (with tests!):
+
+1. [Fork][fk] Deployinator
+2. Create a topic branch - `git checkout -b my_branch`
+3. Push to your branch - `git push origin my_branch`
+4. Create an [Issue][is] with a link to your branch
+
+---
 
 [1]: http://rack.rubyforge.org/
 [2]: http://www.sinatrarb.com/
 [3]: http://gembundler.com/
 [4]: https://github.com/exflickr/GodAuth
-
+[etsy]: http://www.etsy.com/
+[fk]: http://help.github.com/forking/
+[is]: http://github.com/defunkt/mustache/issues
+[dep]: http://etsy.me/deployinator
