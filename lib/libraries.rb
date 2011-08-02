@@ -2,6 +2,9 @@ require "rubygems"
 require "bundler"
 Bundler.setup
 
+base_dir = File.dirname(File.dirname(__FILE__))
+$LOAD_PATH.unshift base_dir unless $LOAD_PATH.include? base_dir
+
 require 'deployinator'
 
 $LOAD_PATH.unshift Deployinator.root unless $LOAD_PATH.include? Deployinator.root
