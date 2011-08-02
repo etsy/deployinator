@@ -80,7 +80,7 @@ end
 
 # Base config.
 # Override in config/<environment>.rb
-Deployinator.log_file = Deployinator.root(["log", "development.log"])
+Deployinator.log_file = Deployinator.root(["log", "#{Deployinator.env}.log"])
 Deployinator.domain = "myawesome.com"
 
 Pony.options = {

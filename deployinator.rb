@@ -51,7 +51,7 @@ module Deployinator
     # This is taken from RACK_ENV or RAILS_ENV
     # *note* this is different from deployinator's concept of stacks/environments
     def env
-      ENV["RACK_ENV"] || ENV["RAILS_ENV"] || "test"
+      ENV["RACK_ENV"] || ENV["RAILS_ENV"] || "development"
     end
 
     # Base root path
