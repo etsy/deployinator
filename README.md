@@ -67,11 +67,43 @@ To create a new stack, run the rake task "new_stack"
 
     STACK=my_blog rake new_stack
 
+#### Customizing your stack
+
+A stack can be customized so that you have flexibility over the different environments within it (which correspond to buttons) and the methods that correspond to each button press.
+
+By default, you will see a button called "deploy _stackname_" where _stackname_ is the STACK defined in the rake command above. In your stack file, you can add a function called _stackname_\_environments that returns an array of hashes.  Each hash will correspond to a new environment, or button. For example if your stack is called web, you can define a function like so to define qa and production environments within your web stack:
+
+      def web_environments
+        [
+          {
+            :name            => "qa",
+            :method          => "qa_rsync",
+            :current_version => qa_version,
+            :current_build   => current_qa_build,
+            :next_build      => next_qa_build
+          },
+          {
+            :name            => "production",
+            :method          => "prod_rsync",
+            :current_version => prod_version,
+            :current_build   => current_prod_build,
+            :next_build      => next_prod_build
+          }
+        ]
+      end
+
+The keys of each hash describe what you will be pushing for that environment:
+
+* __:name__ - name of the environment
+* __:method__ - method name (string) that gets invoked when you press the button
+* __:current_version__ - method that returns the version that is currently deployed in this environment
+* __:current_build__ - method that returns the build that is currently deployed (usually inferred from the version)
+* __:next_build__ - method that returns the next build that is about to be deployed 
 
 Configuration
 -------------
 
-Configuration settings live in config/*.rb. For example, your config/development.rb might look like this:
+Configuration settings live in config/\*.rb. For example, your config/development.rb might look like this:
 
 ```
 Deployinator.log_file = Deployinator.root(["log", "development.log"])
