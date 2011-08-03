@@ -9,3 +9,4 @@ run_logs/current*
 .bundle/
 vendor/bundle
 .yardoc
+.DS_Store
