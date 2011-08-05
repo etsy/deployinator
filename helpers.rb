@@ -378,5 +378,20 @@ module Deployinator
       end
     end
 
+    def environments
+      custom_env = "#{stack}_environments"
+      envs = send(custom_env) if respond_to?(custom_env.to_sym)
+      envs ||=
+      [{
+        :name            => "production",
+        :title           => "Deploy #{stack} production",
+        :method          => "#{stack}_production",
+        :current_version => proc{send(:"#{stack}_production_version")},
+        :current_build   => proc{Version.get_build(send(:"#{stack}_production_version"))},
+        :next_build      => proc{send(:head_build)}
+      }]
+
+      envs.each_with_index { |env, i| env[:number] = "%02d." % (i + 1); env[:not_last] = (i < envs.size - 1) }
+    end
   end
 end

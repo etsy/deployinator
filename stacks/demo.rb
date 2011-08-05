@@ -25,7 +25,7 @@ module Deployinator
         %x{git ls-remote #{demo_git_repo_url} HEAD | cut -c1-7}.chomp
       end
 
-      def demo_rsync(options={})
+      def demo_production(options={})
         old_build = Version.get_build(demo_production_version)
 
         git_cmd = old_build ? :git_freshen_clone : :github_clone

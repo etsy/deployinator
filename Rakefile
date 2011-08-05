@@ -59,8 +59,11 @@ module Deployinator
         "11666e3"
       end
 
-      def #{stack}_rsync(options={})
-        log_and_stream "Fill in the #{stack}_rsync method in stacks/#{stack}.rb!<br>"
+      def #{stack}_production(options={})
+        log_and_stream "Fill in the #{stack}_production method in stacks/#{stack}.rb!<br>"
+
+        # log the deploy
+        log_and_shout :old_build => environments[0][:current_build].call, :build => environments[0][:next_build].call
       end
     end
   end
@@ -73,7 +76,7 @@ end
     f.print "{{< generic_single_push }}"
   end
   
-  puts "Created #{stack}!\nEdit stacks/#{stack}.rb##{stack}_rsync to do your bidding"
+  puts "Created #{stack}!\nEdit stacks/#{stack}.rb##{stack}_production to do your bidding"
 end
 
 
