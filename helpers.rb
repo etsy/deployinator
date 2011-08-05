@@ -166,7 +166,7 @@ module Deployinator
         if github_info_for_stack.key?(stack)
           %x{git ls-remote #{git_url(stack)} HEAD | cut -c1-7}.chomp
         else
-          SVN.version_of(Deployinator.svn_root_repo)
+          SVN.version_of(Deployinator.svn_default_repo)
         end
       end
     end
