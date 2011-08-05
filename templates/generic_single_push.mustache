@@ -12,7 +12,7 @@
 
 {{#environments}}
     <div class="stack-box">
-        <h2><span>01.</span>Deploy {{name}}</h2>
+        <h2><span>{{number}}</span>Deploy {{stack}} {{name}}</h2>
         <form action="/dispatch" method="post">
             <input type="hidden" name="method" value="{{method}}">
             <input type="hidden" name="stack" value="{{stack}}">
@@ -30,6 +30,9 @@
             {{/message_box?}}
             <p class="stack-push"><button class="button {{#disabled}} button-disabled" disabled="disabled{{/disabled}}" type="submit">Deploy {{name}}</button></p>
         </form>
+        {{#not_last}}
+        <span class="arrow"></span>
+        {{/not_last}}
     </div>
 {{/environments}}
 

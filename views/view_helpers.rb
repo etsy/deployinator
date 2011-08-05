@@ -62,16 +62,19 @@ module Deployinator
 
       def environments
         custom_env = "#{stack}_environments"
-        return send(custom_env) if respond_to?(custom_env.to_sym)
+        envs = send(custom_env) if respond_to?(custom_env.to_sym)
+        envs ||=
         [
           {
-            :name            => "#{stack}",
+            :name            => "production",
             :method          => "#{stack}_rsync",
             :current_version => proc{send(:"#{stack}_production_version")},
             :current_build   => proc{Version.get_build(send(:"#{stack}_production_version"))},
             :next_build      => proc{send(:"#{stack}_head_build")}
           }
         ]
+
+        envs.each_with_index { |env, i| env[:number] = "%02d." % (i + 1); env[:not_last] = (i < envs.size - 1) }
       end
 
     end
