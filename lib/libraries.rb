@@ -88,4 +88,8 @@ Pony.options = {
 }
 
 # Load in the current environment and override settings
-require Deployinator.root(["config", Deployinator.env])
+begin
+  require Deployinator.root(["config", Deployinator.env])
+rescue LoadError
+end
+
