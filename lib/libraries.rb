@@ -93,3 +93,20 @@ begin
 rescue LoadError
 end
 
+# Ruby 1.8.6 is teh LAMEZ0Rz
+unless Symbol.respond_to?(:to_proc)
+  class Symbol
+    def to_proc
+      Proc.new { |obj, *args| obj.send(self, *args) }
+    end
+  end
+end
+
+unless String.respond_to?(:start_with?)
+  class String
+    def start_with?(str)
+      self.index(str) == 0
+    end
+  end
+end
+
