@@ -145,14 +145,14 @@ module Deployinator
     get '/diff/:stack/:r1/:r2/compare/?' do
       r1 = [params["r1"].to_i, params["r2"].to_i].min + 1
       r2 = [params["r1"].to_i, params["r2"].to_i].max
-      stack = params[:stack].intern
+      stack = params[:stack].to_sym
       @diff = %x{#{deploy_host_cmd} deploy/compare.php #{r1} #{r2} #{diff_paths_for_stack[stack]}}
 
       mustache :compare
     end
 
     get '/diff/:stack/:r1/:r2/github/?' do
-      stack = params[:stack].intern
+      stack = params[:stack].to_sym
       if Deployinator::Helpers.respond_to?(stack.to_s + "_git_repo_url")
         repo_url = Deployinator::Helpers.send(stack.to_s + "_git_repo_url")
         parts = repo_url.split("/")

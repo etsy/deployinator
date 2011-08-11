@@ -181,13 +181,13 @@ module Deployinator
     end
 
     def diff(r1, r2, stack="web")
-      if use_github(stack.intern, r1, r2)
+      if use_github(stack.to_sym, r1, r2)
         redirect "/diff/#{stack}/#{r1}/#{r2}/github"
         return
       end
       @r1 = r1
       @r2 = r2
-      @paths = diff_paths_for_stack[stack.intern]
+      @paths = diff_paths_for_stack[stack.to_sym]
       @date1 = SVN.time_of_rev(r1) + 1
       @date2 = SVN.time_of_rev(r2)
 

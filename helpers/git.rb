@@ -28,7 +28,7 @@ module Deployinator
       end
 
       def git_url(stack, protocol="git")
-        stack = stack.intern
+        stack = stack.to_sym
         stack_git_meth = stack.to_s + "_git_repo_url"
         return self.send(stack_git_meth) if self.respond_to?(stack_git_meth)
 
