@@ -205,6 +205,14 @@ Once you've made your great commits (with tests!):
 3. Push to your branch - `git push origin my_branch`
 4. Create an [Issue][is] with a link to your branch
 
+
+More Info
+---------
+
+Come by #deployinator on Freenode.
+Mailing list coming soon!
+
+
 ---
 
 [1]: http://rack.rubyforge.org/
