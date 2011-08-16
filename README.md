@@ -49,6 +49,10 @@ You may want to tell Pow to restart before each request for development:
 
 * `touch ./tmp/always_restart.txt`
 
+If you are not using Pow, you can of-course run it like a typical rack application.
+
+* `bundle exec rackup`
+
 
 Authentication
 --------------
