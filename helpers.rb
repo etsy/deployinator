@@ -95,6 +95,16 @@ module Deployinator
 
       raise "Must have stack" unless options[:stack]
 
+      # newlines in any of these will corrupt the logfile, so strip them out
+      newoptions = {}
+      options.each do |key, value|
+        if value.is_a? String
+          value = value.chomp
+        end
+        newoptions[key] = value
+      end
+      options = newoptions
+
       options[:env] ||= "PROD"
       options[:nice_env] = nicify_env(options[:env])
       options[:user] ||= @username
