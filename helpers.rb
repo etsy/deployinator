@@ -98,9 +98,7 @@ module Deployinator
       # newlines in any of these will corrupt the logfile, so strip them out
       newoptions = {}
       options.each do |key, value|
-        if value.is_a? String
-          value = value.chomp
-        end
+        value.chomp! if value.respond_to?(:"chomp!")
         newoptions[key] = value
       end
       options = newoptions
