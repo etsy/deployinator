@@ -13,6 +13,7 @@ $LOAD_PATH.unshift Deployinator.root("lib") unless $LOAD_PATH.include? Deployina
 require 'pony'
 require 'sinatra/base'
 require 'mustache/sinatra'
+require 'open4'
 
 # Silence mustache warnings
 module Mustache::Sinatra::Helpers
