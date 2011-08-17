@@ -64,7 +64,7 @@ module Deployinator
       start = Time.now.to_i
       log_and_stream "<div class='command'><h4>Running #{cmd}</h4><p class='output'>"
       time = Benchmark.measure do
-        Open3.popen3(cmd) do |inn, out, err|
+        ret_code = Open4.popen4(cmd) do |pid, inn, out, err|
           output = ""
           until out.eof?
             # raise "Timeout" if output.empty? && Time.now.to_i - start > 300
@@ -79,6 +79,7 @@ module Deployinator
           log_and_stream(output) unless output.empty?
           log_and_stream("<span class='stderr'>STDERR: #{err.read}</span><br>") unless err.eof?
         end
+        raise 'process_failed' unless ret_code == 0
       end
       log_and_stream "</p>"
       log_and_stream "<h5>Time: #{time}</h5></div>"
