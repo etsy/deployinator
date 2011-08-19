@@ -32,12 +32,15 @@ module Deployinator
         send(git_cmd, stack, "sh -c")
 
         git_bump_version stack, ""
-        
+
         build = demo_head_build
 
-        run_cmd %Q{echo "ssh host do_something"}
-
-        log_and_stream "Done!<br>"
+        begin
+          run_cmd %Q{echo "ssh host do_something"}
+          log_and_stream "Done!<br>"
+        rescue
+          log_and_stream "Failed!<br>"
+        end
 
         # log this deploy / timing
         log_and_shout(:old_build => old_build, :build => build, :send_email => true)
