@@ -5,6 +5,10 @@ module Deployinator
 
       HEADER_URL_EXCLUDE_STACKS = %w[web stats atlas api]
 
+      def protocol
+        Deployinator.protocol
+      end
+
       def push_order
         %w[production]
       end
@@ -18,11 +22,11 @@ module Deployinator
       end
 
       def my_url
-        "http://#{@host}"
+        "#{protocol}://#{@host}"
       end
 
       def logout_url
-        "http://#{auth_url}?logout=true&return=#{my_url}"
+        "#{protocol}://#{auth_url}?logout=true&return=#{my_url}"
       end
 
       def current_stack_url
@@ -31,7 +35,7 @@ module Deployinator
         else
           destination = ""
         end
-        "http://#{@host}/#{destination}"
+        "#{protocol}://#{@host}/#{destination}"
       end
 
       def allowed_to_push_to_prod?

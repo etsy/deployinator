@@ -18,7 +18,11 @@ module Deployinator
     end
 
     get '/' do
-      @stack = "demo"
+      if Deployinator.default_stack 
+        @stack = Deployinator::default_stack
+      else 
+        @stack = "demo"
+      end
       mustache @stack
     end
 
@@ -54,10 +58,6 @@ module Deployinator
 
       meth = "#{@stack}_%s_#{type}"
       inst.push_order.collect {|env| [env, inst.send(meth % env)]}.to_json
-    end
-
-    get '/last_chef' do
-      chef_commits.gsub(/\n/, "<br>\n")
     end
 
     get '/last_pushes' do
@@ -155,9 +155,16 @@ module Deployinator
       stack = params[:stack].to_sym
       if Deployinator::Helpers.respond_to?(stack.to_s + "_git_repo_url")
         repo_url = Deployinator::Helpers.send(stack.to_s + "_git_repo_url")
-        parts = repo_url.split("/")
-        user = parts[3]
-        repo = parts[4].gsub(/\.git$/, "")
+	if repo_url == /https:\/\//
+          parts = repo_url.split("/")
+          user = parts[3]
+          repo = parts[4].gsub(/\.git$/, "")
+        elsif repo_url == /git@github/
+          user_actual = parts[0].split(":")
+          user = user_actual[1] 
+          repo = parts[1].gsub(/\.git$/, "")
+        end
+
         redirect "#{github_url}#{user}/#{repo}/compare/#{params[:r1]}...#{params[:r2]}"
       else
         gh_info = github_info_for_stack[stack]

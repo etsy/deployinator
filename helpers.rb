@@ -20,14 +20,14 @@ module Deployinator
     end
 
     def init(env)
-      @username = (env["HTTP_X_USERNAME"] || ENV["HTTP_X_USERNAME"]) or raise "Must be logged in"
-      @groups   = CGI.unescape(env["HTTP_X_GROUPS"] || ENV["HTTP_X_GROUPS"]).split("|")
+      #@username = (env["HTTP_X_USERNAME"] || ENV["HTTP_X_USERNAME"]) or raise "Must be logged in"
+      #@groups   = CGI.unescape(env["HTTP_X_GROUPS"] || ENV["HTTP_X_GROUPS"]).split("|")
       @host     = env["HTTP_HOST"]
       @local    = @host.match(/local|dev/)
-      @ny4      = @host.match(/ny4/)
-      if @username == "nobody" && ! request.path_info.match(OK_PATH_REGEX)
-        raise "Must be logged in"
-      end
+      #@ny4      = @host.match(/ny4/)
+      #if @username == "nobody" && ! request.path_info.match(OK_PATH_REGEX)
+      #  raise "Must be logged in"
+      #end
       @stack = form_hash(env, "stack") unless @stack
       @filename = "#{Time.now.to_i}-#{@username}-#{dep_method(env)}.html"
     end
@@ -133,7 +133,7 @@ module Deployinator
     # Actual helper methods
 
     def diff_url(stack, old_build, new_build)
-      "http://#{Deployinator.hostname}/diff/#{stack}/#{old_build}/#{new_build}"
+      "#{Deployinator.protocol}://#{Deployinator.hostname}/diff/#{stack}/#{old_build}/#{new_build}"
     end
 
     def stack
@@ -182,7 +182,6 @@ module Deployinator
 
     def use_github(stack, rev1, rev2)
       # Hackery
-      raise self.send("#{stack.to_s}_git_repo_url")
       return true if self.respond_to?(stack.to_s + "_git_repo_url")
       return false if [rev1, rev2].all? {|r| r.match(/^\d{5}$/)}
       return true if github_info_for_stack.key?(stack)
