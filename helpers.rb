@@ -133,7 +133,7 @@ module Deployinator
     # Actual helper methods
 
     def diff_url(stack, old_build, new_build)
-      "http://#{Deployinator.hostname}/diff/#{stack}/#{old_build}/#{new_build}"
+      "#{Deployinator.protocol}://#{Deployinator.hostname}/diff/#{stack}/#{old_build}/#{new_build}"
     end
 
     def stack
@@ -182,7 +182,6 @@ module Deployinator
 
     def use_github(stack, rev1, rev2)
       # Hackery
-      raise self.send("#{stack.to_s}_git_repo_url")
       return true if self.respond_to?(stack.to_s + "_git_repo_url")
       return false if [rev1, rev2].all? {|r| r.match(/^\d{5}$/)}
       return true if github_info_for_stack.key?(stack)
