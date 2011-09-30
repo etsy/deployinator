@@ -14,6 +14,12 @@ module Deployinator
     # New Relic logging of deploys
     attr_accessor :new_relic_options
 
+    # The default stack name 
+    attr_accessor :default_stack
+
+    # The default protocol, http/https
+    attr_accessor :protocol
+
     # Hostname where deployinator runs
     attr_accessor :hostname
 
