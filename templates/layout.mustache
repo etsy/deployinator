@@ -26,7 +26,9 @@ _  __  / _  _ \___  __ \__  / _  __ \__  / / /__  / __  __ \_  __ `/_  __/_  __ 
                 <div id="user">
                     <h1>Welcome to <span>Deployinator</span></h1>
                     {{< who_header }}
+                    <div class="stacks" style="margin-top: 5px;">Change stack: {{{get_stacks_select_box}}}</div>
                 </div>
+                
             </header>
             
             <!-- main content -->
@@ -62,6 +64,12 @@ _  __  / _  _ \___  __ \__  / _  __ \__  / / /__  / __  __ \_  __ `/_  __/_  __ 
                                 img.remove();
                             });
                     });
+                });
+                
+                $('#stacks').change(function() {
+                    var stack = $(this).val();
+                    
+                    window.location = '/' + stack;
                 });
 
                 // this should just check taht action is dispatch?

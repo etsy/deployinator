@@ -405,5 +405,18 @@ module Deployinator
 
       envs.each_with_index { |env, i| env[:number] = "%02d." % (i + 1); env[:not_last] = (i < envs.size - 1) }
     end
+
+    def get_stacks_select_box
+      stacks = Dir.glob('stacks/*.rb')
+      output = "<select name='stacks' id='stacks'>"
+      stacks.each do |s|
+        s = s.gsub("stacks/", "").gsub(".rb", "")
+        output << "<option value='#{s}'>#{s}</option>"
+      end
+      output << "</select>"
+
+      output
+    end
+
   end
 end
