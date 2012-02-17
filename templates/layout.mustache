@@ -155,7 +155,7 @@ _  __  / _  _ \___  __ \__  / _  __ \__  / / /__  / __  __ \_  __ `/_  __/_  __ 
                     setInterval(function() {
                         if (!autoScroll) { return; }
                         $("iframe").each(function() {
-                            this.contentWindow.scrollTo(0, this.contentDocument.height);
+                            this.contentWindow.scrollTo(0, this.contentDocument.body.clientHeight);
                         });
                     }, 200);
                 });
