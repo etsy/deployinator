@@ -298,7 +298,7 @@ module Deployinator
 
     def timing_log(duration, type, stack)
       log_string_to_file("#{now}|#{type}|#{stack}|#{duration}", timing_log_path)
-      %x{echo "deploylong.#{stack}.#{type} #{duration} #{Time.now.to_i}" | nc #{Deployinator.graphite_host} #{Deployinator.graphite_port || 2003}}
+      graphite_plot("deploylong.#{stack}.#{type} #{duration})
     end
 
     def log_string_to_file(string, path)
@@ -335,8 +335,7 @@ module Deployinator
         end
 
         # ping graphite!
-        time = args["time"] || Time.now
-        %x{echo "deploys.#{args["stack"]}.#{env} 1 #{time.to_i}" | nc #{Deployinator.graphite_host} #{Deployinator.graphite_port || 2003}}
+        graphite_plot("deploys.#{args["stack"]}.#{env} 1 #{time.to_i}"
       end
     end
 
