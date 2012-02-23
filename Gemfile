@@ -8,6 +8,7 @@ gem "json"
 gem "pony"
 gem "tlsmail"
 gem "open4"
+gem "simple-graphite"
 
 group :test do
   gem 'nokogiri', '~> 1.4.7' # for ruby 1.8.6
