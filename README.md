@@ -198,6 +198,18 @@ http://mybot/announce
 which accepts a POST request with the _message_ key and _channels_ key.  The _channels_ values are supplied from the __:irc_channels__ parameter passed to log\_and\_shout. 
 Its up to you to implement what happens with the _message_ and _channels_ POST request parameters, so you can plug in more than just IRC bot communication here.
 
+Passenger Configuration
+-------
+
+**Prerequisite:** Disable mod_deflate/mod_gzip on Apache
+
+Passenger versions < 3.0.11
+    
+* Standard configurations will work
+    
+Passenger versions >= 3.0.11
+
+* Set PassengerBufferResponse to off.  This is a change as of 3.0.11 and will break streaming of the output.
 
 Contributing
 ------------
