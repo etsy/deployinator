@@ -3,7 +3,7 @@ module Helpers
   require 'socket'
     def graphite_plot(logString)
       if Deployinator.graphite_host
-        s = TCPSocket.new(Deployinator.graphite_host,Deployinator.graphite_po
+        s = TCPSocket.new(Deployinator.graphite_host,Deployinator.graphite_port || 2003)
         s.write "#{logString} #{Time.now.to_i}\n"
         s.close
       end
