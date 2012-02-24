@@ -335,7 +335,7 @@ module Deployinator
         end
 
         # ping graphite!
-        graphite("deploys.#{args["stack"]}.#{env} 1")
+        graphite_plot("deploys.#{args["stack"]}.#{env} 1")
       end
     end
 
