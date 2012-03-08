@@ -38,7 +38,7 @@ module Deployinator
       end
 
       def github_host
-        Deployinator.github_host
+        Deployinator.github_host || "github.com"
       end
 
       def github_url
