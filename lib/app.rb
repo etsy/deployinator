@@ -159,7 +159,8 @@ module Deployinator
           parts = repo_url.split("/")
           user = parts[3]
           repo = parts[4].gsub(/\.git$/, "")
-        elsif repo_url == /git@github/
+        elsif repo_url =~ /git@github/
+          parts = repo_url.split("/")
           user_actual = parts[0].split(":")
           user = user_actual[1] 
           repo = parts[1].gsub(/\.git$/, "")
