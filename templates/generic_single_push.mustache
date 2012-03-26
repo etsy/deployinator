@@ -13,7 +13,7 @@
 {{#environments}}
     <div class="stack-box">
         <h2><span>{{number}}</span>{{title}}</h2>
-        <form action="/dispatch" method="post">
+        <form action="/dispatch" method="post" class="{{name}}">
             <input type="hidden" name="method" value="{{method}}">
             <input type="hidden" name="stack" value="{{stack}}">
             
