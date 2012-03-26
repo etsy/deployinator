@@ -5,4 +5,4 @@ Deployinator.issue_tracker = proc do |issue|
 end
 
 Deployinator.default_stack = "demo"
-Deployinator.default_stack = "http"
+Deployinator.protocol = "http"
