@@ -35,7 +35,7 @@ It has been tested with ruby 1.8.6, 1.8.7 and 1.9.2. For local development, you 
 
 * `curl get.pow.cx | sh`
 * `cd ~/.pow`
-* `ln -s /path/to/deployinator`
+* `ln -s /path/to/deployinator ./deployinator`
 * `cd /path/to/deployinator`
 * `bundle install`
 * `echo "export HTTP_X_USERNAME=$USER\nexport HTTP_X_GROUPS=foo" > .powenv`
