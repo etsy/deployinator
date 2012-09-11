@@ -410,7 +410,9 @@ module Deployinator
       output = "<select name='stacks' id='stacks'>"
       stacks.each do |s|
         s = s.gsub("stacks/", "").gsub(".rb", "")
-        output << "<option value='#{s}'>#{s}</option>"
+        output << "<option value='#{s}'"
+        output << " selected='selected'" if s == stack
+        output << ">#{s}</option>"
       end
       output << "</select>"
 
