@@ -182,7 +182,7 @@ module Deployinator
 
     def use_github(stack, rev1, rev2)
       # Hackery
-      return true if self.respond_to?(stack.to_s + "_git_repo_url")
+      return true if Deployinator::Helpers.respond_to?(stack.to_s + "_git_repo_url")
       return false if [rev1, rev2].all? {|r| r.match(/^\d{5}$/)}
       return true if github_info_for_stack.key?(stack)
       return false
@@ -410,7 +410,9 @@ module Deployinator
       output = "<select name='stacks' id='stacks'>"
       stacks.each do |s|
         s = s.gsub("stacks/", "").gsub(".rb", "")
-        output << "<option value='#{s}'>#{s}</option>"
+        output << "<option value='#{s}'"
+        output << " selected='selected'" if s == stack
+        output << ">#{s}</option>"
       end
       output << "</select>"
 
