@@ -155,7 +155,7 @@ module Deployinator
       stack = params[:stack].to_sym
       if Deployinator::Helpers.respond_to?(stack.to_s + "_git_repo_url")
         repo_url = Deployinator::Helpers.send(stack.to_s + "_git_repo_url")
-        if repo_url == /^https:\/\//
+        if repo_url =~ /^https:\/\//
           parts = repo_url.split("/")
           user = parts[3]
           repo = parts[4].gsub(/\.git$/, "")
