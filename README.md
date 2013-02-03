@@ -237,5 +237,5 @@ Mailing list coming soon!
 [4]: https://github.com/exflickr/GodAuth
 [etsy]: http://www.etsy.com/
 [fk]: http://help.github.com/forking/
-[is]: http://github.com/defunkt/mustache/issues
+[is]: http://github.com/etsy/deployinator/issues
 [dep]: http://etsy.me/deployinator
