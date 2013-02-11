@@ -60,7 +60,7 @@ DEPENDENCIES
   nokogiri (~> 1.4.7)
   open4
   pony
-  rack
+  rack (~> 1.5.2)
   rake
   sinatra
   tlsmail

@@ -1,7 +1,7 @@
 source :rubygems
 
 gem "rake"
-gem "rack"
+gem "rack", "~> 1.5.2"
 gem "mustache"
 gem "sinatra"
 gem "json", "~> 1.7.7"
