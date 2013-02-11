@@ -55,7 +55,7 @@ PLATFORMS
 
 DEPENDENCIES
   capybara (~> 1.1.4)
-  json
+  json (~> 1.7.7)
   mustache
   nokogiri (~> 1.4.7)
   open4
