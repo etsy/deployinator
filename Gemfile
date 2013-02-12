@@ -11,5 +11,5 @@ gem "open4"
 
 group :test do
   gem 'nokogiri', '~> 1.4.7' # for ruby 1.8.6
-  gem "capybara"
+  gem "capybara", "~> 1.1.4"
 end
