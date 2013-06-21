@@ -1,0 +1,59 @@
+---
+stages_host: {bert: coast140.anchor.net.au, ernie: coast140.anchor.net.au, feature: byredant.com.au, uat: [ pitch160.anchor.net.au, pitch180.anchor.net.au, pitch190.anchor.net.au ], production: [ squid740.anchor.net.au, martingale.anchor.net.au, lazaret.anchor.net.au, squid950.anchor.net.au, squid970.anchor.net.au, squid980.anchor.net.au, pitch570.anchor.net.au, pitch570.anchor.net.au], dev: coast140.anchor.net.au}
+stages_environment: {bert: bert, ernie: ernie, feature: byredant, uat: uat, production: production, dev: bigdev}
+stages_branch: {bert: develop, ernie: develop, feature: develop, uat: master, production: master, dev: develop}
+application: {bert: bert, ernie: ernie, feature: 12wbt, uat: uat_12wbt, production: 12wbt, dev: 12wbt_dev}
+app_server: {dev: unicorn, uat: unicorn, bert: unicorn, ernie: unicorn, production: unicorn}
+deploy_base: {bert: /home/deploy, ernie: /home/deploy, feature: /home/deploy, uat: /home/deploy, production: /home/deploy, dev: /home/deploy}
+notify: {production: [jago@redant.com.au, deploy@12wbt.com], uat: [jago@redant.com.au, toby@redant.com.au, ben@redant.com.au]}
+repository: git@github.com:red-ant/12wbt.git
+rake_tasks: ['db:migrate', 'assets:precompile', 'ts:reindex']
+shared_dirs: {system: public, downloads: public, assets: public, sphinx: db}
+rvm_ruby_string: 1.9.3-p194@12wbt-ruby1.9.3 
+enable_pipeline: true
+jira_key: MB
+scm: git
+members_table: members
+members_preserve_domains: [redant.com.au, 12wbt.com]
+password_flatten_query: update members set encrypted_password = '$2a$10$nbeuz4Hx.Jqom/RYHFz8iue/IQgNXXhBKLmSSPOD7lhxKHGAJ08HS' where email not like '%redant.com.au' and email not like '%12wbt.com';
+
+feature:
+  db_host: localhost
+  db_username: 12wbt
+  db_database: 12wbt
+  db_password: ahG3vee6
+  rvm_path: /home/deploy/.rvm
+
+uat:
+  db_host: pitch190.anchor.net.au
+  db_username: deploy
+  db_database: uat_12wbt
+  db_password: CoNIsmkOU7ScKZG2
+  rvm_path: /usr/local/rvm
+
+dev:
+  db_host: localhost
+  db_username: 12wbt_dev
+  db_database: 12wbt_dev
+  db_password: ahG3vee6
+  rvm_path: /usr/local/rvm
+bert:
+  rvm_path: /usr/local/rvm
+  db_host: localhost
+  db_database: bert
+  db_username: bert
+  db_password: 3pk9yNkn
+ernie:
+  rvm_path: /usr/local/rvm
+  db_host: localhost
+  db_database: bert
+  db_username: bert
+  db_password: 3pk9yNkn
+
+production:
+  rvm_path: /usr/local/rvm
+  db_host: 202.4.224.159
+  db_username: deploy
+  db_database: deploy
+  db_password: CoNIsmkOU7ScKZG2
+
