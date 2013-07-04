@@ -71,6 +71,8 @@ To create a new stack, run the rake task "new_stack"
 
     STACK=my_blog rake new_stack
 
+> Note: a stack name must **not** begin with a capital letter
+
 #### Customizing your stack
 
 A stack can be customized so that you have flexibility over the different environments within it (which correspond to buttons) and the methods that correspond to each button press.
