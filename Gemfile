@@ -1,5 +1,9 @@
 source "https://rubygems.org"
+source "https://gems.byredant.com.au"
 
+
+gem "redant-deploy", :require => false
+gem "unicorn"
 gem "rake"
 gem "rack", "~> 1.5.2"
 gem "mustache"
