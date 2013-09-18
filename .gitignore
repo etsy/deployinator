@@ -1,4 +1,3 @@
-bin/*
 sinatra*.log
 tmp/*.txt
 log/*.log
@@ -10,3 +9,4 @@ run_logs/current*
 vendor/bundle
 .yardoc
 .DS_Store
+/Gemfile.lock

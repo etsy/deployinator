@@ -1,6 +1,7 @@
 # Stolen from github.com/defunkt/mustache
 
 require 'rake/testtask'
+require 'bundler/gem_tasks'
 
 #
 # Helpers
@@ -34,7 +35,7 @@ task :new_stack do
   stack = ENV['STACK']
   raise "You must supply a stack name (like STACK=foo rake new_stack)" unless stack
   raise "Already exists" if File.exists?("./stacks/#{stack}.rb")
-  
+
   File.open("./stacks/#{stack}.rb", "w") do |f|
     contents = <<-EOF
 module Deployinator
@@ -67,7 +68,7 @@ end
   File.open("./templates/#{stack}.mustache", "w") do |f|
     f.print "{{< generic_single_push }}"
   end
-  
+
   puts "Created #{stack}!\nEdit stacks/#{stack}.rb##{stack}_production to do your bidding"
 end
 

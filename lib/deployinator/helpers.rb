@@ -61,7 +61,7 @@ module Deployinator
     # does not (currently) check exit status codes
     def run_cmd(cmd)
       ret = ""
-      start = Time.now.to_i
+      # start = Time.now.to_i
       log_and_stream "<div class='command'><h4>Running #{cmd}</h4><p class='output'>"
       time = Benchmark.measure do
         ret_code = Open4.popen4(cmd) do |pid, inn, out, err|
@@ -364,7 +364,7 @@ module Deployinator
 
     def log_to_hash(opts={})
       times = {}
-      last_time = 0
+      # last_time = 0
       l = log_entries(opts).map do |ll|
         fields = ll.split("|")
         times[fields[1]] ||= []
@@ -406,7 +406,9 @@ module Deployinator
     end
 
     def get_stacks_select_box
-      stacks = Dir.glob('stacks/*.rb')
+      stacks = ENV['DEPLOYINATOR_STACK_PATH'].split(':').map do |stack_dir|
+        Dir.glob("#{stack_dir}/*.rb")
+      end.flatten
       output = "<select name='stacks' id='stacks'>"
       stacks.each do |s|
         s = s.gsub("stacks/", "").gsub(".rb", "")
