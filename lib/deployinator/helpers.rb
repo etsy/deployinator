@@ -61,13 +61,11 @@ module Deployinator
     # does not (currently) check exit status codes
     def run_cmd(cmd)
       ret = ""
-      # start = Time.now.to_i
       log_and_stream "<div class='command'><h4>Running #{cmd}</h4><p class='output'>"
       time = Benchmark.measure do
         ret_code = Open4.popen4(cmd) do |pid, inn, out, err|
           output = ""
           until out.eof?
-            # raise "Timeout" if output.empty? && Time.now.to_i - start > 300
             chr = out.read(1)
             output << chr
             ret << chr
@@ -364,7 +362,6 @@ module Deployinator
 
     def log_to_hash(opts={})
       times = {}
-      # last_time = 0
       l = log_entries(opts).map do |ll|
         fields = ll.split("|")
         times[fields[1]] ||= []
