@@ -64,8 +64,12 @@ module Deployinator
     # Takes an optional argument of a string or array and returns the path(s)
     # From the root of deployinator
     def root(path = nil)
-      base = File.expand_path(File.dirname(__FILE__))
+      base = deployinator_root
       path ? File.join(base, path) : base
+    end
+
+    def deployinator_root
+      ENV['DEPLOYINATOR_ROOT'] ||= File.expand_path('../../', __FILE__)
     end
   end
 end

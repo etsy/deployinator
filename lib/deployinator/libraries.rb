@@ -8,7 +8,7 @@ $LOAD_PATH.unshift base_dir unless $LOAD_PATH.include? base_dir
 require 'deployinator'
 
 $LOAD_PATH.unshift Deployinator.root unless $LOAD_PATH.include? Deployinator.root
-$LOAD_PATH.unshift Deployinator.root("lib") unless $LOAD_PATH.include? Deployinator.root("lib")
+$LOAD_PATH.unshift Deployinator.root("lib") unless $LOAD_PATH.include? Deployinator.root('lib')
 
 require 'pony'
 require 'sinatra/base'
@@ -21,12 +21,15 @@ module Mustache::Sinatra::Helpers
 end
 
 # The magic of the helpers
-Dir[Deployinator.root(["helpers", "*.rb"])].each do |file|
-  require file
-  require file
-  the_mod = Deployinator::Helpers.const_get(Mustache.classify(File.basename(file, ".rb") + "Helpers"))
-  Deployinator::Helpers.send(:include, the_mod)
-  Deployinator::Helpers.send(:extend, the_mod)
+ENV['DEPLOYINATOR_HELPER_PATH'] ||= Deployinator.root('helpers')
+internal_helpers_dir = Deployinator.root(['lib', 'deployinator', 'helpers'])
+(ENV['DEPLOYINATOR_HELPER_PATH'].split(':') + [internal_helpers_dir]).map do |helper_dir|
+  Dir["#{helper_dir}/*.rb"].each do |file|
+    require file
+    the_mod = Deployinator::Helpers.const_get(Mustache.classify(File.basename(file, ".rb") + "Helpers"))
+    Deployinator::Helpers.send(:include, the_mod)
+    Deployinator::Helpers.send(:extend, the_mod)
+  end
 end
 
 # ruby Std lib
@@ -39,32 +42,34 @@ require 'time'
 require 'json'
 
 # deployinator libs
-require 'app'
-require 'helpers'
-require 'deployinator'
-require 'version'
-require 'svn'
-require 'stream'
+require_relative 'app'
+require_relative 'helpers'
+require_relative 'version'
+require_relative 'svn'
+require_relative 'stream'
 
-require 'views/layout'
+require_relative 'views/layout'
 
 # The magic of the stacks
-Dir[Deployinator.root(["stacks", "*.rb"])].each do |file|
-  require file
-  klass = Mustache.classify(File.basename(file, ".rb"))
-  the_mod = Deployinator::Stacks.const_get(klass)
-  Deployinator::Helpers.send(:include, the_mod)
-  Deployinator::Helpers.send(:extend, the_mod)
+ENV['DEPLOYINATOR_STACK_PATH'] ||= Deployinator.root(['stacks'])
+ENV['DEPLOYINATOR_STACK_PATH'].split(':').map do |stack_dir|
+  Dir["#{stack_dir}/*.rb"].each do |file|
+    require file
+    klass = Mustache.classify(File.basename(file, ".rb"))
+    the_mod = Deployinator::Stacks.const_get(klass)
+    Deployinator::Helpers.send(:include, the_mod)
+    Deployinator::Helpers.send(:extend, the_mod)
 
-  # Hackery... all stacks should have a view class that inheriets
-  # from "Layout". This is so we MAY but don't HAVE to define views/stack.rb
-  Deployinator::Views.class_eval <<-EOF
+    # Hackery... all stacks should have a view class that inheriets
+    # from "Layout". This is so we MAY but don't HAVE to define views/stack.rb
+    Deployinator::Views.class_eval <<-EOF
     class #{klass} < Layout
     end
-  EOF
+    EOF
+  end
 end
 
-require 'views/view_helpers'
+require_relative 'views/view_helpers'
 
 class Mustache
   include Deployinator::Helpers
