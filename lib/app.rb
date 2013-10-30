@@ -10,7 +10,7 @@ module Deployinator
       :namespace => Deployinator
     }
 
-    set :public, "public/"
+    set :public_folder, "public/"
     set :static, true
 
     before do
