@@ -8,8 +8,8 @@ Gem::Specification.new do |gem|
   gem.version       = Deployinator::VERSION
   gem.authors       = ["JPaul"]
   gem.email         = ["jpaul@etsy.com"]
-  gem.description   = %q{TODO: Write a gem description}
-  gem.summary       = %q{TODO: Write a gem summary}
+  gem.description   = %q{Deployinator as a Gem}
+  gem.summary       = %q{Rewrite of deployinator to be a gem instead of repo to be forked}
   gem.homepage      = ""
 
   gem.files         = `git ls-files`.split($/)
