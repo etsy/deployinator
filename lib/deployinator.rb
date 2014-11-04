@@ -25,7 +25,18 @@ module Deployinator
     # a hash for context specifics settings (test,dev,production) of deployinator itself
     attr_accessor :app_context
 
+    # Your install root
+    attr_accessor :root_dir
+
     attr_accessor :git_sha_length
+
+    # Base root path
+    # Takes an optional argument of a string or array and returns the path(s)
+    # From the root of deployinator
+    def root(path = nil)
+      base = Deployinator.root_dir
+      path ? File.join(base, path) : base
+    end
 
     # is a log file defined?
     def log_file?
@@ -37,14 +48,6 @@ module Deployinator
     # *note* this is different from deployinator's concept of stacks/environments
     def env
       ENV["RACK_ENV"] || ENV["RAILS_ENV"] || "development"
-    end
-
-    # Base root path
-    # Takes an optional argument of a string or array and returns the path(s)
-    # From the root of deployinator
-    def root(path = nil)
-      base = File.expand_path(File.dirname(__FILE__))
-      path ? File.join(base, path) : base
     end
 
     # Gets all the stack files in the stack directory
