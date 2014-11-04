@@ -18,6 +18,9 @@ module Deployinator
     # Default username for passwordless ssh
     attr_accessor :default_user
 
+    # Default github_host
+    attr_accessor :github_host
+
     # Bug or issue tracker - proc that takes the issue id as an argument
     # ex: Deployinator.issue_tracker = proc {|issue| "http://foo/browse/#{issue}"}
     attr_accessor :issue_tracker
