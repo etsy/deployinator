@@ -1,4 +1,4 @@
-Copyright (c) 2014 JPaul
+Copyright (c) 2014 Etsy
 
 MIT License
 
