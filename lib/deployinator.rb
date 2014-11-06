@@ -34,6 +34,9 @@ module Deployinator
     # Git info per stack
     attr_accessor :git_info_for_stack
 
+    # Deploy Host
+    attr_accessor :deploy_host
+
     attr_accessor :git_sha_length
 
     # Base root path
