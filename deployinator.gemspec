@@ -18,5 +18,8 @@ Gem::Specification.new do |gem|
   gem.require_paths = ["lib"]
 
   gem.add_runtime_dependency "json"
+  gem.add_runtime_dependency "mustache"
+  gem.add_runtime_dependency "pony"
+  gem.add_runtime_dependency "tlsmail"
 
 end
