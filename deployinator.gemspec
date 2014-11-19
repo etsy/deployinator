@@ -21,5 +21,7 @@ Gem::Specification.new do |gem|
   gem.add_runtime_dependency "mustache"
   gem.add_runtime_dependency "pony"
   gem.add_runtime_dependency "tlsmail"
-
+  gem.add_runtime_dependency "eventmachine"
+  gem.add_runtime_dependency "eventmachine-tail"
+  gem.add_runtime_dependency "em-websocket"
 end
