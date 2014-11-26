@@ -8,6 +8,7 @@ require 'pony'
 require "deployinator"
 require "mustache/sinatra"
 require "deployinator/helpers"
+require "deployinator/helpers/version"
 
 # ruby Std lib
 require 'open3'
