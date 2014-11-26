@@ -1,3 +1,4 @@
+require 'deployinator/helpers/version'
 module Deployinator
   module Helpers
     include Deployinator::Helpers::VersionHelpers
