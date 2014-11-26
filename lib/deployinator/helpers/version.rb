@@ -42,7 +42,7 @@ module Deployinator
 					val = /^[a-zA-Z0-9]{7,}-[0-9]{8}-[0-9]{6}-UTC$/.match version
 					val.nil? ? nil : version.chomp
 			end
-      module_function get_version_by_url
+      module_function :get_version_by_url
 
 			# Public: this helper function wraps the actual call to get the contents of a
 			# version file. This helps with reducing code duplication and also stubbing
@@ -56,7 +56,7 @@ module Deployinator
 					`curl -s #{url}`
 					end
 			end
-      module_function curl_get_url
+      module_function :curl_get_url
 	  end
 	end
 end
