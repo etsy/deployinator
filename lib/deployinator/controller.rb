@@ -28,7 +28,7 @@ module Deployinator
   # modules it includes/extends based on the stack we are deploying.
   class Deploy
     include Deployinator::Helpers,
-      Deployinator::Helpers::Version
+      Deployinator::Helpers::VersionHelpers
 
     # Public: initialize the deploy class with instance variables that are
     # needed by the deploy methods, runlog helpers and all that
