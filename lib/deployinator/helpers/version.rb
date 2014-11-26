@@ -17,6 +17,7 @@ module Deployinator
 					val = /^[a-zA-Z0-9]{7,}$/.match the_sha
 					val.nil? ? nil : the_sha
 			end
+      module_function :get_build
 
 			# Public: function to get the current software version running on a host
 			#
@@ -27,6 +28,7 @@ module Deployinator
 					host_url = "http://#{host}/"
 					get_version_by_url("#{host_url}version.txt")
 			end
+      module_function :get_version
 
 			# Public: function to fetch a version string from a URL. The version string
 			# is validated to have a valid format. The function calls a lower level
@@ -40,6 +42,7 @@ module Deployinator
 					val = /^[a-zA-Z0-9]{7,}-[0-9]{8}-[0-9]{6}-UTC$/.match version
 					val.nil? ? nil : version.chomp
 			end
+      module_function get_version_by_url
 
 			# Public: this helper function wraps the actual call to get the contents of a
 			# version file. This helps with reducing code duplication and also stubbing
@@ -53,6 +56,7 @@ module Deployinator
 					`curl -s #{url}`
 					end
 			end
+      module_function curl_get_url
 	  end
 	end
 end
