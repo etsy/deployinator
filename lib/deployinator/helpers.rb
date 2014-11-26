@@ -1,5 +1,6 @@
 module Deployinator
   module Helpers
+    include Deployinator::Helpers::VersionHelpers
     RUN_LOG_PATH = "run_logs/"
 
     def dev_context?
@@ -156,7 +157,7 @@ module Deployinator
       end
 
       define_method "#{env}_build" do
-        Version.get_build(self.send("#{env}_version"))
+        get_build(self.send("#{env}_version"))
       end
     end
 
@@ -239,7 +240,7 @@ module Deployinator
         :title           => "Deploy #{stack} production",
         :method          => "production",
         :current_version => proc{send(:"#{stack}_production_version")},
-        :current_build   => proc{Version.get_build(send(:"#{stack}_production_version"))},
+        :current_build   => proc{get_build(send(:"#{stack}_production_version"))},
         :next_build      => proc{send(:head_build)}
       }]
 
