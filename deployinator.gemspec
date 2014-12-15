@@ -24,4 +24,5 @@ Gem::Specification.new do |gem|
   gem.add_runtime_dependency "eventmachine"
   gem.add_runtime_dependency "eventmachine-tail"
   gem.add_runtime_dependency "em-websocket"
+  gem.add_runtime_dependency "sinatra", ">=1.4.3"
 end

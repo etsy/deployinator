@@ -374,6 +374,10 @@ module Deployinator
       d.empty? ? nil : Hash[*[:who, :method, :lock_time].zip(d.split("|")).flatten]
     end
 
+    def pushes_locked?(stack)
+        push_lock_info(stack)
+    end
+
     def push_lock_path(stack)
       "#{Deployinator.app_context['data_path']}/#{stack}-push-lock"
     end
