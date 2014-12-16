@@ -18,12 +18,12 @@ module Deployinator
     end
 
     set :mustache, {
-      :views     => File.join(Deployinator.root_dir, 'views/'),
-      :templates => File.join(Deployinator.root_dir, 'templates/'),
+      :views     => Deployinator.root('views'),
+      :templates => Deployinator.root('templates'),
       :namespace => Deployinator
     }
 
-    set :public_folder, File.join(Deployinator.root_dir, "public/")
+    set :public_folder, Deployinator.root('public')
     set :static, true
 
     before do
