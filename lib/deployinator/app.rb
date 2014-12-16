@@ -11,11 +11,11 @@ module Deployinator
       Deployinator::Helpers::GitHelpers,
       Deployinator::Helpers::VersionHelpers
 
-    def github_diff_url(params) {
+    def github_diff_url(params)
       stack = params[:stack].intern
       gh_info = git_info_for_stack[stack]
       "https://#{which_github_host(stack)}/#{gh_info[:user]}/#{gh_info[:repository]}/compare/#{params[:r1]}...#{params[:r2]}"
-    }
+    end
 
     set :mustache, {
       :views     => File.join(Deployinator.root_dir, 'views/'),
