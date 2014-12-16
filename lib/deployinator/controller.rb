@@ -138,7 +138,7 @@ module Deployinator
         deploy_instance.raise_event(:deploy_error)
       end
 
-      if state.nil?
+      if state.nil? || !state.is_a?(Hash)
         state = {}
       end
       deploy_instance.raise_event(:deploy_end, state)
