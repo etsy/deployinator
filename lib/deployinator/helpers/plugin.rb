@@ -1,6 +1,14 @@
 module Deployinator
   module Helpers
     module PluginHelpers
+      attr_accessor :plugins
+
+      def initialize
+        super
+        @plugins = []
+      end
+
+
       def register_plugins(stack)
         @plugins = []
         global_plugins = Deployinator.global_plugins
