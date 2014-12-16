@@ -9,6 +9,7 @@ require "deployinator"
 require "mustache/sinatra"
 require "deployinator/helpers"
 require "deployinator/helpers/version"
+require "deployinator/helpers/plugin"
 
 # ruby Std lib
 require 'open3'
@@ -29,7 +30,8 @@ module Deployinator
   # modules it includes/extends based on the stack we are deploying.
   class Deploy
     include Deployinator::Helpers,
-      Deployinator::Helpers::VersionHelpers
+      Deployinator::Helpers::VersionHelpers,
+      Deployinator::Helpers::PluginHelpers
 
     # Public: initialize the deploy class with instance variables that are
     # needed by the deploy methods, runlog helpers and all that
@@ -48,8 +50,6 @@ module Deployinator
       @username = args[:username]
       @groups   = "deploy_prod"
       @host     = `hostname -s`
-      @local    = @host.match(/local|ny4dev|dev/)
-      @ny4      = @host.match(/ny4/)
       @stack = args[:stack]
       @method = args[:method]
       @filename = "#{@deploy_start_time}-#{@username}-#{args[:method]}.html"
@@ -120,6 +120,7 @@ module Deployinator
       end
 
       deploy_instance = deploy_class.new(options)
+      deploy_instance.register_plugins(options[:stack])
 
       deploy_instance.lock_pushes(options[:stack], options[:username], options[:method])
 
@@ -128,11 +129,19 @@ module Deployinator
       deploy_instance.log_and_stream "Calling #{options[:method]}\n";
       deploy_instance.link_stack_logfile(deploy_instance.get_filename, options[:stack])
 
+      deploy_instance.raise_event(:deploy_start)
+
       begin
-        deploy_instance.send(options[:method], options)
+        state = deploy_instance.send(options[:method], options)
       rescue Exception => e
         deploy_instance.log_error("There was an exception during this deploy. Aborted!", e)
+        deploy_instance.raise_event(:deploy_error)
       end
+
+      if state.nil?
+        state = {}
+      end
+      deploy_instance.raise_event(:deploy_end, state)
 
       if options[:method].match(/config_push/)
         env = options[:method].match(/prod/) ? "production" : "princess"

@@ -39,6 +39,15 @@ module Deployinator
 
     attr_accessor :git_sha_length
 
+    attr_accessor :global_plugins
+
+    attr_accessor :stack_plugins
+
+    def initialize
+      @stack_plugins = {}
+      @global_plugins = []
+    end
+
     # Base root path
     # Takes an optional argument of a string or array and returns the path(s)
     # From the root of deployinator

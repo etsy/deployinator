@@ -1,7 +1,11 @@
 require 'deployinator/helpers/version'
+require 'deployinator/helpers/plugin'
+
 module Deployinator
   module Helpers
-    include Deployinator::Helpers::VersionHelpers
+    include Deployinator::Helpers::VersionHelpers,
+      Deployinator::Helpers::PluginHelpers
+
     RUN_LOG_PATH = "run_logs/"
 
     def dev_context?
@@ -97,6 +101,13 @@ module Deployinator
       exit_code = 0
       start = Time.now.to_i
       timestamp = Time.now.to_s
+      plugin_state = {
+        :cmd => cmd,
+        :method => @method,
+        :graphite_metric => graphite_metric,
+        :start_time => start
+      }
+      raise_event(:run_command_start, plugin_state)
       log_and_stream "<div class='command'><h4>#{timestamp}: Running #{cmd}</h4>\n<p class='output'>"
       time = Benchmark.measure do
         Open3.popen3(cmd) do |inn, out, err, wait_thr|
@@ -121,6 +132,11 @@ module Deployinator
             log_and_stream("STDERR:" + error_message + "<br>") unless error_message.nil?
           end
 
+          unless error_message.nil? then
+            plugin_state[:error_message] = error_message
+            raise_event(:run_command_error, plugin_state)
+          end
+
           # Log non-zero exits
           if wait_thr.value.exitstatus != 0 then
             log_and_stream("<span class='stderr'>DANGER! #{cmd} had an exit value of: #{wait_thr.value.exitstatus}</span><br>")
@@ -130,6 +146,10 @@ module Deployinator
       end
       log_and_stream "</p>"
       log_and_stream "<h5>Time: #{time}</h5></div>"
+      plugin_state[:exit_code] = exit_code
+      plugin_state[:stdout] = ret
+      plugin_state[:time] = time.real 
+      raise_event(:run_command_end, plugin_state)
       return { :stdout => ret, :exit_code => exit_code }
     end
 
