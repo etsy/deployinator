@@ -197,7 +197,7 @@ module Deployinator
       redirect "/diff/#{stack}/#{r1}/#{r2}/github?time=#{time}"
       return
     end
-    
+
     def send_email(options)
       Pony.mail(options)
     end

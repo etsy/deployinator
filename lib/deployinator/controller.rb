@@ -1,26 +1,7 @@
-require "rubygems"
-require "bundler"
-Bundler.setup
-
-require "socket"
-require 'pony'
-
-require "deployinator"
-require "mustache/sinatra"
-require "deployinator/helpers"
-require "deployinator/helpers/version"
+require 'deployinator'
+require 'deployinator/helpers'
+require 'deployinator/helpers/version'
 require "deployinator/helpers/plugin"
-
-# ruby Std lib
-require 'open3'
-require 'benchmark'
-require 'net/http'
-require 'open-uri'
-require 'uri'
-require 'time'
-require 'json'
-require 'resolv'
-require Deployinator.root(["config", "base"])
 
 module Deployinator
 

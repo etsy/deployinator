@@ -1,3 +1,5 @@
+require 'sinatra/base'
+require 'mustache/sinatra'
 require 'deployinator'
 require 'deployinator/helpers/deploy'
 require 'deployinator/helpers/version'
@@ -36,7 +38,7 @@ module Deployinator
     end
 
     get '/run_logs/view/:log' do
-      template = open(settings.mustache[:templates] + "stream.mustache").read
+      template = open(File.join(settings.mustache[:templates],  "stream.mustache")).read
       template.gsub!("{{ yield }}", "{{{yield}}}")
       Mustache.render(template, :yield => open("run_logs/" + params[:log]).read)
     end
