@@ -65,17 +65,6 @@ module Deployinator
       mustache :log_table
     end
 
-    get '/ti/:stack/:env' do
-      @stack = params[:stack]
-      average_duration(params["env"], params["stack"]).to_s
-    end
-
-    get '/:stack/remove-lock' do
-      stack = params[:stack]
-      unlock_pushes(stack) if can_remove_stack_lock?
-      redirect "/#{stack}"
-    end
-
     get '/:stack/can-deploy' do
       lock_info = push_lock_info(params["stack"]) || {}
       lock_info[:can_deploy] = lock_info.empty?
