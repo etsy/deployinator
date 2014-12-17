@@ -104,7 +104,8 @@ module Deployinator
       plugin_state = {
         :cmd => cmd,
         :timing_metric => timing_metric,
-        :start_time => start
+        :start_time => start,
+        :log_errors => log_errors
       }
       raise_event(:run_command_start, plugin_state)
       log_and_stream "<div class='command'><h4>#{timestamp}: Running #{cmd}</h4>\n<p class='output'>"
@@ -133,6 +134,7 @@ module Deployinator
 
           unless error_message.nil? then
             plugin_state[:error_message] = error_message
+            plugin_state[:log_errors] = error_message
             raise_event(:run_command_error, plugin_state)
           end
 
