@@ -1,3 +1,4 @@
+require 'benchmark'
 require 'deployinator/helpers/version'
 require 'deployinator/helpers/plugin'
 
