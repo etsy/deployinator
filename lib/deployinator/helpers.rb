@@ -72,12 +72,12 @@ module Deployinator
     # This defaults to 5, but can be specified with the num_retries parameter
     # If all the retries fail, an exception is thrown
     # Between retries it will sleep for a given period, defaulting to 2 seconds
-    def run_cmd_with_retries(cmd, num_retries=5, sleep_seconds=2, graphite_metric=nil)
+    def run_cmd_with_retries(cmd, num_retries=5, sleep_seconds=2, timing_metric=nil)
       for i in 1..num_retries
         if i == num_retries then
-          result = run_cmd(cmd, graphite_metric)
+          result = run_cmd(cmd, timing_metric)
         else
-          result = run_cmd(cmd, graphite_metric, false)
+          result = run_cmd(cmd, timing_metric, false)
         end
         if result[:exit_code] == 0
           return result
@@ -96,15 +96,14 @@ module Deployinator
     # Run external command with timing information
     # streams and logs the output of the command as well
     # does not (currently) check exit status codes
-    def run_cmd(cmd, graphite_metric=nil, log_errors=true)
+    def run_cmd(cmd, timing_metric=nil, log_errors=true)
       ret = ""
       exit_code = 0
       start = Time.now.to_i
       timestamp = Time.now.to_s
       plugin_state = {
         :cmd => cmd,
-        :method => @method,
-        :graphite_metric => graphite_metric,
+        :timing_metric => timing_metric,
         :start_time => start
       }
       raise_event(:run_command_start, plugin_state)
