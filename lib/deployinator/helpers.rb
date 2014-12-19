@@ -445,7 +445,6 @@ module Deployinator
           :info => info
         }
         raise_event(:timeout, state)
-        puts_info
         ""
       end
     end
