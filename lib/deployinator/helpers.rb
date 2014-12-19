@@ -1,4 +1,5 @@
 require 'benchmark'
+require 'timeout'
 require 'deployinator/helpers/version'
 require 'deployinator/helpers/plugin'
 
@@ -413,6 +414,39 @@ module Deployinator
     # Returns a string URL where that runlog can be viewed
     def run_log_url(filename)
       "http://#{Deployinator.hostname}/run_logs/view/#{filename}"
+    end
+
+    # Public: wrap a block into a timeout
+    #
+    # seconds     - timeout in seconds
+    # description - optional description for logging (default:"")
+    # &block      - block to call
+    #
+    # Example
+    #   with_timeout(20){system("curl -s http://google.com")}
+    #   with_timeout 30 do; system("curl -s http://google.com"); end
+    #
+    # Returns nothing
+    # TODO: Decouple irc announce
+    def with_timeout(seconds, description=nil,  &block)
+      begin
+        Timeout.timeout(seconds) do
+          yield
+        end
+      rescue Timeout::Error => e
+        info = "#{Time.now}: Timeout: #{e}"
+        info += " for #{description}" unless description.nil?
+        # log and stream if log filename is not undefined
+        if (/undefined/ =~ @filename).nil?
+          log_and_stream "<div class=\"stderr\">#{info}</div>"
+        end
+        state = {
+          :seconds => seconds
+          :info => info
+        }
+        raise_event(:timeout, state)
+        ""
+      end
     end
   end
 end
