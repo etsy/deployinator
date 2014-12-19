@@ -3,7 +3,7 @@ module Deployinator
     module PluginHelpers
       attr_accessor :plugins
 
-      def self.included 
+      def self.included(klass)
         @plugins = []
       end
 
