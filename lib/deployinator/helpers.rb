@@ -185,13 +185,6 @@ module Deployinator
       end
     end
 
-    def head_build
-      meth = "#{stack}_head_build"
-      if self.respond_to?(meth)
-        self.send(meth)
-      end
-    end
-
     def diff(r1, r2, stack="web", time=null)
       if (!time)
         time = Time.now.to_i
