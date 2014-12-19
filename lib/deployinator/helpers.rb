@@ -445,23 +445,24 @@ module Deployinator
           :info => info
         }
         raise_event(:timeout, state)
+        puts_info
         ""
       end
+    end
 
-      def can_remove_stack_lock?
-        unless @groups.nil? then
-          Deployinator.admin_groups.each { |cg| return true if @groups.include?(cg) }
-        end
-
-        # get the lock info to see if the user is the locker
-        info = push_lock_info(@stack) || {}
-        return true if info.empty?
-        if info[:who] == @username
-          return true
-        end
-
-        return false
+    def can_remove_stack_lock?
+      unless @groups.nil? then
+        Deployinator.admin_groups.each { |cg| return true if @groups.include?(cg) }
       end
+
+      # get the lock info to see if the user is the locker
+      info = push_lock_info(@stack) || {}
+      return true if info.empty?
+      if info[:who] == @username
+        return true
+      end
+
+      return false
     end
   end
 end
