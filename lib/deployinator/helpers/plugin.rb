@@ -2,10 +2,7 @@ module Deployinator
   module Helpers
     module PluginHelpers
       attr_accessor :plugins
-
-      def self.included(klass)
-        @plugins = []
-      end
+      @plugins = []
 
       def register_plugins(stack)
         @plugins = []
