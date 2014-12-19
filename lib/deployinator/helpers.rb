@@ -441,7 +441,7 @@ module Deployinator
           log_and_stream "<div class=\"stderr\">#{info}</div>"
         end
         state = {
-          :seconds => seconds
+          :seconds => seconds,
           :info => info
         }
         raise_event(:timeout, state)
