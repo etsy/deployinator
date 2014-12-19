@@ -29,7 +29,6 @@ module Deployinator
       @deploy_start_time = Time.now.to_i
       @start_time = Time.now.to_i
       @username = args[:username]
-      @groups   = "deploy_prod"
       @host     = `hostname -s`
       @stack = args[:stack]
       @method = args[:method]
