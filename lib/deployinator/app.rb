@@ -95,6 +95,12 @@ module Deployinator
       end
     end
 
+    get '/:stack/remove-lock' do
+      stack = params[:stack]
+      unlock_pushes(stack) if can_remove_stack_lock?
+      redirect "/#{stack}"
+    end
+
     # return a list of all deploys as JSON
     get '/deploys/?' do
       get_list_of_deploys.to_json
