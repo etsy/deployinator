@@ -3,11 +3,9 @@ module Deployinator
     module PluginHelpers
       attr_accessor :plugins
 
-      def initialize
-        super
+      def self.included 
         @plugins = []
       end
-
 
       def register_plugins(stack)
         @plugins = []
