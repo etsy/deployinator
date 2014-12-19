@@ -43,6 +43,9 @@ module Deployinator
 
     attr_accessor :stack_plugins
 
+    attr_accessor :admin_groups
+    @admin_groups = []
+
     # the controller class. defaults to Deployinator::Controller
     # if you override this it should be a subclass of Deployinator::Controller
     attr_accessor :deploy_controller
@@ -50,6 +53,7 @@ module Deployinator
     def initialize
       @stack_plugins = {}
       @global_plugins = []
+      @admin_groups = []
     end
 
     # Base root path
