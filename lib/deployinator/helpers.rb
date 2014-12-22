@@ -524,5 +524,35 @@ module Deployinator
       avg_time
     end
 
+    def log_entries(options = {})
+      stacks = []
+      stacks << "LOG MESSAGE" unless (options[:no_limit] || options[:no_global])
+
+      stacks << options[:stack] if options[:stack]
+
+      env = options[:env] ? "\\|#{options[:env].upcase}\\|" : ""
+      limit = (options[:no_limit] && options[:no_limit] == true) ? nil : (options[:limit] || 40)
+
+      # stack should be the last part of the log line from the last pipe to the end
+      # modified this to take into account the run_log entry at the end
+      unless stacks.empty? && env.empty?
+        grep = "| egrep '#{env}.*\\|\(#{stacks.join("|")}\)(|(\\||$))?'"
+      end
+
+      # extra grep does another filter to the line, needed to get CONFIG PRODUCTION
+      if defined? options[:extragrep]
+        extragrep = "| egrep -i '#{options[:extragrep]}' "
+      end
+
+      if options[:page]
+        num_per_page = 40
+        limit = "| head -#{num_per_page * options[:page].to_i} | tail -#{num_per_page}"
+      else
+        limit = "| head -#{limit}" if limit
+      end
+
+      log = `tac #{Deployinator.log_path} #{grep} #{extragrep} #{limit}`
+      log.split("\n")
+    end
   end
 end

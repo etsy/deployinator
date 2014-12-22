@@ -112,6 +112,11 @@ module Deployinator
         mustache :deploys_status
     end
 
+    get '/log.txt' do
+      content_type :text
+      `tac #{Deployinator.log_path}#{ " | head -n #{params[:limit]}" if params[:limit]}`
+    end
+
     get '/timing_log.txt' do
       content_type :text
       `tac #{Deployinator.timing_log_path}`
