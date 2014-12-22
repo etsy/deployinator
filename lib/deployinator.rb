@@ -37,6 +37,9 @@ module Deployinator
     # Deploy Host
     attr_accessor :deploy_host
 
+    # Timing Log path
+    attr_accessor :timing_log_path
+
     attr_accessor :git_sha_length
 
     attr_accessor :global_plugins

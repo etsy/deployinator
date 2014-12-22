@@ -505,5 +505,15 @@ module Deployinator
         announce announcement, options
       end
     end
+
+    def timing_log(duration, type, stack, timestamp=nil)
+      if (timestamp == nil) then
+        timestamp = Time.now.to_i
+      end
+
+      current = now()
+      log_string_to_file("#{current}|#{type}|#{stack}|#{duration}", Deployinator.timing_log_path)
+      raise_event(:timing_log, {:duration => duration, :current => current, :type => type, :timestamp => timestamp})
+    end
   end
 end
