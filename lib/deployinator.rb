@@ -40,6 +40,9 @@ module Deployinator
     # Timing Log path
     attr_accessor :timing_log_path
 
+    # Log path
+    attr_accessor :log_path
+
     attr_accessor :git_sha_length
 
     attr_accessor :global_plugins
