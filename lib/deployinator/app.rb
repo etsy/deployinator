@@ -1,6 +1,7 @@
 require 'sinatra/base'
 require 'mustache/sinatra'
 require 'deployinator'
+require 'deployinator/helpers'
 require 'deployinator/helpers/deploy'
 require 'deployinator/helpers/version'
 require 'deployinator/helpers/git'
@@ -9,6 +10,7 @@ module Deployinator
   class DeployinatorApp < Sinatra::Base
     register Mustache::Sinatra
     helpers Deployinator::Helpers,
+      Deployinator::Helpers,
       Deployinator::Helpers::DeployHelpers,
       Deployinator::Helpers::GitHelpers,
       Deployinator::Helpers::VersionHelpers

@@ -515,5 +515,14 @@ module Deployinator
       log_string_to_file("#{current}|#{type}|#{stack}|#{duration}", Deployinator.timing_log_path)
       raise_event(:timing_log, {:duration => duration, :current => current, :type => type, :timestamp => timestamp})
     end
+
+    def average_duration(type, stack)
+      log = `grep "#{type}|#{stack}" #{Deployinator.timing_log_path} | tac | head -5`
+      timings = log.split("\n").collect { |line| line.split("|").last.to_f }
+      avg_time = (timings.empty?) ? 30 : timings.inject(0) {|a,v| a+v} / timings.size
+      puts "avg time for #{stack}/#{type}: #{avg_time}"
+      avg_time
+    end
+
   end
 end
