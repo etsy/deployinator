@@ -472,5 +472,38 @@ module Deployinator
     def diff_url(stack, old_build, new_build)
       raise_event(:diff, {:stack => stack, :old_build => old_build, :new_build => new_build})
     end
+
+    def log_and_shout(options={})
+      options[:stack] ||= @stack
+
+      raise "Must have stack" unless options[:stack]
+
+      options[:env] ||= "PROD"
+      options[:nice_env] = nicify_env(options[:env])
+      options[:user] ||= @username
+      options[:start] = @start_time unless options[:start] || ! @start_time
+
+      if (options[:start])
+        options[:end] = Time.now unless options.key?(:end)
+        options[:duration] = options[:end] - options[:start]
+
+        log_and_stream "Ended at #{options[:end]}<br>Took: #{options[:duration]} seconds<br>"
+        # TODO: fix this, move over timing log and add plugin raise for graphite
+        # timing_log options[:duration], options[:nice_env], options[:stack]
+      end
+
+      if (options[:old_build] && options[:build])
+        log_str = "#{options[:stack]} #{options[:nice_env]} deploy: old #{options[:old_build]}, new: #{options[:build]}"
+        log options[:env], options[:user], log_str, options[:stack]
+        d_url = diff_url(options[:stack], options[:old_build], options[:build])
+      end
+
+      if (options[:old_build] && options[:build] && (options[:irc_channels] || options[:send_email]))
+        announcement = "#{options[:stack]} #{options[:env]} deployed by #{options[:user]}"
+        announcement << " build: #{options[:build]} took: #{options[:duration]} seconds "
+        announcement << "diff: #{d_url}" if d_url
+        announce announcement, options
+      end
+    end
   end
 end
