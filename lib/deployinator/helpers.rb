@@ -420,7 +420,6 @@ module Deployinator
     #   with_timeout 30 do; system("curl -s http://google.com"); end
     #
     # Returns nothing
-    # TODO: Decouple irc announce
     def with_timeout(seconds, description=nil,  &block)
       begin
         Timeout.timeout(seconds) do
@@ -455,6 +454,19 @@ module Deployinator
       end
 
       return false
+    end
+
+    def announce(announcement, options = {})
+      raise_event(:announce, {:announcement => announcement, :options => options})
+
+      if options[:send_email] && options[:send_email] == true
+        stack = options[:stack]
+
+        send_email({
+          :subject => "#{stack} deployed #{options[:env]} by #{@username}",
+          :html_body => announcement
+        })
+      end
     end
   end
 end
