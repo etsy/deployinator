@@ -468,5 +468,9 @@ module Deployinator
         })
       end
     end
+
+    def diff_url(stack, old_build, new_build)
+      raise_event(:diff, {:stack => stack, :old_build => old_build, :new_build => new_build})
+    end
   end
 end
