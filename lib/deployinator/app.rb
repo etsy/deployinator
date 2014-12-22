@@ -110,6 +110,16 @@ module Deployinator
         mustache :deploys_status
     end
 
+    get '/timing_log.txt' do
+      content_type :text
+      `tac #{Deployinator.timing_log_path}`
+    end
+
+    get '/ti/:stack/:env' do
+      @stack = params[:stack]
+      average_duration(params["env"], params["stack"]).to_s
+    end
+
     # this is the API endpoint to asynchronously start a deploy that runs in
     # the background.
     post '/deploys/?' do
