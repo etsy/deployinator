@@ -113,6 +113,10 @@ module Deployinator
       get_list_of_deploys.to_json
     end
 
+    get '/css/style.css:version' do
+      send_file "#{File.dirname(__FILE__)}/static/css/style.css"
+    end
+
     get '/deploys_status' do
         mustache Deployinator::Views::DeploysStatus
     end
