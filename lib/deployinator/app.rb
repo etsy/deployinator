@@ -9,6 +9,7 @@ require 'deployinator/views/index'
 require 'deployinator/views/log'
 require 'deployinator/views/run_logs'
 require 'deployinator/views/log_table'
+require 'deployinator/views/deploys_status'
 
 module Deployinator
   class DeployinatorApp < Sinatra::Base
@@ -113,7 +114,7 @@ module Deployinator
     end
 
     get '/deploys_status' do
-        mustache :deploys_status
+        mustache Deployinator::Views::DeploysStatus
     end
 
     get '/log.txt' do
