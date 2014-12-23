@@ -8,7 +8,7 @@ module Deployinator
       include Deployinator::Helpers::GitHelpers, 
         Deployinator::Helpers::StackTailHelpers
 
-      self.template_file = File.expand_path("../templates/layout.mustache")
+      self.template_file = "../templates/layout.mustache"
 
       def set_stack(stack)
         @stack = stack
