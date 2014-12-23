@@ -1,0 +1,24 @@
+<ol id="log">
+    {{# log_lines }}
+    <li class="{{env}} {{stack}} {{is_prod}}">
+        {{stack}} &ndash;
+        <span title="{{time}}" data-timestamp="{{time_secs}}" class="timestamp">{{timestamp}}</span> |
+        <span class="env">{{env}}</span> |
+        {{who}} |
+        {{{msg}}}
+        {{# run_log_url}}
+        <a href="/run_logs/view/{{run_log_url}}">run log</a>
+        {{/ run_log_url}}
+        {{# new}} |
+        {{# diff_url}}
+        <a href="/{{diff_method}}/{{stack}}/{{old}}/{{new}}?time={{time_secs}}" target="_blank">diff</a>
+        {{/ diff_url}}
+
+        {{# dashboards_host }}
+        <a href="http://{{ dashboards_host }}/deploy.php?m=1&time={{ from_timestamp }}&until={{ until_timestamp }}&error_log=_all" target="_blank">dashboard</a>
+        {{/ dashboards_host }}
+
+        {{/ new}}
+    </li>
+    {{/ log_lines }}
+</ol>
