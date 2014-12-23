@@ -25,6 +25,7 @@ require 'resolv'
 
 require "deployinator"
 require "deployinator/helpers"
+require "deployinator/views/layout"
 
 class Mustache
   include Deployinator::Helpers

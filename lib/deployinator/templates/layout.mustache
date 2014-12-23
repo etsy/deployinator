@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="Content-type" content="text/html; charset=utf-8">
+        <title>Deployinator</title>
+        <link rel="shortcut icon" href="/favicon.ico">
+        <link rel="stylesheet" href="/css/highlight.css" type="text/css" media="screen">
+        <link rel="stylesheet" href="/css/style.css?v=8" type="text/css" media="screen">
+        <link rel="stylesheet" href="/css/diff_style.css" type="text/css" media="screen">
+        <script src="/js/jquery-1.8.3.min.js"></script>
+        <script src="/js/jquery-ui-1.8.24.min.js"></script>
+    </head>
+    <body>
+
+        {{#dev_context?}}
+            <div id="dev">Deployinator is in Dev Context. Pushes will NOT go live.</div>
+        {{/dev_context?}}
+        <div class="hidden" id="app_context" data-context="{{ app_context }}"></div>
+
+        <div id="content" class="clearfix">
+
+            <!-- header -->
+            <header class="{{get_header_css_class}} {{stack}} search-{{search_live_cluster}}">
+                <div id="dna">
+                        <a href="{{{ current_stack_url }}}">_________               ______                _____                 _____
+______  /_____ ________ ___  /______ _____  _____(_)_______ ______ ___  /_______ ________
+_  __  / _  _ \___  __ \__  / _  __ \__  / / /__  / __  __ \_  __ `/_  __/_  __ \__  ___/
+/ /_/ /  /  __/__  /_/ /_  /  / /_/ /_  /_/ / _  /  _  / / // /_/ / / /_  / /_/ /_  /
+\__,_/   \___/ _  .___/ /_/   \____/ _\__, /  /_/   /_/ /_/ \__,_/  \__/  \____/ /_/
+               /_/                   /____/</a>
+
+               </div>
+               <div id="user">
+                   <div class="line">
+                       <span class="label">Account: </span>
+                       <span>
+                           {{ username }}
+                           <a href="{{ logout_url }}">logout</a>
+                       </span>
+                   </div>
+                   <div class="line">
+                       <span class="label">Deploy Host: </span>
+                       <span>{{{get_deploy_target_status}}}</span>
+                   </div>
+                   <div class="line">
+                       {{#can_remove_stack_lock?}}
+                       <button id="unlockstack">&nbsp;Clear deploy lock&nbsp;</button>
+                       {{/can_remove_stack_lock?}}
+                       <span class="label">Stack: </span>
+                       <span>
+                           <select name='stacks' id='stacks'>
+                           {{#get_stack_select}}
+                           <option value="{{stack}}"{{#current}} selected{{/current}}>{{stack}}</option>
+                           {{/get_stack_select}}
+                           </select>
+                       </span>
+                   </div>
+                   <div class="line">
+                       <span class="label">Current Deploys: </span>
+                       <span><a title="Wm5sb3JMYmhGdWJoeXFPYmJncG56Y1ZhRnJwaGV2Z2w=" href= "/deploys_status">Watch</a></span>
+                   </div>
+               </div>
+            </header>
+
+            <!-- main content -->
+            {{{ yield }}}
+
+            <!-- footer -->
+            <footer>
+                <div class="etsy">Etsy</div>
+                <div class="source"><a href="http://etsy.me/deployinator">Deployinator on Github</a></div>
+            </footer>
+
+            <script src="/js/flot/jquery.flot.min.js"></script>
+            <script src="/js/flot/jquery.flot.selection.js"></script>
+            <script src="/js/jquery.timed_bar.js"></script>
+            <script>
+                var autoScroll = true;
+                var deploy_enabled = true;
+                var is_deploying = false;
+                var clearing_deploy_lock = false;
+                var current_method; // is used by the error report to make the message more specific
+                var deploy_buttons;
+                var app_context;
+                var deployer = "{{ username }}";
+                var ircnick;         // the irc nick of the logged in user; will be set later on
+                var queue_head = ''; // If this stack has a queue then we will be storing a string
+                                     // here to represent the current head of the queue.  This will
+                                     // be set in push_topic.mustache and comes from pushbot.
+                seen_errors = 0; // GLOBAL
+
+                // makes the stacks dropdown work
+                $('#stacks').change(function () {
+                    var stack = $(this).val();
+                    window.location = '/' + stack;
+                });
+
+                // listen for changes on the watch button 
+                $('.watch').click(function () {
+                    $.ajax({
+                        url : '/{{stack}}/can-deploy',
+                        dataType: 'json',
+                        timeout: 1001,
+                        success: function (data) {
+                            var form = $("form[data-method='" + data.method + "']");
+                            console.log(form);
+                            if (form.length == 1) {
+                                stream_log_websocket(form[0]);
+                            } 
+                        }
+                    });
+                });
+
+                // return a more readable method name for showing to the operator
+                var human_readable_method_name = function (method_name) {
+                    if (method_name === "rsync_to_webs") {
+                        method_name = "production";
+                    } else if (method_name === "princess_rsync") {
+                        method_name = "princess";
+                    }
+                    return method_name;
+                }
+
+                function close_stream_log_websocket_deploys(id){
+                  $( "#shell-frame-" + id ).remove();
+                }
+
+                function connect_web_socket(stack, rnd_id, bar, button) {
+                  var bufferedMsg = '';
+                  var append;
+                  var ws = new WebSocket('ws://' + window.location.host + ':{{stack_tail_websocket_port}}');
+                  var show = function(el) {
+                    return function(msg) {
+                      bufferedMsg = bufferedMsg + msg;
+                      if (append) {
+                        clearTimeout(append);
+                      }
+                      append = setTimeout(function() {
+                        var dom = $(bufferedMsg);
+                        dom.filter('script#deploy-done').each(function(){
+                          ws.onclose = function () { };
+                          ws.close();
+                          if (bar) {
+                              bar.replaceWith(button);
+                              updateVersionsAndBuilds();
+                          }
+                          return false;
+                        });
+                        el.html(bufferedMsg);
+                      }, 50);
+                    }
+                  }
+                  ($('#' + rnd_id).contents().find('body.code'));
+                  ws.onopen    = function()  { ws.send(stack) };
+                  ws.onmessage = function(m) {
+                    if (m.data == '{{stack_tail_version}}') {
+                      ws.onmessage = function(m) { show(m.data); }
+                      ws.onclose   = function()  { show('<div class="command"><h4>Websocket died. Please refresh page to continue viewing log</h4></div>'); }
+                    } else {
+                      show('<div class="command"><h4>Version mismatch between front end and back end for tailer. Please refresh page for latest js to fix</h4></div>');
+                      ws.close();
+                    }
+                  };
+                  return ws;
+                }
+
+                function massage_iframe (rnd_id) {
+                  $('#' + rnd_id).contents().find('html')[0].innerHTML = '\
+<head>\
+    <link rel="stylesheet" href="/css/style.css" type="text/css" media="screen">\
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js" />\
+    <style type="text/css" media="screen">\
+        body { background:#111 none repeat scroll 0 0; }\
+    </style>\
+</head>\
+<body>\
+</body>';
+                    $('#' + rnd_id).contents().find('body').addClass('code');
+                    $('#' + rnd_id).contents().find('body').html('\
+<div class="command">\
+<h4>\
+Currently connecting to tailer web socket. If this message persists for a long time, please consult #devtools.\
+</h4>\
+</div>');
+                }
+
+                function create_iframe (rnd_id) {
+                  var frame = $("<iframe src='about:blank'>").attr("name", rnd_id);
+                  frame.attr('id', rnd_id);
+                  frame.addClass("runlogpane");
+                  // Pauses scrolling if you hover over the iFrame.
+
+                  frame.hover( function() {
+                    autoScroll = false; },
+                    function() { autoScroll = true;
+                    });
+                  return frame;
+                }
+
+                function stream_log_websocket_deploys (stack, stage) {
+
+                    var rnd_id = "r_" + (Math.random() + "").replace('.', '');
+                    var name = "<div id=shell-head><div class=deploys-listing-heading>Stack: " + stack + " Stage: " + stage +  "</div><a href=\"javascript:close_stream_log_websocket_deploys('" + rnd_id +  "')\">Remove</a></div>";
+                    var whole_shell_frame = $("<div id=shell-frame-" + rnd_id  + "></div>");
+
+                    whole_shell_frame.append(name);
+                    var frame = create_iframe (rnd_id);
+                    whole_shell_frame.append(frame)
+                    $("#shell_deploys").append(whole_shell_frame);
+                    massage_iframe (rnd_id)
+                    connect_web_socket(stack, rnd_id, null, null);
+                  }
+
+
+                var stream_log_websocket = function (form) {
+                    is_deploying = true;
+                    seen_errors = 0;
+                    disableDeploys();
+
+                    var button = $(form).find('button');
+                    var method = $(form).find('input[name="method"]').val();
+                    var rnd_id = "r_" + (Math.random() + "").replace('.', '');
+                    var frame = create_iframe (rnd_id);
+
+                    var bar = $('<div>').addClass('push-progress');
+
+                    var $panel = getDeployPanel(method);
+
+                    if ($panel.length > 0) {
+                        $panel.removeClass("hide");
+                        $(".progress-panel", $panel).show();
+                        $(".complete-panel", $panel).hide();
+                        $panel.find('.run-log-console').html(frame);
+                    } else {
+                        $("#main").prepend(frame);
+                    }
+
+                    var doc = frames[rnd_id].document;
+                    if (doc) {
+                        doc.open();
+                        doc.close();
+                    }
+                    massage_iframe (rnd_id)
+                    // stash the method name in a global we can use later on
+                    current_method = human_readable_method_name(method);
+
+                    button.replaceWith(bar);
+                    var extra_class = $(form).attr("class");
+                    var extra;
+                    if (extra_class === undefined) {
+                        extra = "";
+                    } else {
+                        extra = extra_class.toLowerCase();
+                    }
+                    if (!extra) {
+                        extra = ".*"; // this gets ti to at least return
+                    }
+
+                    $.get("/ti/{{stack}}/"+ extra , function(data) {
+                        bar.timed_bar(data);
+                    });
+
+                    connect_web_socket('{{stack}}', rnd_id, bar, button);
+                }
+
+                $('body').on("click", '.pushers form[action="/deploys"] button', function() {
+                    // Check that the user doing the deploy is at the head of the queue
+                    if (!checkDeployerIsAtHeadOfQueue()) {
+                        return false;
+                    }
+
+                    is_deploying = true;
+                    seen_errors = 0;
+                    disableDeploys();
+
+                    var button = $(this);
+                    var form = $(this).closest('form')[0];
+                    var error_deploying = false;
+                    var method = $(form).find('input[name="method"]').val();
+
+                    // Manual config editor magic
+                    if ($(form).data('method') == 'web_config_diff') {
+                      /* copy the text of the textarea to our form for reviewing the diff */
+                      $('#production_field').val($("textarea#production").val());
+                      $("#config-editor").hide();
+                    }
+
+                    $.ajax({
+                        type: 'POST',
+                        url: form.action + '?stack={{stack}}&stage=' + method,
+                        timeout: 5000,
+                        data: $(form).serialize(),
+                        async: false,  // makes the parent wait for the response
+                        success: function (data) {
+                        },
+                        error: function (data) {
+                          error_deploying = true;
+                        }
+                    });
+
+                    if (error_deploying) {
+                      alert('There was an error deploying. Please try again in a moment or there is already a deploy going');
+                      is_deploying = false;
+                      enableDeploys();
+                      return false;
+                    }
+
+                    stream_log_websocket(form);
+
+                    return false;
+                });
+
+                /*
+                 * checkDeployerIsAtHeadOfQueue
+                 * uses global variables: deployer, queue_head and ircnick
+                 * Determine if the user who pushed the button is at the
+                 * head of the push queue.  If not then put up an alert
+                 * giving them a chance to not start the deploy.
+                 */
+                var checkDeployerIsAtHeadOfQueue = function () {
+                    // Only do this check if not in dev context
+                    if (app_context != 'dev') {
+                        // Only do this check if there is a push queue on the page
+                        var waiters = $(".waiters");
+                        if (waiters.length > 0) {
+                            $.ajax({
+                                url: "/auth2nic/" + deployer,
+                                timeout: 5000,
+                                async: false,  // makes the parent wait for the response
+                                success: function (data) {
+                                    ircnick = data['irc_nick'];
+                                },
+                                error: function (data) {
+                                    ircnick = deployer;
+                                }
+                            });
+                            // Double check we have a nick or fall back to using the auth name
+                            // both ircnick and deployer are global
+                            if (typeof ircnick === 'undefined') {
+                                ircnick = deployer;
+                            }
+
+                            var in_queue = (queue_head.indexOf(ircnick) >= 0);
+                            if (!in_queue) {
+                                if (!confirm("Hey " + deployer + "!\n\nYou do not seem to be in the push queue at the moment.  Are you sure you want to deploy?\n\nClick 'OK' to start the deploy or 'Cancel' to not start the deploy.")) {
+                                    return false;
+                                }
+                            }
+                        }
+                    }
+                    return true;
+                };
+
+                function getDeployPanel(method) {
+                    return $("#{{stack}}-"+method+"-panel");
+                }
+
+                function updateVersionsAndBuilds() {
+                  $.each(["version", "build"], function(i, type) {
+                      // This finds only the spans at the top of the page that match for version and build if they exist
+                      if ($("[class^='{{stack}}_'][class$='" + type + "']").not("[class$='current_" + type + "']").not("[class$='next_" + type + "']").length) {
+                        $.getJSON('/{{stack}}/' + type + 's', function(data) {
+                          $.each(data, function(index, tuple) {
+                            $(".{{stack}}_"+tuple[0]+"_"+type).html(function(i, o) {
+                              if (tuple[1] != o) {
+                                $(this).effect("highlight", {}, 3000);
+                              }
+                              return tuple[1];
+                            });
+                          });
+                        });
+                    }
+                  });
+                }
+
+                // Updates the appropriate button text when someone is deploying
+                // with the lock status info (who and when)
+                function addStackLockStatus(method, who, when) {
+                    // Find the appropriate stack form
+                    var stack_form = $('.stack-box form').has('input[value="' + method +'"]');
+                    var deploy_button = $(stack_form).find('button:submit');
+                    var current_status = $(deploy_button).find("span").text();
+                    var deploy_text = "<span style='color: yellow'>" + who + " is deploying since "+
+                                      when + "</span>";
+
+                    if (current_status != deploy_text) {
+                        $(deploy_button).html(deploy_text);
+                    }
+                }
+
+                // Puts the original text back in each button
+                function removeStackLockStatus() {
+                    $(deploy_buttons).each(function(i,b) {
+                         b.innerText = b.originalInnerText;
+                    });
+                }
+
+                // Disable deploy buttons for that stack - store the active ones first!
+                function disableDeploys(){
+                    if (deploy_enabled) {
+                        deploy_enabled = false;
+                        $(deploy_buttons).attr('disabled','disabled').addClass('button-disabled');
+                        $("#unlockstack").show();
+                    }
+                }
+
+                // Enable deploy buttons for that stack - store the active ones first!
+                function enableDeploys(){
+                    if ((!deploy_enabled) && (!is_deploying)) {
+                        $(deploy_buttons).removeAttr('disabled').removeClass('button-disabled');
+                        deploy_enabled = true;
+                        $("#unlockstack").hide();
+                    }
+                }
+
+                // Poll our endpoint to see if this stack is locked. Update the UI accordingly
+                function updateDeployLocks(open_streamer) {
+                    if ('{{stack}}' != '') {
+                        if (!is_deploying) {
+                            $.ajax({
+                                url : '/{{stack}}/can-deploy',
+                                dataType: 'json',
+                                timeout: 1001,
+                                success: function (data) {
+                                    if (data.can_deploy) {
+                                        enableDeploys();
+                                        removeStackLockStatus();
+                                    } else {
+                                        // This is only called once on page load to determine if log streamer
+                                        // should be opened
+                                        var form = $("form[data-method='" + data.method + "']");
+                                        if (open_streamer && data.who == '{{username}}' && form.length == 1) {
+                                            stream_log_websocket(form[0]);
+                                        } else {
+                                            disableDeploys();
+                                            addStackLockStatus(data.method, data.who, data.lock_time);
+                                        }
+                                    }
+                                }
+                            });
+                        }
+                    }
+                }
+
+                var getTime = function() {
+                    var date = new Date();
+                    return date.getFullYear() + "-"
+                            + date.getMonth() + "-"
+                            + date.getDay() + " "
+                            + date.getHours() + ":"
+                            + date.getMinutes() + ":"
+                            + date.getSeconds();
+                }
+
+                var log = function(_elem, txt) {
+                    var txtHolder = $('<pre></pre>');
+                    var logLi     = $("<li></li>");
+                    var elem      = $(_elem);
+                    var platform  = elem.attr('className');
+                    var time      = getTime();
+                    var who       = elem.find('input[name=who]').val()
+                    var msg       = elem.find('input[name=msg]').val()
+                    logLi.text([platform, time, who, msg].join(' | '));
+                    logLi.append(txtHolder.text(txt));
+                    logLi.prependTo('#log ul');
+                }
+
+                // This block is for general stuff that needs to be set up on each page
+                // pollers are set in here with setInterval
+                $(function () {
+                    $("#unlockstack").hide();
+
+                    // Sets the app context
+                    app_context = $('#app_context').data('context');
+
+                    // Save the currently active deploy buttons with their original text
+                    deploy_buttons = $('.stack-box form .stack-push button:submit:not(.button-disabled)');
+                    $(deploy_buttons).each(function (i, b) {
+                        b.originalInnerText = b.innerText;
+                    });
+
+                    updateDeployLocks(true);
+
+                    setInterval(function() {
+                        if (!autoScroll) { return; }
+                        if ($("iframe").length === 0) {
+                            return;
+                        }
+                        $("iframe").each(function() {
+                            this.contentWindow.scrollTo(0, this.contentWindow.document.body.offsetHeight);
+                        });
+                    }, 200);
+
+                    // Keep checking our endpoint to see if a deploy is in progress
+                    setInterval(updateDeployLocks, 2000);
+
+                    // don't do this if there isn't an error_report element on the page
+                    if ($("#error_report").length > 0) {
+                      // watch for stderror streaming by and copy them to an error_report div
+                      // similarly info streams will be copied to an info report div
+                      // this can be stopped with clearInterval(ec)
+                      ec = setInterval(function() {
+                        var errors = $("iframe").contents().find(".stderr");
+                        if (errors.length && (seen_errors === 0)) {
+                          // we only really need to do this one time
+                          $("#error_report").append("<h1>There were some errors during this " +
+                          current_method + " deploy</h1>");
+                          $("#error_report").show();
+                        }
+                        var iw = 0; // i watcher, cause i scopes out
+                        for (var i=1; i <= errors.length; i++) {
+                          // this helps not show the same error more than once
+                          // note we start with 1 not 0 and compensate -1 below
+                          if (i > seen_errors) {
+                            // we clone so that the error is still in the iframe too
+                            var e = $(errors[i-1]).clone();
+                            var t = e.text(e.text().replace(/STDERR:/,'ERROR: '));
+                            $("#error_report").append(e);
+                          }
+                        iw = i;
+                        }
+                        seen_errors = iw;
+
+                      }, 333); // 1/3 of a second should be faster than the human eye
+                    }
+                });
+
+                $("iframe").click(function() {
+                    autoScroll = !autoScroll;
+                });
+
+                $("#auto_scroll").click(function() {
+                    autoScroll = this.checked;
+                });
+
+                function pad (n) {
+                    return n<10 ? '0'+n : n;
+                }
+
+                /** Public: show a notification message
+                  *
+                  * Parameters:
+                  *   info_message - String to display
+                  *
+                  * Returns nothing
+                  */
+                function ui_notify(info_message) {
+                    var info_box = $("#info_msg_report");
+                    if (info_box.is(':empty')) {
+                        info_box.append("<h1>Deploy notifications</h1>");
+                    }
+                    info_box.append(info_message);
+                    info_box.show();
+                }
+
+                /** Public: show a notification message and do some
+                  * housekeeping for done deploys.
+                  *
+                  * Parameters:
+                  *   info_message - String to display at the end of a
+                  *                  deploy
+                  *
+                  * Returns nothing
+                  */
+                function deploy_done(info_message, method) {
+                    var $panel = getDeployPanel(method);
+                    if ($panel.length > 0 ) {
+                        $panel.find('.progress-panel').hide();
+                        $panel.find('.complete-panel').show();
+                    } else {
+                        ui_notify(info_message);
+                    }
+
+                    window.onbeforeunload = null;
+                    is_deploying = false;
+                    enableDeploys();
+                    deploy_enabled = true;
+                    current_method = "";
+                }
+
+                // clear the deploy lock
+                $('.line').on('click', '#unlockstack', function(evt) {
+                    var msg = 'Are you sure you want to clear the deploy lock?';
+                    if (is_deploying) {
+                        msg = '**A DEPLOY IS IN PROGRESS**\n\n' + msg;
+                    }
+
+                    var confirmed = confirm(msg);
+                    if (confirmed) {
+                        clearing_deploy_lock = true;
+                        window.location='/{{stack}}/remove-lock';
+                    } else {
+                        evt.preventDefault();
+                    }
+                });
+            </script>
+        </div>
+        <script src="/js/check_push_status.js"></script>
+    </body>
+</html>
