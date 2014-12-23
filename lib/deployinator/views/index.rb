@@ -1,5 +1,8 @@
 module Deployinator::Views
   class Index < Layout
+
+    self.template_file = "#{File.dirname(__FILE__)}/../templates/index.mustache"
+
     # Public: Gets an array of stacks for use in templating the
     # index page.
     #
