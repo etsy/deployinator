@@ -1,0 +1,12 @@
+<!-- Stack Index Page <3 -->
+
+<section id="info-bar" class="clearfix">
+    <ul><li class="heading">Stack Index</li></ul>
+</section>
+<div class="stack-list stack-box">
+    <ul>
+    {{#get_other_stack_list}}
+    <li><a href="/{{.}}">{{.}}</a></li> 
+    {{/get_other_stack_list}}
+    </ul>
+</div>
