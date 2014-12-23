@@ -21,15 +21,20 @@ module Deployinator
       end
 
       def notify_plugins(event, state)
+        ret = nil
         unless plugins.nil? then
           @plugins.each do |plugin|
             begin
-              plugin.run(event, state)
+              new_ret = plugin.run(event, state)
+              if ret.nil? then
+                ret = new_ret
+              end
             rescue => e
               raise "Error running plugin #{plugin} with exception #{e.to_s}"
             end
           end
         end
+        ret
       end
 
       def raise_event(event, extra_state = {})
