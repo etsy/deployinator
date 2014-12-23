@@ -23,6 +23,17 @@ module Deployinator
     end
 
     def init(env)
+      @username = "mr guy"
+      @groups = []
+      @local = false
+      @host = env['HTTP_HOST']
+      auth_info = raise_event(:auth, {:env => env})
+      #if !auth_info.nil?
+        @username = auth_info[:username]
+        @groups = auth_info[:groups]
+        @host = auth_info[:host]
+        @local = auth_info[:local]
+      #end
     end
 
     def write_file(str, file)
@@ -151,7 +162,7 @@ module Deployinator
       log_and_stream "<h5>Time: #{time}</h5></div>"
       plugin_state[:exit_code] = exit_code
       plugin_state[:stdout] = ret
-      plugin_state[:time] = time.real 
+      plugin_state[:time] = time.real
       raise_event(:run_command_end, plugin_state)
       return { :stdout => ret, :exit_code => exit_code }
     end

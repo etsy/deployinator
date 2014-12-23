@@ -5,6 +5,7 @@ require 'deployinator/helpers'
 require 'deployinator/helpers/deploy'
 require 'deployinator/helpers/version'
 require 'deployinator/helpers/git'
+require 'deployinator/helpers/plugin'
 require 'deployinator/views/index'
 require 'deployinator/views/log'
 require 'deployinator/views/run_logs'
@@ -18,7 +19,8 @@ module Deployinator
       Deployinator::Helpers,
       Deployinator::Helpers::DeployHelpers,
       Deployinator::Helpers::GitHelpers,
-      Deployinator::Helpers::VersionHelpers
+      Deployinator::Helpers::VersionHelpers,
+      Deployinator::Helpers::PluginHelpers
 
     def github_diff_url(params)
       stack = params[:stack].intern
@@ -36,6 +38,7 @@ module Deployinator
     set :static, true
 
     before do
+      register_plugins(nil)
       init(env)
       @disabled_override = params[:override].nil? ? false : true
     end
@@ -95,6 +98,7 @@ module Deployinator
     get '/:thing' do
       @stack = params[:thing]
       @params = params
+      register_plugins(@stack)
       begin
         mustache @stack
       rescue Errno::ENOENT
