@@ -1,0 +1,29 @@
+<div id="error_report" class="display-panel">
+  <h1>Error Log</h1>
+</div>
+<div id="warning_report" class="display-panel">
+  <h1>Warnings</h1>
+</div>
+<div id="info_msg_report" class="display-panel">
+  <h1>Information Log</h1>
+  {{# disabled_override }}
+    <h3>You have chosen to override version checking. Hic sunt dracones.</h3>
+    <p> Stuff known not to work properly without a valid version rev:
+    <ul style="list-style-position: inside">
+      <li> Diff URLs </li>
+      <li> Jenkins build notifications </li>
+    </ul>
+    </p>
+    <script>$('#info_msg_report').show();</script>
+  {{/ disabled_override }}
+  {{^ allowed_to_push_to_prod?}}
+      <div id="not-allowed-to-prod">
+        Oops, looks like you can't push to prod yet. Just ask <span class="channel">#sysops</span> or 
+        <span class="channel">#devtools</span>
+        to add you to the <span class="the-group">deploy-prod</span> LDAP group.
+      </div>
+      <script>$('#info_msg_report').show();</script>
+  {{/ allowed_to_push_to_prod?}}
+
+</div>
+

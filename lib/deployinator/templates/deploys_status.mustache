@@ -1,0 +1,42 @@
+<!-- Depoly Status Page <3 -->
+
+<script>
+
+function load_deploys(){
+	$.get( "/deploys", function( data ) {
+		data = JSON.parse(data)
+		var items = [];
+		var html = ''
+		if (data.length===0){
+			data.push({"stack":"alcohol","stage":"consuming"})
+		}
+		for (var i = 0; i < data.length; ++i){
+			var stack = data[i]['stack']
+			var stage = data[i]['stage']
+			html = html +
+			"<div class='stack-box'> \
+			<div class=\"deploys-listing-heading\"><h2>" + stack + ":" + stage + "</h2></div> \
+			<a href=\"javascript:stream_log_websocket_deploys('" + stack + "', '" + stage + "')\">Watch</a> \
+			</div>"
+		}
+		$( "#running-deploys" ).html(html);
+	});
+}
+
+setInterval( load_deploys, 2000 );
+
+</script>
+
+<aside id="running-deploys" class="pushers">
+	{{#current_deploys}}
+    <div class="stack-box">
+        <div class="deploys-listing-heading"><h2>{{stack}}:{{stage}}</h2></div>
+        <a href="javascript:stream_log_websocket_deploys('{{stack}}', '{{stage}}')">Watch</a>
+    </div>
+    {{/current_deploys}}
+</aside>
+<section id="main" class="info">
+    <div id = "shell_deploys"class="log-main">
+    </div>
+</section>
+

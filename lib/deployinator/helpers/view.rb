@@ -6,6 +6,10 @@ module Deployinator
         @username
       end
 
+      def allowed_to_push_to_prod?
+        true
+      end
+
       def groups
         @groups.join(", ")
       end
