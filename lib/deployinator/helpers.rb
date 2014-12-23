@@ -23,8 +23,8 @@ module Deployinator
     end
 
     def init(env)
-      @username = "mr guy"
-      @groups = []
+      @username = 'nobody'
+      @groups = ['nogroup']
       @local = false
       @host = env['HTTP_HOST']
       auth_info = raise_event(:auth, {:env => env})
