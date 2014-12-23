@@ -8,7 +8,7 @@ module Deployinator
         Deployinator::Helpers::StackTailHelpers,
         Deployinator::Helpers::VersionHelpers
 
-      @@internal_partials = ["log"]
+      @@internal_partials = ["log", "log_table"]
 
       self.template_file = "#{File.dirname(__FILE__)}/../templates/layout.mustache"
 
