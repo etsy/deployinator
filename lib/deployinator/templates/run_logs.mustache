@@ -1,0 +1,15 @@
+<ul id="run-log">
+    {{# files}}
+    <li>
+        <span class="timestamp-normal">{{time}}</span>
+        <a href="/run_logs/view/{{name}}">{{name}}</a>
+    </li>
+    {{/ files}}
+</ul>
+
+{{#next_page }}
+<a href="/run_logs?page={{ to_s }}">More run logs</a>
+{{/next_page}}
+{{^next_page}}
+No more run logs
+{{/next_page}}
