@@ -5,6 +5,8 @@ require 'deployinator/helpers'
 require 'deployinator/helpers/deploy'
 require 'deployinator/helpers/version'
 require 'deployinator/helpers/git'
+require 'deployinator/views/index'
+require 'deployinator/views/run_logs'
 
 module Deployinator
   class DeployinatorApp < Sinatra::Base
@@ -36,7 +38,7 @@ module Deployinator
     end
 
     get '/' do
-        mustache :index
+        mustache Deployinator::Views::Index
     end
 
     get '/run_logs/view/:log' do
@@ -48,7 +50,7 @@ module Deployinator
     get '/run_logs/?' do
       @stack = "log"
       @params = params
-      mustache :run_logs
+      mustache Deployinator::Views::RunLogs
     end
 
     get '/run_logs/latest/:log_type' do
