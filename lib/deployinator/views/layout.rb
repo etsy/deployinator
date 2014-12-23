@@ -8,7 +8,7 @@ module Deployinator
         Deployinator::Helpers::StackTailHelpers,
         Deployinator::Helpers::VersionHelpers
 
-      @@internal_partials = ["log", "log_table"]
+      @@internal_partials = ["log", "log_table", "generic_single_push", "scroll_control"]
 
       self.template_file = "#{File.dirname(__FILE__)}/../templates/layout.mustache"
 

@@ -1,0 +1,64 @@
+<!-- Stacks info -->
+<section id="info-bar" class="clearfix">
+    <ul>
+        <li class="heading">Version: </li>
+        {{#environments}}
+        <li>{{name}} &ndash; <span class="{{stack}}_{{name}}_version">{{current_version}}</span> </li>
+        {{/environments}}
+    </ul>
+</section>
+
+{{> messageboxes }}
+
+<aside class="pushers">
+
+{{#environments}}
+    <div class="stack-box">
+        <h2><span>{{number}}</span>{{title}}</h2>
+        <form action="/deploys" method="post" data-method="{{stack}}_{{method}}">
+            <input type="hidden" name="method" value="{{method}}">
+            <input type="hidden" name="stack" value="{{stack}}">
+            <input type="hidden" name="env" value="{{name}}">
+
+            <p class="stack-status">
+                <a href="/diff/{{stack}}/{{current_build}}/{{next_build}}{{#use_github_diff}}/github{{/use_github_diff}}" target="_blank">
+                    <span class="{{stack}}_{{name}}_current_build">{{current_build}}</span>
+                    &rarr;
+                    <span class="{{stack}}_{{name}}_next_build">{{next_build}}</span>
+                </a>
+            </p>
+            <p class="stack-push"><button class="button {{#disabled}} button-disabled" disabled="disabled{{/disabled}}" type="submit">Deploy {{name}}</button></p>
+        </form>
+        {{#not_last}}
+        <span class="arrow"></span>
+        {{/not_last}}
+    </div>
+{{/environments}}
+
+</aside>
+
+<section id="main" class="info">
+    <!-- heading -->
+    <div class="heading clearfix">
+        <h2>Info</h2>
+        <span class="option">
+            {{< scroll_control }}
+        </span>
+    </div>
+
+    <!-- topic -->
+    <div class="push-topic">
+        <div class="title"></div>
+        <span class="log-run">
+            <form action="/run_logs">
+                <button class="button small" type="submit">See run logs</button>
+            </form>
+        </span>
+    </div>
+
+    <!-- log -->
+    <div class="log-main">
+        {{< log }}
+    </div>
+
+</section>
