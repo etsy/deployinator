@@ -6,6 +6,7 @@ require 'deployinator/helpers/deploy'
 require 'deployinator/helpers/version'
 require 'deployinator/helpers/git'
 require 'deployinator/views/index'
+require 'deployinator/views/log'
 require 'deployinator/views/run_logs'
 
 module Deployinator
