@@ -38,10 +38,12 @@ _  __  / _  _ \___  __ \__  / _  __ \__  / / /__  / __  __ \_  __ `/_  __/_  __ 
                            <a href="{{ logout_url }}">logout</a>
                        </span>
                    </div>
+                   {{#deploy_host?}}
                    <div class="line">
                        <span class="label">Deploy Host: </span>
                        <span>{{{get_deploy_target_status}}}</span>
                    </div>
+                   {{/deploy_host?}}
                    <div class="line">
                        {{#can_remove_stack_lock?}}
                        <button id="unlockstack">&nbsp;Clear deploy lock&nbsp;</button>

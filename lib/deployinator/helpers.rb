@@ -554,5 +554,19 @@ module Deployinator
       log = `tac #{Deployinator.log_path} #{grep} #{extragrep} #{limit}`
       log.split("\n")
     end
+
+    # Public: check if the deploy host is up or not
+    # show a little slug in the header with the deploy host name and status
+    def get_deploy_target_status
+      status = %x{ssh -o ConnectTimeout=5 #{Deployinator.deploy_host} uptime | awk '{print $2}' }.rstrip
+      if status != 'up'
+        status = "<b>DOWN!</b>"
+      end
+      "#{Deployinator.deploy_host} is #{status}"
+    end
+
+    def deploy_host?
+      ! Deployinator.deploy_host.nil?
+    end
   end
 end
