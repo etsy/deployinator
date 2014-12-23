@@ -27,7 +27,7 @@ module Deployinator
     set :mustache, {
       :views     => Deployinator.root('views'),
       :templates => Deployinator.root('templates'),
-      :namespace => Deployinator
+      :namespace => Deployinator::Views
     }
 
     set :public_folder, Deployinator.root('public')

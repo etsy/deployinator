@@ -8,7 +8,17 @@ module Deployinator
         Deployinator::Helpers::StackTailHelpers,
         Deployinator::Helpers::VersionHelpers
 
+      @@internal_partials = ["log"]
+
       self.template_file = "#{File.dirname(__FILE__)}/../templates/layout.mustache"
+
+      def self.partial(name)
+        if @@internal_partials.include?(name.to_s)
+          File.read("#{File.dirname(__FILE__)}/../templates/#{name.to_s}.mustache")
+        else
+          super
+        end
+      end
 
       def set_stack(stack)
         @stack = stack
