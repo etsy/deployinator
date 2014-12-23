@@ -1,0 +1,90 @@
+<table id="log">
+    <thead>
+        <tr>
+            <th>
+                {{# prev_page }}
+                  <a href="?page={{prev_page}}">prev</a>
+                {{/ prev_page }}
+            </th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th>
+                <a href="?page={{next_page}}">next</a>
+            </th>
+        </tr>
+        <tr>
+            <th>Stack</th>
+            <th>When (UTC)</th>
+            <th>Info</th>
+            <th>Who</th>
+            <th>Message</th>
+            <th>Run Log</th>
+            <th>Diff</th>
+            {{# dashboards? }}
+            <th>Dashboard</th>
+            {{/ dashboards? }}
+            {{# show_counts? }}
+            <th>+/-</th>
+            {{/ show_counts? }}
+        </tr>
+    </thead>
+    <tbody>
+        {{# log_lines }}
+        <tr class="{{env}} {{is_prod}}">
+            <td>{{stack}}</td>
+            <td><span title="{{timestamp}}" class="timestamp" data-timestamp="{{time_secs}}">{{time}}</span></td>
+            <td>{{env}}</td>
+            <td>{{who}}</td>
+            <td>{{{msg}}}</td>
+            <td>
+            {{# run_log_url }}
+                <a href="/run_logs/view/{{run_log_url}}">run log</a>
+            {{/ run_log_url }}
+            </td>
+            <td>
+                {{# new}}
+                <a href="/{{diff_method}}/{{stack}}/{{old}}/{{new}}" target="_blank">diff</a>
+                {{/ new}}
+            </td>
+            {{# dashboards? }}
+            <td>
+                <a href="http://{{ dashboards_host }}/deploy.php?m=1&time={{ from_timestamp }}&until={{ until_timestamp }}&error_log=_all" target="_blank">dashboard</a>
+            </td>
+            {{/ dashboards? }}
+            {{# show_counts? }}
+            <td>
+                {{counts}}
+            </td>
+            {{/ show_counts? }}
+        </tr>
+        {{/ log_lines }}
+
+        <tr>
+            <th>
+                {{# prev_page }}
+                <form action="/log">
+                    <input type="hidden" name="page" value="{{prev_page}}" />
+                    <button class="button small">Prev</button>
+                </form>
+                {{/ prev_page }}
+            </th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th>
+                <form action="/log">
+                    <input type="hidden" name="page" value="{{next_page}}" />
+                    <button class="button small">Next</button>
+                </form>
+
+            </th>
+        </tr>
+
+    </tbody>
+</table>
