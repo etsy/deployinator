@@ -26,9 +26,11 @@ require 'resolv'
 require "deployinator"
 require "deployinator/helpers"
 require "deployinator/views/layout"
+require "deployinator/helpers/view"
 
 class Mustache
-  include Deployinator::Helpers
+  include Deployinator::Helpers,
+    Deployinator::Helpers::ViewHelpers
 end
 
 # Ruby 1.8.6 is teh LAMEZ0Rz
