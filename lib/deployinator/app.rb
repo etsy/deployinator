@@ -8,6 +8,7 @@ require 'deployinator/helpers/git'
 require 'deployinator/views/index'
 require 'deployinator/views/log'
 require 'deployinator/views/run_logs'
+require 'deployinator/views/log_table'
 
 module Deployinator
   class DeployinatorApp < Sinatra::Base
@@ -67,7 +68,7 @@ module Deployinator
     get '/log/?' do
       @stack = "log"
       @params = params
-      mustache :log_table
+      mustache Deployinator::Views::LogTable
     end
 
     get '/:stack/can-deploy' do
