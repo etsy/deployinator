@@ -44,7 +44,7 @@ module Deployinator
     end
 
     get '/run_logs/view/:log' do
-      template = open("templates/stream.mustache").read
+      template = open("#{File.dirname(__FILE__)}/templates/stream.mustache").read
       template.gsub!("{{ yield }}", "{{{yield}}}")
       Mustache.render(template, :yield => open("run_logs/" + params[:log]).read)
     end
