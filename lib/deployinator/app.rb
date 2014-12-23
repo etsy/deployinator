@@ -117,6 +117,42 @@ module Deployinator
       send_file "#{File.dirname(__FILE__)}/static/css/style.css"
     end
 
+    get '/css/diff_style.css' do
+      send_file "#{File.dirname(__FILE__)}/static/css/diff_style.css"
+    end
+
+    get '/css/highlight.css' do
+      send_file "#{File.dirname(__FILE__)}/static/css/highlight.css"
+    end
+
+    get '/js/flot/jquery.flot.min.js' do
+      send_file "#{File.dirname(__FILE__)}/static/js/flot/jquery.flot.min.js"
+    end
+
+    get '/js/flot/jquery.flot.selection.js' do
+      send_file "#{File.dirname(__FILE__)}/static/js/flot/jquery.flot.selection.js"
+    end
+
+    get '/js/jquery-1.8.3.min.js' do
+      send_file "#{File.dirname(__FILE__)}/static/js/jquery-1.8.3.min.js"
+    end
+
+    get '/js/jquery-ui-1.8.24.min.js' do
+      send_file "#{File.dirname(__FILE__)}/static/js/jquery-ui-1.8.24.min.js"
+    end
+
+    get '/js/jquery.timed_bar.js' do
+      send_file "#{File.dirname(__FILE__)}/static/js/jquery.timed_bar.js"
+    end
+
+    get '/js/check_push_status.js' do
+      send_file "#{File.dirname(__FILE__)}/static/js/check_push_status.js"
+    end
+
+    get '/header_class' do
+      return 'push-open'
+    end
+
     get '/deploys_status' do
         mustache Deployinator::Views::DeploysStatus
     end
