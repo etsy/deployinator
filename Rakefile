@@ -1,6 +1,7 @@
 
 require 'rake/testtask'
 require 'rdoc/task'
+require 'bundler/gem_tasks'
 
 #
 # Helpers
@@ -10,13 +11,13 @@ def command?(command)
   system("type #{command} &> /dev/null")
 end
 
-task :default => 'test:unit'
+task :default => 'deploytest:unit'
 
 #
 # Tests
 #
 
-namespace :test do
+namespace :deploytest do
 
   desc 'Run deployinator unit tests'
   Rake::TestTask.new :unit do |t|

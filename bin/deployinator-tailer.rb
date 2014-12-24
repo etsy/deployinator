@@ -4,6 +4,7 @@ require "deployinator"
 require "deployinator/helpers"
 require 'deployinator/stack-tail'
 require 'deployinator/helpers/stack-tail'
+require "#{Dir.pwd}/lib/base-setup"
 
 # Note: If you change the protocol of how this communicates with the front end,
 # please also update the version located in helpers/stack-tail.rb
