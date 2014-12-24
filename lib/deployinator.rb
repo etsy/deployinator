@@ -95,3 +95,5 @@ module Deployinator
     end
   end
 end
+
+Deployinator.root_dir = Dir.pwd

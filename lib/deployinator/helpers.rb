@@ -392,13 +392,6 @@ module Deployinator
       output
     end
 
-    # Public: Gets the value of app_context config flag 'pinned_stacks'
-    #
-    # Returns an array of stack names, an empty array, or nil if not set in config.
-    def pinned_stacks
-      Deployinator.app_context['pinned_stacks']
-    end
-
     # Public: given a run logs filename, return a full URL to the runlg
     #
     # Params:

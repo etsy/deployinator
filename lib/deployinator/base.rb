@@ -2,6 +2,13 @@ require "rubygems"
 require "bundler"
 Bundler.setup
 
+require 'deployinator'
+
+$LOAD_PATH.unshift Deployinator.root unless $LOAD_PATH.include? Deployinator.root
+$LOAD_PATH.unshift Deployinator.root("lib") unless $LOAD_PATH.include? Deployinator.root("lib")
+
+require 'deployinator/config'
+
 require "socket"
 require 'pony'
 
@@ -23,10 +30,10 @@ require 'time'
 require 'json'
 require 'resolv'
 
-require "deployinator"
 require "deployinator/helpers"
 require "deployinator/views/layout"
 require "deployinator/helpers/view"
+require "deployinator/app"
 
 class Mustache
   include Deployinator::Helpers,
