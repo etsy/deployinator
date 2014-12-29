@@ -27,7 +27,7 @@ module Deployinator
       @groups = ['nogroup']
       @local = false
       @host = env['HTTP_HOST']
-      auth_info = raise_event(:auth, {:env => env, :request => request})
+      auth_info = raise_event(:auth, {:env => env, :path_info => request.path_info})
       if !auth_info.nil?
         raise "You must login." unless auth_info[:authorized]
         @username = auth_info[:username]
