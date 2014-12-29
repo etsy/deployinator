@@ -1,0 +1,10 @@
+module Deployinator
+  module Helpers
+    module <%= mustache_class %>Helpers
+      def <%= stack %>_production_version
+        # %x{curl http://my-app.com/version.txt}
+        "1234-abc"
+      end
+    end
+  end
+end

@@ -1,0 +1,7 @@
+require 'deployinator/layout'
+require 'helpers/<%= stack %>'
+module Deployinator::Views
+  class <%= mustache_class %> < Layout
+    include Deployinator::Helpers::<%= mustache_class %>Helpers
+  end
+end

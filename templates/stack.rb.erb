@@ -1,0 +1,15 @@
+require 'helpers/<%= stack %>'
+module Deployinator
+  module Stacks
+    class <%= mustache_class %>Deploy < Deployinator::EtsyDeploy
+        include Deployinator::Helpers::<%= mustache_class %>Helpers
+
+      def <%= stack %>_production(options={})
+        log_and_stream "Fill in the <%= stack %>_production method in stacks/<%= stack %>.rb!<br>"
+
+        # log the deploy
+        log_and_shout :old_build => environments[0][:current_build].call, :build => environments[0][:next_build].call
+      end
+    end
+  end
+end

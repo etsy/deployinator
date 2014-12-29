@@ -1,0 +1,10 @@
+require 'deployinator'
+require 'deployinator/base'
+require 'lib/app'
+require 'deployinator/logging'
+
+Encoding.default_external="UTF-8"  if Kernel.const_defined?("Encoding")
+
+use Rack::CommonLogger
+
+run Deployinator::<%= company %>App.new
