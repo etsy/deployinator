@@ -2,7 +2,7 @@
 # Tests
 #
 
-namespace :depoyinator do
+namespace :deployinator do
   namespace :test do
 
     desc 'Run deployinator unit tests'

@@ -11,6 +11,6 @@ def command?(command)
   system("type #{command} &> /dev/null")
 end
 
-task :default => 'deploytest:unit'
+task :default => 'deployinator:test:unit'
 
 load 'deployinator/tasks/tests.rake'
