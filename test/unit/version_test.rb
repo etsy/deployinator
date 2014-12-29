@@ -1,4 +1,5 @@
 require "rubygems"
+require 'deployinator/base'
 require 'deployinator/helpers/version'
 require 'test/unit'
 require 'mocha/test_unit'
