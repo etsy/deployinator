@@ -16,7 +16,6 @@ module Deployinator
   class DeployinatorApp < Sinatra::Base
     register Mustache::Sinatra
     helpers Deployinator::Helpers,
-      Deployinator::Helpers,
       Deployinator::Helpers::DeployHelpers,
       Deployinator::Helpers::GitHelpers,
       Deployinator::Helpers::VersionHelpers,
