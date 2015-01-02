@@ -243,7 +243,11 @@ module Deployinator
       end
 
       def git_info_for_stack
-        Deployinator.git_info_for_stack
+        if Deployinator.git_info_for_stack
+          Deployinator.git_info_for_stack
+        else
+          {}
+        end
       end
 
       # Public: determines whether a given filesystem path is a git repo
