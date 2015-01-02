@@ -1,6 +1,7 @@
 require 'sinatra/base'
 require 'mustache/sinatra'
 require 'deployinator'
+require 'deployinator/controller'
 require 'deployinator/helpers'
 require 'deployinator/helpers/deploy'
 require 'deployinator/helpers/version'

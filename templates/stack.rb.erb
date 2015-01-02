@@ -1,7 +1,7 @@
 require 'helpers/<%= stack %>'
 module Deployinator
   module Stacks
-    class <%= mustache_class %>Deploy < Deployinator::EtsyDeploy
+    class <%= mustache_class %>Deploy < Deployinator::Deploy
         include Deployinator::Helpers::<%= mustache_class %>Helpers
 
       def <%= stack %>_production(options={})
