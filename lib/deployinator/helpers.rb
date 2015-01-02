@@ -573,5 +573,20 @@ module Deployinator
     def deploy_host?
       ! Deployinator.deploy_host.nil?
     end
+
+    def head_build
+      meth = "#{stack}_head_build"
+      if self.respond_to?(meth)
+        self.send(meth)
+      else
+        if git_info_for_stack.key?(stack.to_sym)
+          rev = get_git_head_rev(stack)
+          puts rev
+          return rev
+        else
+          puts "ERROR: add your stack in git_info_for_stack"
+        end
+      end
+    end
   end
 end
