@@ -97,3 +97,10 @@ module Deployinator
 end
 
 Deployinator.root_dir = Dir.pwd
+Deployinator.app_context = {}
+Deployinator.admin_groups = []
+Deployinator.global_plugins = []
+Deployinator.log_file = Deployinator.root(["log", "development.log"])
+Deployinator.log_path = Deployinator.root(["log", "deployinator.log"])
+Deployinator.timing_log_path = Deployinator.root(["log", "deployinator-timing.log"])
+

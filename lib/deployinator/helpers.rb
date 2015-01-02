@@ -48,7 +48,7 @@ module Deployinator
     # filename - String of the current run log filename
     # stack - String containing the stack for this deploy
     def link_stack_logfile(filename, stack)
-      run_cmd %Q{ln -nfs #{Deployinator.app_context['install_path']}/#{run_log_path}#{filename} #{Deployinator.app_context['install_path']}/#{run_log_path}current-#{stack}}
+      run_cmd %Q{ln -nfs #{Deployinator.root_dir}/#{run_log_path}#{filename} #{Deployinator.root_dir}/#{run_log_path}current-#{stack}}
     end
 
     # Moves current-stackname symlink so tailer won't accidentally pick up on last push
@@ -56,7 +56,7 @@ module Deployinator
     #
     # stack - String containing the stack for this deploy
     def move_stack_logfile(stack)
-      run_cmd %Q{mv #{Deployinator.app_context['install_path']}/#{run_log_path}current-#{stack} #{Deployinator.app_context['install_path']}/#{run_log_path}last-#{stack}}
+      run_cmd %Q{mv #{Deployinator.root_dir}/#{run_log_path}current-#{stack} #{Deployinator.root_dir}/#{run_log_path}last-#{stack}}
     end
 
     # output to a file, and the streaming output handler
@@ -386,7 +386,7 @@ module Deployinator
     end
 
     def push_lock_path(stack)
-      "#{Deployinator.app_context['data_path']}/#{stack}-push-lock"
+      "#{Deployinator.root(["log"])}/#{stack}-push-lock"
     end
 
     # Public: Outputs stack data for use in templating

@@ -43,6 +43,9 @@ namespace :deployinator do
     end
 
     mkdir_p("stacks")
+    mkdir_p("config")
+    mkdir_p("log")
+    mkdir_p("run_logs")
     mkdir_p("helpers")
     mkdir_p("views")
     mkdir_p("templates")
@@ -51,6 +54,10 @@ namespace :deployinator do
     template("#{TEMPLATE_PATH}helper.rb.erb", "helpers/#{stack}.rb", binding)
     template("#{TEMPLATE_PATH}view.rb.erb", "views/#{stack}.rb", binding)
     cp("#{TEMPLATE_PATH}template.mustache", "templates/#{stack}.mustache")
+    touch("log/deployinator.log")
+    touch("log/deployinator-timing.log")
+    touch("log/development.log")
+    touch("config/base.rb")
   end
 
   def template(source, target, scope)
