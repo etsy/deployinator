@@ -3,7 +3,12 @@ module Deployinator
     module <%= mustache_class %>Helpers
       def <%= stack %>_production_version
         # %x{curl http://my-app.com/version.txt}
-        "1234-abc"
+        "1234567-abc"
+      end
+
+      def <%= stack %>_head_build
+        # %x{git ls-remote -h http://www.github.com/name/repo.git origin/master | cut -c1-8.chomp
+        "12345678"
       end
     end
   end
