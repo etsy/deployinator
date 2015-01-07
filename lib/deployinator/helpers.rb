@@ -587,5 +587,16 @@ module Deployinator
         end
       end
     end
+
+    def log_error(msg, e = nil)
+      log_msg = e.nil? ? msg : "#{msg} (#{e.message})"
+      log_and_stream "<div class=\"stderr\">#{log_msg}</div>"
+      if !e.nil?
+        log_and_stream e.backtrace.inspect
+      end
+      # This is so we have something in the log if/when this fails
+      puts log_msg
+    end
+
   end
 end
