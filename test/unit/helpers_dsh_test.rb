@@ -1,4 +1,3 @@
-require "rubygems"
 require 'deployinator'
 require 'deployinator/helpers'
 require 'deployinator/helpers/dsh'

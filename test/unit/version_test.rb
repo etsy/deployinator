@@ -1,4 +1,3 @@
-require "rubygems"
 require 'deployinator/helpers/version'
 require 'test/unit'
 require 'mocha/setup'

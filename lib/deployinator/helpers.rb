@@ -148,7 +148,6 @@ module Deployinator
 
           unless error_message.nil? then
             plugin_state[:error_message] = error_message
-            plugin_state[:log_errors] = error_message
             raise_event(:run_command_error, plugin_state)
           end
 
