@@ -8,7 +8,7 @@ This gem is the core of Deployinator. Here are the steps to get it running for y
 
 - Add this line to your application's Gemfile:
 
-    gem 'deployinator'
+    `gem 'deployinator'`
 
 - And then execute:
 ```sh
