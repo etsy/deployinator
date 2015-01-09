@@ -14,7 +14,7 @@ This gem is the core of Deployinator. Here are the steps to get it running for y
 ```sh
     $ bundle install --path vendor/bundle
 ```
-inside your project directory.
+inside your project directory. Make sure you have rubygems.org as a source for your gems.
 
 Or install it yourself as:
 
@@ -38,13 +38,14 @@ Now you are ready to build your first stack.
 A *stack* is a collection of code, the initialization and the teardown steps involved in getting it running. 
 Let's create our first stack by running:
 ```sh
-    $ bundle exec rake 'deployinator:new_stack[stack]'
+    $ bundle exec rake 'deployinator:new_stack[testStack]'
 ```
-where stack is the name of your stack. 
+where testStack is the name of your stack. 
 
 The commands run by the rake tasks are logged to stderr.
 
-Our deployinator stack is now ready. Run the following command to set up the right bundler requires before getting started.
+Our deployinator stack is now ready. 
+Run the following command to set up the right bundler requires before getting started.
 ```sh
     $ echo "require 'rubygems'\nrequire 'bundler'\n\nBundler.require\n" >> config.ru
 ```
@@ -54,13 +55,54 @@ We need a server to run our Sinatra application. For the purpose of this demo, w
 ```
 Note: You might need `sudo` to install shotgun. 
 Start the server by running:
-```sh
+```sh                                                                                                           n
     $ shotgun --host localhost -p 7777 config.ru
 ```
 The host could be localhost or the dns name (or ip address of the server you are using). You can set any port you want that's not in use using the `-p` flag.
 Fire it up and load the page. You should see deployinator running!
 
 You will probably want a robust server like apache to handle production traffic. 
+
+
+### Deploying a test stack
+- The `config/base.rb` file is the base config for the application.
+```ruby                                                                                                         
+module Deployinator
+    class << self
+        attr_accessor :git_info_for_stack
+    end
+end
+
+# The domain deployinator is running on
+domain = %x{hostname --long}.chomp.split('.').drop(1).join('.')
+# Host domain for github
+Deployinator.github_host = "github.etsycorp.com"
+# Git sha hash length to use in the application
+Deployinator.git_sha_length = "10"
+# The unix user you want to run deployingator under
+# Useful for setting permissions
+Deployinator.default_user = "nsubedi"
+# Port to run the tailer on
+Deployinator.app_context['stack_tailer_port'] = 7778
+# where is deployinator installed?
+Deployinator.app_context['stack_stack_config'] = {
+   :prod_host               => "localhost",
+   :checkout_path           => "/tmp/deployinator_dev/"
+ }
+Deployinator.git_info_for_stack = {
+    :testStack => {
+        :user => "Engineering",
+        :repository => "virtual-machines"
+    }
+}
+```
+
+Edit the stacks/testStack.rb file to include the GitHelpers.
+
+Next, edit the hepler/testStack.rb file. You can delete the testStack_head_build function 
+Create the folder for the local checkout.
+If you have deployinator installed as a global gem, you can start the tailer by running:
+`deployinator-tailer.rb`
 
 
 ### Hacking on the plugin
