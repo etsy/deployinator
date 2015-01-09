@@ -38,7 +38,9 @@ module Deployinator
 
         path ||= git_checkout_path(checkout_root, stack)
 
-        sha1 = run_cmd(%Q{#{extra_cmd} 'cd #{path} && git rev-parse --short=#{Deployinator.git_sha_length} #{rev}'})[:stdout]
+        cmd = "cd #{path} && git rev-parse --short=#{Deployinator.git_sha_length} #{rev}"
+        cmd = "#{extra_cmd} '#{cmd}'" if extra_cmd
+        sha1 = run_cmd(cmd)[:stdout]
 
         version = "#{sha1.chomp}-#{ts}"
 
@@ -49,7 +51,10 @@ module Deployinator
         end
 
         log_and_stream "Setting #{fullpaths} to #{version}"
-        run_cmd %Q{#{extra_cmd} 'cd #{path} && echo #{version} | #{tee_cmd} #{fullpaths}'}
+
+        cmd = "cd #{path} && echo #{version} | #{tee_cmd} #{fullpaths}"
+        cmd = "#{extra_cmd} '#{cmd}'" if extra_cmd
+        run_cmd cmd
 
         return version
       end
@@ -82,7 +87,9 @@ module Deployinator
       # Returns nothing
       def git_freshen_clone(stack, extra_cmd="", path=nil, branch="master")
         path ||= git_checkout_path(checkout_root, stack)
-        run_cmd %Q{#{extra_cmd} 'cd #{path} && git fetch --quiet origin +refs/heads/#{branch}:refs/remotes/origin/#{branch} && git reset --hard origin/#{branch} 2>&1'}
+        cmd = "cd #{path} && git fetch --quiet origin +refs/heads/#{branch}:refs/remotes/origin/#{branch} && git reset --hard origin/#{branch} 2>&1"
+        cmd = "#{extra_cmd} '#{cmd}'" if extra_cmd
+        run_cmd cmd
         yield "#{path}" if block_given?
       end
 
@@ -132,7 +139,9 @@ module Deployinator
         path ||= git_checkout_path(checkout_root, stack)
         including_shas = []
         excluding_shas = []
-        committers = run_cmd(%Q{#{extra_cmd} 'cd #{path} && git log --no-merges --name-only --pretty=format:%H #{old_rev}..#{new_rev}'})[:stdout]
+        cmd = "cd #{path} && git log --no-merges --name-only --pretty=format:%H #{old_rev}..#{new_rev}"
+        cmd = "#{extra_cmd} '#{cmd}'" if extra_cmd
+        committers = run_cmd(cmd)[:stdout]
         committers.split(/\n\n/).each { |commit|
           lines = commit.split(/\n/)
           commit_sha = lines.shift
@@ -204,7 +213,9 @@ module Deployinator
       #
       # Returns nothing
       def git_clone(stack, repo_url, extra_cmd="", checkout_root=checkout_root, branch='master')
-        run_cmd %Q{#{extra_cmd} 'cd #{checkout_root} && git clone #{repo_url} -b #{branch} #{stack}'}
+        cmd = "cd #{checkout_root} && git clone #{repo_url} -b #{branch} #{stack}"
+        cmd = "#{extra_cmd} '#{cmd}'" if extra_cmd
+        run_cmd cmd
       end
 
       # Public: helper method to build github urls

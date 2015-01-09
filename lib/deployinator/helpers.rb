@@ -148,7 +148,6 @@ module Deployinator
 
           unless error_message.nil? then
             plugin_state[:error_message] = error_message
-            plugin_state[:log_errors] = error_message
             raise_event(:run_command_error, plugin_state)
           end
 
@@ -588,5 +587,16 @@ module Deployinator
         end
       end
     end
+
+    def log_error(msg, e = nil)
+      log_msg = e.nil? ? msg : "#{msg} (#{e.message})"
+      log_and_stream "<div class=\"stderr\">#{log_msg}</div>"
+      if !e.nil?
+        log_and_stream e.backtrace.inspect
+      end
+      # This is so we have something in the log if/when this fails
+      puts log_msg
+    end
+
   end
 end
