@@ -21,7 +21,7 @@ Gem::Specification.new do |gem|
 
   gem.add_runtime_dependency "rake"
   gem.add_runtime_dependency "json"
-  gem.add_runtime_dependency "mustache"
+  gem.add_runtime_dependency "mustache", "~> 0.99"
   gem.add_runtime_dependency "pony"
   gem.add_runtime_dependency "tlsmail"
   gem.add_runtime_dependency "eventmachine"
