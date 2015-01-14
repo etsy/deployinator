@@ -28,7 +28,7 @@ EM.run do
   Signal.trap('HUP')  { refresh_stacks }
   refresh_stacks
 
-  EM::WebSocket.start(:host => "0.0.0.0", :port => 9292) do |ws|
+  EM::WebSocket.start(:host => "0.0.0.0", :port => Deployinator.stack_tailer_port) do |ws|
 
     # This attempts to attach a tailer to the stack symlink. If it doesn't
     # exist yet it will attempt next tick of the EventMachine
