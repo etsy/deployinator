@@ -8,7 +8,8 @@ This gem is the core of Deployinator. Here are the steps to get it running for y
 
 - Add this line to your application's Gemfile:
 
-    `gem 'deployinator'`
+    `source 'https://rubygems.org'
+     gem 'deployinator'`
 
 - And then execute:
 ```sh
@@ -38,9 +39,9 @@ Now you are ready to build your first stack.
 A *stack* is a collection of code, the initialization and the teardown steps involved in getting it running. 
 Let's create our first stack by running:
 ```sh
-    $ bundle exec rake 'deployinator:new_stack[testStack]'
+    $ bundle exec rake 'deployinator:new_stack[test_stack]'
 ```
-where testStack is the name of your stack. 
+where test_stack is the name of your stack. Make sure this is all lowercase and underscore escaped.
 
 The commands run by the rake tasks are logged to stderr.
 
