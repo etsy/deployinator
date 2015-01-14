@@ -103,4 +103,9 @@ Deployinator.global_plugins = []
 Deployinator.log_file = Deployinator.root(["log", "development.log"])
 Deployinator.log_path = Deployinator.root(["log", "deployinator.log"])
 Deployinator.timing_log_path = Deployinator.root(["log", "deployinator-timing.log"])
+Deployinator.git_sha_length = "10"
+Deployinator.default_user = `whoami`
+Deployinator.app_context['stack_tailer_port'] = 7778
+Deployinator.github_host = 'github.com'
+
 
