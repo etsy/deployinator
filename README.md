@@ -1,10 +1,9 @@
 # Deployinator
 
-TODO: Write a gem description
 This gem is the core of Deployinator. Here are the steps to get it running for your application.
 
 ## Installation
-- Create a folder for your project. `mkdir testStacks`
+- Create a folder for your project. `mkdir test_stacks`
 
 - Add this line to your application's Gemfile:
 
@@ -23,13 +22,14 @@ Or install it yourself as:
     $ gem install deployinator
 ```
 
-## Usage
-
 Run the following command:
 ```sh
     $ echo "require 'deployinator'\nload 'deployinator/tasks/initialize.rake' " > Rakefile
 ```
 This will create a rake file and set it up with some includes for deployinator tasks.
+
+## Usage
+
 Next, you can initialize the project by running:
 ```sh
     $ bundle exec rake 'deployinator:init[Company]'
@@ -68,46 +68,27 @@ You will probably want a robust server like apache to handle production traffic.
 ### Deploying a test stack
 - The `config/base.rb` file is the base config for the application.
 ```ruby                                                                                                         
-module Deployinator
-    class << self
-        attr_accessor :git_info_for_stack
-    end
-end
-
-# The domain deployinator is running on
-domain = %x{hostname --long}.chomp.split('.').drop(1).join('.')
-# Host domain for github
-Deployinator.github_host = "github.etsycorp.com"
-# Git sha hash length to use in the application
-Deployinator.git_sha_length = "10"
-# The unix user you want to run deployingator under
-# Useful for setting permissions
-Deployinator.default_user = "nsubedi"
-# Port to run the tailer on
-Deployinator.app_context['stack_tailer_port'] = 7778
 # where is deployinator installed?
-Deployinator.app_context['stack_stack_config'] = {
+Deployinator.app_context['test_stack_config'] = {
    :prod_host               => "localhost",
    :checkout_path           => "/tmp/deployinator_dev/"
  }
 Deployinator.git_info_for_stack = {
-    :testStack => {
-        :user => "Engineering",
-        :repository => "virtual-machines"
+    :test_stack => {
+        :user => "etsy",
+        :repository => "DeployinatorGem"
     }
 }
 ```
 
-Edit the stacks/testStack.rb file to include the GitHelpers.
+Edit the stacks/test_stack.rb file to include the GitHelpers.
 
-Next, edit the hepler/testStack.rb file. You can delete the testStack_head_build function 
+Next, edit the hepler/test_stack.rb file. You can delete the test_stack_head_build function 
 Create the folder for the local checkout.
-If you have deployinator installed as a global gem, you can start the tailer by running:
-`deployinator-tailer.rb`
 
 
-### Hacking on the plugin
-If you find issues with the plugin, or would like to play around with it, you can check it out from git and start hacking on it. 
+### Hacking on the gem
+If you find issues with the gem, or would like to play around with it, you can check it out from git and start hacking on it. 
 First tell bundle to use your local copy instead by running:
 ```sh
     $ bundle config local.deployinator /path/to/DeployinatorGem
