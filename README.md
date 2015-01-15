@@ -179,10 +179,10 @@ By default, you will see a button called "deploy _stackname_" where _stackname_ 
 The keys of each hash describe what you will be pushing for that environment:
 
 * __:name__ - name of the environment
-* __:method__ - method name (string) that gets invoked when you press the button
-* __:current_version__ - method that returns the version that is currently deployed in this environment
-* __:current_build__ - method that returns the build that is currently deployed (usually inferred from the version)
-* __:next_build__ - method that returns the next build that is about to be deployed 
+* __:method__ - method name (string) that gets invoked when you press the button (this is defined in the stack)
+* __:current_version__ - method that returns the version that is currently deployed in this environment (defined in the helper)
+* __:current_build__ - method that returns the build that is currently deployed (usually inferred from the version, also defined in the helper)
+* __:next_build__ - method that returns the next build that is about to be deployed (defined in the helper)
 
 ### Useful helper methods
 There are a few helpers built in that you can use after creating a new stack to assist you
