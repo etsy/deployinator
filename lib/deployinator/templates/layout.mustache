@@ -9,8 +9,10 @@
         <link rel="stylesheet" href="/css/diff_style.css" type="text/css" media="screen">
         <script src="/js/jquery-1.8.3.min.js"></script>
         <script src="/js/jquery-ui-1.8.24.min.js"></script>
+        {{ additional_header_html }}
     </head>
     <body>
+        {{ additional_top_body_html }}
 
         {{#dev_context?}}
             <div id="dev">Deployinator is in Dev Context. Pushes will NOT go live.</div>
@@ -70,7 +72,7 @@ _  __  / _  _ \___  __ \__  / _  __ \__  / / /__  / __  __ \_  __ `/_  __/_  __ 
             <!-- footer -->
             <footer>
                 <div class="etsy">Etsy</div>
-                <div class="source"><a href="http://etsy.me/deployinator">Deployinator on Github</a></div>
+                <div class="source"><a href="http://github.com/etsy/DeployinatorGem">Deployinator on Github</a></div>
             </footer>
 
             <script src="/js/flot/jquery.flot.min.js"></script>
@@ -181,7 +183,7 @@ _  __  / _  _ \___  __ \__  / _  __ \__  / / /__  / __  __ \_  __ `/_  __/_  __ 
                     $('#' + rnd_id).contents().find('body').html('\
 <div class="command">\
 <h4>\
-Currently connecting to tailer web socket. If this message persists for a long time, please consult #devtools.\
+{{ tailer_loading_message }}\
 </h4>\
 </div>');
                 }
@@ -598,5 +600,6 @@ Currently connecting to tailer web socket. If this message persists for a long t
             </script>
         </div>
         <script src="/js/check_push_status.js"></script>
+        {{ additional_bottom_body_html }}
     </body>
 </html>

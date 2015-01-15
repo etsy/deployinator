@@ -27,6 +27,22 @@ module Deployinator
       def disabled_override
         @disabled_override
       end
+
+      def additional_bottom_body_html
+        ""
+      end
+
+      def additional_top_body_html
+        ""
+      end
+
+      def additional_header_html
+        ""
+      end
+
+      def tailer_loading_message
+        "Currently connecting to tailer web socket. If this message persists for a long time, please contact your administrator"
+      end
     end
   end
 end
