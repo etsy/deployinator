@@ -236,6 +236,9 @@ Next, on every code change, you can install from the checked out gem by running 
     $ bundle install --no-deployment && bundle install --deployment
 ```
 
+### Plugins
+TODO: Write this
+
 ## Contributing
 
 1. Fork it
