@@ -85,9 +85,12 @@ Deployinator.git_info_for_stack = {
 }
 ```
 
-Edit the stacks/test_stack.rb file to include the GitHelpers.
+Edit the stacks/test_stack.rb file to include the GitHelpers:
+```ruby
+    include Deployinator::Helpers::GitHelpers
+```
 
-Next, edit the hepler/test_stack.rb file. You can delete the test_stack_head_build function since you are using the GitHelpers and that is automatically taken care of for you
+Next, edit the helpers/test_stack.rb file. You can delete the test_stack_head_build function since you are using the GitHelpers and that is automatically taken care of for you
 Create the folder for the local checkout.
 
 ### Hacking on the gem
