@@ -109,9 +109,10 @@ module Deployinator
             Deployinator::Helpers::GitHelpers
 
       def test_stack_production(options={})
-        # save the previous before we update the repo
-        old_version = %x{ssh #{Deployinator.app_context['test_stack_info'][:prod_host] 'cat #{checkout_path}/version.txt'}
+        # save old version for announcement
+        old_version = test_stack_production_version
 
+        # Clone and update copy of git repository
         git_freshen_or_clone(stack, "ssh #{Deployinator.app_context['test_stack_info'][:prod_host]", stack_config[:checkout_path], "master")
 
         # bump version
@@ -121,8 +122,7 @@ module Deployinator
         log_and_stream "Updating application to #{version} from #{old_version}"
 
         # log the deploy
-        log_and_shout :old_build => environments[0][:current_build].call, :build => environments[0][:next_build].call
-
+        log_and_shout :old_build => get_build(old_version), :build => get_build(version)
       end
     end
   end
