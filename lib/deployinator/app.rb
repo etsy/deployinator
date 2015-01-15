@@ -117,15 +117,15 @@ module Deployinator
       get_list_of_deploys.to_json
     end
 
-    get '/css/style.css?:version' do
+    get '/static/css/style.css?:version' do
       send_file "#{File.dirname(__FILE__)}/static/css/style.css"
     end
 
-    get '/css/diff_style.css' do
+    get '/static/css/diff_style.css' do
       send_file "#{File.dirname(__FILE__)}/static/css/diff_style.css"
     end
 
-    get '/css/highlight.css' do
+    get '/static/css/highlight.css' do
       send_file "#{File.dirname(__FILE__)}/static/css/highlight.css"
     end
 
