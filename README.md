@@ -10,9 +10,7 @@
 Deployinator - Deploy code like Etsy
 ====================================
 
-Deployinator is a deployment framework extracted from [Etsy][etsy]. We've been using it since late 2009 / early 2010. This has been revamped into a ruby gem.
-
-Here is a [blog post][dep] explaining our rationale behind it and how it helps us out.
+Deployinator is a deployment framework extracted from Etsy. We've been using it since late 2009 / early 2010. This has been revamped into a ruby gem.
 
 ## Installation
 
