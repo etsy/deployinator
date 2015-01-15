@@ -39,6 +39,11 @@ Run the following command:
 This will create a rake file and set it up to make deployinator's initialization
 tasks available to you.
 
+Create a binstub for the run log tailing backend:
+```sh
+    bundle install --binstubs deployinator
+```
+
 ## Usage
 
 Next, you can initialize the project by running:
@@ -140,6 +145,11 @@ end
 
 Create the folder that will contain the checkout if it doesn't exist already
 (one level above your checkout destination)
+
+- Run the tailer as a background service:
+```sh
+    ./bin/deployinator-tailer.rb
+```
 
 ### Customizing your stack
 
