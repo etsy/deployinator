@@ -148,7 +148,7 @@ Create the folder that will contain the checkout if it doesn't exist already
 
 - Run the tailer as a background service:
 ```sh
-    ./bin/deployinator-tailer.rb
+    ./bin/deployinator-tailer.rb &
 ```
 
 ### Customizing your stack
