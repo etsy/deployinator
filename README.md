@@ -68,15 +68,19 @@ shipped with deployinator
     require 'bundler'
     Bundler.require
 ```
-We need a server to run our Sinatra application. For the purpose of this demo, we will use [shotgun](https://github.com/rtomayko/shotgun). Let's install shotgun as a global gem and we are ready to roll!
-```sh
-    $ gem install shotgun
+We need a server to run our Sinatra application. For the purpose of this demo, we will use [shotgun](https://github.com/rtomayko/shotgun). Let's install shotgun into our bundle. Add the following to your Gemfile:
+```ruby
+    gem 'shotgun'
 ```
-Note: You might need `sudo` to install shotgun. 
+Now update your bundler:
+```sh
+    bundle install --path vendor/bundle --no-deployment && bundle install --path vendor/bundle --deployment
+```
+
 Start the server by running:
 
 ```sh
-    $ shotgun --host localhost -p 7777 config.ru
+    $ bundle exec shotgun --host localhost -p 7777 config.ru
 ```
 The host could be localhost or the dns name (or ip address of the server you are using). You can set any port you want that's not in use using the `-p` flag.
 Fire it up and load the page. You should see deployinator running!
