@@ -485,7 +485,7 @@ module Deployinator
       options[:env] ||= "PROD"
       options[:nice_env] = nicify_env(options[:env])
       options[:user] ||= @username
-      options[:start] = @start_time unless options[:start] || ! @start_time
+      options[:start] = @start_time.to_i unless options[:start] || ! @start_time
 
       if (options[:start])
         options[:end] = Time.now unless options.key?(:end)
