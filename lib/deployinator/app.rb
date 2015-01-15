@@ -34,7 +34,7 @@ module Deployinator
       :namespace => Deployinator::Views
     }
 
-    set :root, Deployinator.root_dir
+    set :public_folder, Deployinator.root('public')
     set :static, true
 
     before do
