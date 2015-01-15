@@ -207,7 +207,7 @@ The real time output console renders HTML so you should use markup here.
 #### log_and_shout
 
 Output an announcement message with build related information.  
-Also includes hooks for Email and IRC.
+Also includes hooks for Email.
 
     log_and_shout({
         :old_build  => old_build,
