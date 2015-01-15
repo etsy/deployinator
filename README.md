@@ -23,7 +23,7 @@ you can skip the bundler steps.
 
 ```ruby
     source 'https://rubygems.org'
-    gem 'deployinator'
+    gem 'deployinator', :git => 'git@github.com:etsy/DeployinatorGem.git', :branch => 'master'
  ```
 
 - And then execute:
