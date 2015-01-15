@@ -492,8 +492,7 @@ module Deployinator
         options[:duration] = options[:end] - options[:start]
 
         log_and_stream "Ended at #{options[:end]}<br>Took: #{options[:duration]} seconds<br>"
-        # TODO: fix this, move over timing log and add plugin raise for graphite
-        # timing_log options[:duration], options[:nice_env], options[:stack]
+        timing_log options[:duration], options[:nice_env], options[:stack]
       end
 
       if (options[:old_build] && options[:build])
