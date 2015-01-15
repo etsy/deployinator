@@ -155,7 +155,7 @@ Create the folder that will contain the checkout if it doesn't exist already
 
 A stack can be customized so that you have flexibility over the different environments within it (which correspond to buttons) and the methods that correspond to each button press.
 
-By default, you will see a button called "deploy _stackname_" where _stackname_ is the stack defined in the rake command. In your stack file, you can add a function called _stackname_\_environments that returns an array of hashes.  Each hash will correspond to a new environment, or button. For example if your stack is called web, you can define a function like so to define qa and production environments within your web stack:
+By default, you will see a button called "deploy _stackname_" where _stackname_ is the stack defined in the rake command. In your stack file, you can add a function called _stackname_\_environments that returns an array of hashes.  Each hash will correspond to a new environment, or button. For example if your stack is called web, you can define a function like so in helpers/your_stack.rb to define qa and production environments within your web stack:
 
       def web_environments
         [
