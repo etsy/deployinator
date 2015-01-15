@@ -1,6 +1,18 @@
-# Deployinator
+<pre>
+                  _________               ______                _____                 _____
+                  ______  /_____ ________ ___  /______ _____  _____(_)_______ ______ ___  /_______ ________
+                  _  __  / _  _ \___  __ \__  / _  __ \__  / / /__  / __  __ \_  __ `/_  __/_  __ \__  ___/
+                  / /_/ /  /  __/__  /_/ /_  /  / /_/ /_  /_/ / _  /  _  / / // /_/ / / /_  / /_/ /_  / 
+                  \__,_/   \___/ _  .___/ /_/   \____/ _\__, /  /_/   /_/ /_/ \__,_/  \__/  \____/ /_/ 
+                                 /_/                   /____/             Deploy with style!
+</pre>
 
-This gem is the core of Deployinator. Here are the steps to get it running for your application.
+Deployinator - Deploy code like Etsy
+====================================
+
+Deployinator is a deployment framework extracted from [Etsy][etsy]. We've been using it since late 2009 / early 2010. This has been revamped into a ruby gem.
+
+Here is a [blog post][dep] explaining our rationale behind it and how it helps us out.
 
 ## Installation
 
