@@ -131,7 +131,7 @@ module Deployinator
   module Helpers
     module TestStackHelpers
       def test_stack_production_version
-        %x{ssh #{Deployinator.app_context["test_stack_config"][:prod_host] cat #{Deployinator.app_context[test_stack_config"][:checkout_path]}/#{stack}/version.txt}
+        %x{ssh #{Deployinator.app_context["test_stack_config"][:prod_host]} cat #{Deployinator.app_context[test_stack_config"][:checkout_path]}/#{stack}/version.txt}
       end
     end
   end
