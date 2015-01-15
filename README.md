@@ -3,30 +3,31 @@
 This gem is the core of Deployinator. Here are the steps to get it running for your application.
 
 ## Installation
+
+This demo assumes you are using bundler to install deployinator. If you aren't
+you can skip the bundler steps.
+
 - Create a folder for your project. `mkdir test_stacks`
 
 - Add this line to your application's Gemfile:
 
-    `source 'https://rubygems.org'
-     gem 'deployinator'`
+```ruby
+    source 'https://rubygems.org'
+    gem 'deployinator'
+ ```
 
 - And then execute:
 ```sh
     $ bundle install --path vendor/bundle
 ```
-inside your project directory. Make sure you have rubygems.org as a source for your gems.
-
-Or install it yourself as:
-
-```sh
-    $ gem install deployinator
-```
+inside your project directory. 
 
 Run the following command:
 ```sh
     $ echo "require 'deployinator'\nload 'deployinator/tasks/initialize.rake' " > Rakefile
 ```
-This will create a rake file and set it up with some includes for deployinator tasks.
+This will create a rake file and set it up to make deployinator's initialization
+tasks available to you.
 
 ## Usage
 
@@ -46,9 +47,12 @@ where test_stack is the name of your stack. Make sure this is all lowercase and 
 The commands run by the rake tasks are logged to stderr.
 
 Our deployinator stack is now ready. 
-Run the following command to set up the right bundler requires before getting started.
-```sh
-    $ echo "require 'rubygems'\nrequire 'bundler'\n\nBundler.require\n" >> config.ru
+If you are using bundler add the following to the top of the config.ru that
+shipped with deployinator
+```ruby
+    require 'rubygems'
+    require 'bundler'
+    Bundler.require
 ```
 We need a server to run our Sinatra application. For the purpose of this demo, we will use [shotgun](https://github.com/rtomayko/shotgun). Let's install shotgun as a global gem and we are ready to roll!
 ```sh
@@ -63,7 +67,6 @@ The host could be localhost or the dns name (or ip address of the server you are
 Fire it up and load the page. You should see deployinator running!
 
 You will probably want a robust server like apache to handle production traffic. 
-
 
 ### Deploying a test stack
 - The `config/base.rb` file is the base config for the application.
@@ -83,9 +86,8 @@ Deployinator.git_info_for_stack = {
 
 Edit the stacks/test_stack.rb file to include the GitHelpers.
 
-Next, edit the hepler/test_stack.rb file. You can delete the test_stack_head_build function 
+Next, edit the hepler/test_stack.rb file. You can delete the test_stack_head_build function since you are using the GitHelpers and that is automatically taken care of for you
 Create the folder for the local checkout.
-
 
 ### Hacking on the gem
 If you find issues with the gem, or would like to play around with it, you can check it out from git and start hacking on it. 
