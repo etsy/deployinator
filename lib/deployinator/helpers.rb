@@ -488,9 +488,8 @@ module Deployinator
       options[:start] = @start_time unless options[:start] || ! @start_time
 
       if (options[:start])
-        options[:end] = Time.now unless options.key?(:end)
+        options[:end] = Time.now.to_i unless options.key?(:end)
         options[:duration] = options[:end] - options[:start]
-        log_string_to_file("#{options[:end]}|#{options[:start]}|waaa", Deployinator.timing_log_path)
 
         log_and_stream "Ended at #{options[:end]}<br>Took: #{options[:duration]} seconds<br>"
         timing_log options[:duration], options[:nice_env], options[:stack]
