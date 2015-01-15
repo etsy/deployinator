@@ -37,7 +37,6 @@ Next, you can initialize the project by running:
 ```
 where Company is the name of your company/organization with an uppercase first letter.
 Now you are ready to build your first stack. 
-A *stack* is a collection of code, the initialization and the teardown steps involved in getting it running. 
 Let's create our first stack by running:
 ```sh
     $ bundle exec rake 'deployinator:new_stack[test_stack]'
@@ -91,7 +90,8 @@ Edit the stacks/test_stack.rb file to include the GitHelpers:
 ```
 
 Next, edit the helpers/test_stack.rb file. You can delete the test_stack_head_build function since you are using the GitHelpers and that is automatically taken care of for you
-Create the folder for the local checkout.
+Create the folder that will contain the checkout if it doesn't exist already
+(one level above your checkout destination)
 
 ### Hacking on the gem
 If you find issues with the gem, or would like to play around with it, you can check it out from git and start hacking on it. 
@@ -103,12 +103,79 @@ Next, on every code change, you can install from the checked out gem by running
 ```sh
     $ bundle install --no-deployment && bundle install --deployment
 ```
+### Customizing your stack
+
+A stack can be customized so that you have flexibility over the different environments within it (which correspond to buttons) and the methods that correspond to each button press.
+
+By default, you will see a button called "deploy _stackname_" where _stackname_ is the stack defined in the rake command. In your stack file, you can add a function called _stackname_\_environments that returns an array of hashes.  Each hash will correspond to a new environment, or button. For example if your stack is called web, you can define a function like so to define qa and production environments within your web stack:
+
+      def web_environments
+        [
+          {
+            :name            => "qa",
+            :method          => "qa_rsync",
+            :current_version => qa_version,
+            :current_build   => current_qa_build,
+            :next_build      => next_qa_build
+          },
+          {
+            :name            => "production",
+            :method          => "prod_rsync",
+            :current_version => prod_version,
+            :current_build   => current_prod_build,
+            :next_build      => next_prod_build
+          }
+        ]
+      end
+
+The keys of each hash describe what you will be pushing for that environment:
+
+* __:name__ - name of the environment
+* __:method__ - method name (string) that gets invoked when you press the button
+* __:current_version__ - method that returns the version that is currently deployed in this environment
+* __:current_build__ - method that returns the build that is currently deployed (usually inferred from the version)
+* __:next_build__ - method that returns the next build that is about to be deployed 
+
+### Useful helper methods
+There are a few helpers built in that you can use after creating a new stack to assist you
+
+#### run_cmd
+
+Shell out to run a command line program.
+Includes timing information streams and logs the output of the command.
+
+For example you could wrap your capistrano deploy:
+
+    run_cmd %Q{cap deploy}
 
 
+#### log_and_stream 
 
+Output information to the log file, and the streaming output handler.
+The real time output console renders HTML so you should use markup here.
 
+    log_and_stream "starting deploy<br>"
 
+#### log_and_shout
 
+Output an announcement message with build related information.  
+Also includes hooks for Email and IRC.
+
+    log_and_shout({
+        :old_build  => old_build,
+        :build      => build,
+        :send_email => true
+    });
+
+The supported keys for log_and_shout are:
+
+* __:env__ - the environment that is being pushed
+* __:user__ - the user that pushed
+* __:start__ - the start time of the push (if provided the command will log timing output)
+* __:end__ - the end time of the push (defaults to "now")
+* __:old_build__ - the existing version to be replaced
+* __:build__ - the new version to be pushed
+* __:send_email__ - true if you want it to email the announcement (make sure to define settings in config)
 
 ## Contributing
 
