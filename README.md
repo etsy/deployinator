@@ -94,12 +94,50 @@ Deployinator.git_info_for_stack = {
 }
 ```
 
-Edit the stacks/test_stack.rb file to include the GitHelpers:
+Edit the stacks/test_stack.rb file to look like this (adding git version bumping and checkout)
 ```ruby
-    include Deployinator::Helpers::GitHelpers
+require 'helpers/test_stack'
+module Deployinator
+  module Stacks
+    class TestStackDeploy < Deployinator::Deploy
+        include Deployinator::Helpers::TestStackHelpers,
+            Deployinator::Helpers::GitHelpers
+
+      def test_stack_production(options={})
+        # save the previous before we update the repo
+        old_version = %x{ssh #{Deployinator.app_context['test_stack_info'][:prod_host] 'cat #{checkout_path}/version.txt'}
+
+        git_freshen_or_clone(stack, "ssh #{Deployinator.app_context['test_stack_info'][:prod_host]", stack_config[:checkout_path], "master")
+
+        # bump version
+        version = git_bump_version(stack, checkout_path, "ssh #{Deployinator.app_context['test_stack_info'][:prod_host]", checkout_path)
+
+        # Write the sha1s of the different versions out to the logs for safe keeping.
+        log_and_stream "Updating application to #{version} from #{old_version}"
+
+        # log the deploy
+        log_and_shout :old_build => environments[0][:current_build].call, :build => environments[0][:next_build].call
+
+      end
+    end
+  end
+end
 ```
 
-Next, edit the helpers/test_stack.rb file. You can delete the test_stack_head_build function since you are using the GitHelpers and that is automatically taken care of for you
+Next, edit the helpers/test_stack.rb file. You can delete the test_stack_head_build function since you are using the GitHelpers and that is automatically taken care of for you. Here is the final version:
+
+```ruby
+module Deployinator
+  module Helpers
+    module TestStackHelpers
+      def test_stack_production_version
+        %x{ssh #{Deployinator.app_context["test_stack_config"][:prod_host] cat #{Deployinator.app_context[test_stack_config"][:checkout_path]}/#{stack}/version.txt}
+      end
+    end
+  end
+end
+```
+
 Create the folder that will contain the checkout if it doesn't exist already
 (one level above your checkout destination)
 
