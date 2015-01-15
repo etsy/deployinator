@@ -149,14 +149,6 @@ module Deployinator
       send_file "#{File.dirname(__FILE__)}/static/js/jquery.timed_bar.js"
     end
 
-    get '/js/check_push_status.js' do
-      send_file "#{File.dirname(__FILE__)}/static/js/check_push_status.js"
-    end
-
-    get '/header_class' do
-      return 'push-open'
-    end
-
     get '/deploys_status' do
         mustache Deployinator::Views::DeploysStatus
     end

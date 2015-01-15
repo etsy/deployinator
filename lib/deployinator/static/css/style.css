@@ -284,24 +284,6 @@ header a:hover {
   color: #fff;
 }
 
-header.push-caution {
-  background-size: cover;
-  background-position: center;
-  /* photo credit: http://www.flickr.com/photos/_belial/507487824/ */
-  background-image: url(/images/night02.jpg);
-}
-
-header.push-closed {
-  background-size: cover;
-  background-position: center;
-  /* photo credit: http://www.flickr.com/photos/68868401@N00/249840249/ */
-  background-image: url(/images/night03.jpg);
-}
-
-header.push-open {
-  background-image: none;
-}
-
 #dna{
   margin: 0;
   float: right;
@@ -319,14 +301,6 @@ header.push-open {
   text-decoration: none;
   color: #333;
 }
-
-.push-caution #dna a:hover {
-  color: yellow;
-}
-.push-closed #dna a:hover {
-  color: orange;
-}
-
 
 #user{
   float: left;
@@ -353,11 +327,6 @@ header.push-open {
 .stacks {
   margin-top: 5px;
 }
-.push-caution .stacks,
-.push-closed .stacks {
-  color: yellow;
-}
-
 #dev {
   position:fixed;
   top:0;
