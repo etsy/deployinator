@@ -227,11 +227,11 @@ The supported keys for log_and_shout are:
 
 ## Hacking on the gem
 If you find issues with the gem, or would like to play around with it, you can check it out from git and start hacking on it. 
-First tell bundle to use your local copy instead by running:
+First tell bundler to use your local copy instead by running:
 ```sh
     $ bundle config local.deployinator /path/to/DeployinatorGem
 ```
-Next, on every code change, you can install from the checked out gem by running
+Next, on every code change, you can install from the checked out gem by running (you will want to make commits to the gem to update the sha in the Gemfile.lock)
 ```sh
     $ bundle install --no-deployment && bundle install --deployment
 ```
