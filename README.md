@@ -61,7 +61,7 @@ We need a server to run our Sinatra application. For the purpose of this demo, w
 Note: You might need `sudo` to install shotgun. 
 Start the server by running:
 
-```sh                                                                                                           n
+```sh
     $ shotgun --host localhost -p 7777 config.ru
 ```
 The host could be localhost or the dns name (or ip address of the server you are using). You can set any port you want that's not in use using the `-p` flag.
