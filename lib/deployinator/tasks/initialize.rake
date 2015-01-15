@@ -11,13 +11,21 @@ namespace :deployinator do
   desc "Initialize the project root for your deployinator instance"
   task :init, :company do |t, args|
     if args[:company].nil?
-      puts "You need to specify a company name for your classes"
+      puts "You need to specify a company name for your classes."
       puts "for example: rake deployinator:init[Etsy]"
       exit 1
     end
 
     company = args[:company]
+    company[0] = company[0].capitalize
     mkdir_p("lib")
+    mkdir_p("stacks")
+    mkdir_p("config")
+    mkdir_p("log")
+    mkdir_p("run_logs")
+    mkdir_p("helpers")
+    mkdir_p("views")
+    mkdir_p("templates")
 
     template("#{TEMPLATE_PATH}app.rb.erb", "lib/app.rb", binding)
     template("#{TEMPLATE_PATH}config.ru.erb", "config.ru", binding)
@@ -33,6 +41,11 @@ namespace :deployinator do
     end
 
     stack = args[:stack]
+    # Enfore underscore and no camelcase
+    stack = stack.gsub(/([A-Z]+)([A-Z][a-z])/,'\1_\2').
+       gsub(/([a-z\d])([A-Z])/,'\1_\2').
+       tr("-", "_").
+       downcase
     mustache_class = Mustache.classify(stack)
     user = args[:user]
     repo = args[:repository]
