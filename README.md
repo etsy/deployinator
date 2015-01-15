@@ -60,6 +60,7 @@ We need a server to run our Sinatra application. For the purpose of this demo, w
 ```
 Note: You might need `sudo` to install shotgun. 
 Start the server by running:
+
 ```sh                                                                                                           n
     $ shotgun --host localhost -p 7777 config.ru
 ```
