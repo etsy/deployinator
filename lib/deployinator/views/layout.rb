@@ -41,7 +41,7 @@ module Deployinator
       end
 
       def tailer_loading_message
-        "Currently connecting to tailer web socket. If this message persists for a long time, please contact your administrator"
+        "Currently connecting to tailer web socket. If this message persists for a long time, please contact your administrator. If you are developing a new stack, try restarting the deployinator-tailer."
       end
     end
   end
