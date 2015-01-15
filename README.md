@@ -93,16 +93,6 @@ Next, edit the helpers/test_stack.rb file. You can delete the test_stack_head_bu
 Create the folder that will contain the checkout if it doesn't exist already
 (one level above your checkout destination)
 
-### Hacking on the gem
-If you find issues with the gem, or would like to play around with it, you can check it out from git and start hacking on it. 
-First tell bundle to use your local copy instead by running:
-```sh
-    $ bundle config local.deployinator /path/to/DeployinatorGem
-```
-Next, on every code change, you can install from the checked out gem by running
-```sh
-    $ bundle install --no-deployment && bundle install --deployment
-```
 ### Customizing your stack
 
 A stack can be customized so that you have flexibility over the different environments within it (which correspond to buttons) and the methods that correspond to each button press.
@@ -176,6 +166,17 @@ The supported keys for log_and_shout are:
 * __:old_build__ - the existing version to be replaced
 * __:build__ - the new version to be pushed
 * __:send_email__ - true if you want it to email the announcement (make sure to define settings in config)
+
+## Hacking on the gem
+If you find issues with the gem, or would like to play around with it, you can check it out from git and start hacking on it. 
+First tell bundle to use your local copy instead by running:
+```sh
+    $ bundle config local.deployinator /path/to/DeployinatorGem
+```
+Next, on every code change, you can install from the checked out gem by running
+```sh
+    $ bundle install --no-deployment && bundle install --deployment
+```
 
 ## Contributing
 
