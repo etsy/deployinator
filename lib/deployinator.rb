@@ -109,5 +109,6 @@ Deployinator.git_sha_length = "10"
 Deployinator.default_user = `whoami`
 Deployinator.stack_tailer_port = 7778
 Deployinator.github_host = 'github.com'
+Deployinator.app_context['context'] = 'dev'
 
 
