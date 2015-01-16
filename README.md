@@ -39,7 +39,7 @@ you can skip the bundler steps.
 
 - Create a directory for your project. `mkdir test_stacks`
 
-- Add this line to your application's Gemfile:
+- Create a Gemfile for bundler:
 
 ```ruby
     source 'https://rubygems.org'
