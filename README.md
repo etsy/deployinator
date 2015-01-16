@@ -1,96 +1,121 @@
-```
+<pre>
 _________               ______                _____                 _____
 ______  /_____ ________ ___  /______ _____  _____(_)_______ ______ ___  /_______ ________
 _  __  / _  _ \___  __ \__  / _  __ \__  / / /__  / __  __ \_  __ `/_  __/_  __ \__  ___/
 / /_/ /  /  __/__  /_/ /_  /  / /_/ /_  /_/ / _  /  _  / / // /_/ / / /_  / /_/ /_  / 
 \__,_/   \___/ _  .___/ /_/   \____/ _\__, /  /_/   /_/ /_/ \__,_/  \__/  \____/ /_/ 
                 /_/                   /____/             Deploy with style!
-```
+</pre>
 
 Deployinator - Deploy code like Etsy
 ====================================
 
 Deployinator is a deployment framework extracted from Etsy. We've been using it since late 2009 / early 2010. This has been revamped into a ruby gem.
 
+**Table of Contents**
+
+- [Installation](#installation)
+- [Usage](#usage)
+  - [Example Stack](#example-stack)
+  - [Customizing your stack](#customizing-your-stack)
+  - [Useful helper methods](#useful-helper-methods)
+  - [Plugins](#plugins)
+- [Hacking on the gem](#hacking-on-the-gem)
+  - [Contributing](#contributing)
+
+
 ## Installation
 
 This demo assumes you are using bundler to install deployinator. If you aren't
 you can skip the bundler steps.
 
-- Create a folder for your project. `mkdir test_stacks`
+- Create a directory for your project. `mkdir test_stacks`
 
 - Add this line to your application's Gemfile:
 
 ```ruby
     source 'https://rubygems.org'
     gem 'deployinator', :git => 'git@github.com:etsy/DeployinatorGem.git', :branch => 'master'
- ```
+```
 
-- And then execute:
+- Install all required gems with bundler:
+
 ```sh
     $ bundle install --path vendor/bundle
 ```
-inside your project directory. 
 
-Run the following command:
+- Run the following command to make deployinator gem's rake tasks available to you:
+
 ```sh
     $ echo "require 'deployinator'\nload 'deployinator/tasks/initialize.rake' " > Rakefile
 ```
-This will create a rake file and set it up to make deployinator's initialization
-tasks available to you.
 
-Create a binstub for the run log tailing backend:
+- Create a binstub for the deploy log tailing backend:
+
 ```sh
     bundle install --binstubs deployinator
 ```
 
-## Usage
+- Initialize the project directory by running the following command replacing ___Company___ with the name of your company/organization. This must start with a capital letter.
 
-Next, you can initialize the project by running:
 ```sh
     $ bundle exec rake 'deployinator:init[Company]'
 ```
-where Company is the name of your company/organization with an uppercase first letter.
-Now you are ready to build your first stack. 
-Let's create our first stack by running:
-```sh
-    $ bundle exec rake 'deployinator:new_stack[test_stack]'
-```
-where test_stack is the name of your stack. Make sure this is all lowercase and underscore escaped.
 
-The commands run by the rake tasks are logged to stderr.
-
-Our deployinator stack is now ready. 
-If you are using bundler add the following to the top of the config.ru that
+- If you are using bundler add the following to the top of the config.ru that
 shipped with deployinator
 ```ruby
     require 'rubygems'
     require 'bundler'
     Bundler.require
 ```
-We need a server to run our Sinatra application. For the purpose of this demo, we will use [shotgun](https://github.com/rtomayko/shotgun). Let's install shotgun into our bundle. Add the following to your Gemfile:
+
+- Run the tailer as a background service (using whatever init flavor you like)
+
+```sh
+    ./bin/deployinator-tailer.rb &
+```
+
+
+## Usage
+
+
+### Example Stack
+- Use the deployinator rake task to create the stub for your stack. Replace
+___test_stack___ with the name of your stack. This should be all lowercase with
+underscores but if you forget the rake task will convert from camelcase for you. The commands run by the rake tasks are logged to stderr.
+
+```sh
+    $ bundle exec rake 'deployinator:new_stack[test_stack]'
+```
+
+- We need a server to run our Sinatra application. For the purpose of this demo, we will use [shotgun](https://github.com/rtomayko/shotgun). Let's install shotgun into our bundle. Add the following to your Gemfile:
+
 ```ruby
     gem 'shotgun'
 ```
-Now update your bundler:
+
+- Now update your bundler:
+
 ```sh
     bundle install --path vendor/bundle --no-deployment && bundle install --path vendor/bundle --deployment
 ```
 
-Start the server by running:
+- Start the server by running:
+  - The host could be localhost or the dns name (or ip address of the server you are using). You can set any port you want that's not in use using the `-p` flag.
 
 ```sh
     $ bundle exec shotgun --host localhost -p 7777 config.ru
 ```
-The host could be localhost or the dns name (or ip address of the server you are using). You can set any port you want that's not in use using the `-p` flag.
-Fire it up and load the page. You should see deployinator running!
 
-You will probably want a robust server like apache to handle production traffic. 
+- You will probably want a robust server like apache to handle production traffic. 
 
-### Deploying a test stack
-- The `config/base.rb` file is the base config for the application.
+- The `config/base.rb` file is the base config for the application. Replace all
+occurences of ___test_stack___ with the name you chose above. Also the example
+below uses a git repository of http://github.com/etsy/deployinator, feel free to
+replace this with your specific repository
+
 ```ruby                                                                                                         
-# where is deployinator installed?
 Deployinator.app_context['test_stack_config'] = {
    :prod_host               => "localhost",
    :checkout_path           => "/tmp/deployinator_dev/"
@@ -98,12 +123,13 @@ Deployinator.app_context['test_stack_config'] = {
 Deployinator.git_info_for_stack = {
     :test_stack => {
         :user => "etsy",
-        :repository => "DeployinatorGem"
+        :repository => "deployinator"
     }
 }
 ```
 
-Edit the stacks/test_stack.rb file to look like this (adding git version bumping and checkout)
+- Edit the stacks/test_stack.rb file to look like this (adding git version bumping and checkout)
+
 ```ruby
 require 'helpers/test_stack'
 module Deployinator
@@ -133,7 +159,7 @@ module Deployinator
 end
 ```
 
-Next, edit the helpers/test_stack.rb file. You can delete the test_stack_head_build function since you are using the GitHelpers and that is automatically taken care of for you. Here is the final version:
+- Next, edit the helpers/test_stack.rb file. You can delete the test_stack_head_build function since you are using the GitHelpers and that is automatically taken care of for you. Here is the final version:
 
 ```ruby
 module Deployinator
@@ -147,13 +173,10 @@ module Deployinator
 end
 ```
 
-Create the folder that will contain the checkout if it doesn't exist already
-(one level above your checkout destination)
+- Create the directory that will contain the checkout if it doesn't exist already
+(defined in `config/base.rb`)
 
-- Run the tailer as a background service:
-```sh
-    ./bin/deployinator-tailer.rb &
-```
+- Load up deployinator and deploy your stack!
 
 ### Customizing your stack
 
@@ -229,6 +252,73 @@ The supported keys for log_and_shout are:
 * __:build__ - the new version to be pushed
 * __:send_email__ - true if you want it to email the announcement (make sure to define settings in config)
 
+### Plugins
+Deployinator provides various entry points to execute plugins without having to
+modify the gem code. Here is a list of current pluggable events:
+
+- __:logout_url__ for defining your own authentications logout url
+- __:deploy_start__ for any actions to be performed at the start of a deploy
+- __:deploy_end__ for any actions to be performed at the end of a deploy
+- __:deploy_error__ for any actions to be performed when an error occurs during a
+deploy
+- __:run_command_start__ for any actions to be performed at the start of a run_cmd
+call
+- __:run_command_end__ for any actions to be performed at the end of a run_cmd call
+- __:run_command_error__ for any actions to be performed when an error occurs during a
+run_cmd call
+- __:timeout__ for any actions to be performed when a with_timeout calls times out
+- __:announce__ for any actions to be performed when announcing a deploy (IRC
+        integration)
+- __:diff__ for generating diff links
+- __:timing_log__ for sending timing log information to anywhere besides the log
+file (Graphite for example)
+- __:auth__ for handling auth however you please
+
+To create a plugin simply create a new class (example from our code) that
+defined a run method taking event and state. __event__ is a symbol from the
+table above and __state__ is a hash of state data which varies from event to
+event
+
+```ruby
+require 'deployinator/plugin'
+require 'helpers/etsy'
+require 'deployinator/helpers'
+
+module Deployinator
+  class GraphitePlugin < Plugin
+    include Deployinator::Helpers::EtsyHelpers,
+      Deployinator::Helpers
+
+    def run(event, state)
+      case event
+      when :run_command_end
+        unless state[:timing_metric].nil?
+          graphite_timing "deploylong.#{state[:stack]}.#{state[:timing_metric]}", "#{state[:time]}", state[:start_time].to_i
+        end
+      when :timing_log
+        graphite_timing("deploylong.#{state[:stack]}.#{state[:type]}", "#{state[:duration]}", state[:timestamp])
+      end
+      return nil
+    end
+  end
+end
+```
+
+Then simply require your plugin in `lib/app.rb` and add it to your
+`config/base.rb` like this:
+
+```ruby
+Deployinator.global_plugins = []
+Deployinator.global_plugins << "GraphitePlugin"
+```
+
+You can also configure plugins to only apply to a single stack like this:
+
+```ruby
+Deployinator.stack_plugins = {}
+Deployinator.stack_plugins["test_stack"] << "TestStackPlugin"
+```
+
 ## Hacking on the gem
 If you find issues with the gem, or would like to play around with it, you can check it out from git and start hacking on it. 
 First tell bundler to use your local copy instead by running:
@@ -240,10 +330,7 @@ Next, on every code change, you can install from the checked out gem by running 
     $ bundle install --no-deployment && bundle install --deployment
 ```
 
-### Plugins
-TODO: Write this
-
-## Contributing
+### Contributing
 
 1. Fork it
 2. Create your feature branch (`git checkout -b my-new-feature`)
