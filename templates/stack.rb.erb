@@ -5,10 +5,12 @@ module Deployinator
         include Deployinator::Helpers::<%= mustache_class %>Helpers
 
       def <%= stack %>_production(options={})
+        old_build = environments[0][:current_build].call
+
         log_and_stream "Fill in the <%= stack %>_production method in stacks/<%= stack %>.rb!<br>"
 
         # log the deploy
-        log_and_shout :old_build => environments[0][:current_build].call, :build => environments[0][:next_build].call
+        log_and_shout :old_build => old_build, :build => environments[0][:next_build].call
       end
     end
   end
