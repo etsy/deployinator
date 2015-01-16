@@ -14,15 +14,23 @@ Deployinator is a deployment framework extracted from Etsy. We've been using it 
 
 **Table of Contents**
 
+- [Stacks](#stacks)
 - [Installation](#installation)
 - [Usage](#usage)
   - [Example Stack](#example-stack)
   - [Customizing your stack](#customizing-your-stack)
   - [Useful helper methods](#useful-helper-methods)
   - [Plugins](#plugins)
+  - [Template Hooks](#template-hooks)
 - [Hacking on the gem](#hacking-on-the-gem)
   - [Contributing](#contributing)
 
+## Stacks
+Deployments are grouped by "stacks". You might have a "web" and "search" stack.
+
+Each of those stacks might have different deployment environments, such as "staging" or "production". 
+
+You can map a button to each of these environments,  to create multi-stage pushes within each stack. 
 
 ## Installation
 
@@ -318,6 +326,27 @@ You can also configure plugins to only apply to a single stack like this:
 Deployinator.stack_plugins = {}
 Deployinator.stack_plugins["test_stack"] << "TestStackPlugin"
 ```
+
+### Template Hooks
+Since the main layout page is contained within the gem, there are tags provided
+to allow you to add things to it in the header and body. List of points:
+
+- __tailer_loading_message__ To customize the default deploy tailer loading
+message
+- __additional_header_html__ Additional html to add to the header
+- __additional_body_top_html__ Additional html to add to the top of the body
+- __additional_body_bottom_html__ Additional html to add to the bottom of the body
+
+To set these simple override the methods in your view class. For example:
+
+```ruby
+     def additional_bottom_body_html
+       '<script src="/js/check_push_status.js"></script>'
+     end
+```
+
+This can be done on a global layout that extends the gem's default layout or on
+a stack by stack basis in their own view.
 
 ## Hacking on the gem
 If you find issues with the gem, or would like to play around with it, you can check it out from git and start hacking on it. 
