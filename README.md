@@ -14,6 +14,9 @@ Deployinator is a deployment framework extracted from [Etsy][etsy]. We've been u
 
 Here is a [blog post][dep] explaining our rationale behind it and how it helps us out.
 
+We have refactored this into a gem! Please go here: https://github.com/etsy/deployinator/tree/master
+
+This is now deprecated
 
 Stacks
 ------
