@@ -274,9 +274,11 @@ module Deployinator
 
       # Support simplified symbol for methods
       envs.map! do |env|
-        env[:current_version] = proc{send(env[:current_version])} if env[:current_version].is_a? Symbol
-        env[:current_build] = proc{send(env[:current_build])} if env[:current_build].is_a? Symbol
-        env[:next_build] = proc{send(env[:next_build])} if env[:next_build].is_a? Symbol
+        new_env = env
+        new_env[:current_version] = proc{send(env[:current_version])} if env[:current_version].is_a? Symbol
+        new_env[:current_build] = proc{send(env[:current_build])} if env[:current_build].is_a? Symbol
+        new_env[:next_build] = proc{send(env[:next_build])} if env[:next_build].is_a? Symbol
+        new_env
       end
 
       envs.each_with_index { |env, i| env[:number] = "%02d." % (i + 1); env[:not_last] = (i < envs.size - 1) }
