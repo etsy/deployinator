@@ -4,12 +4,12 @@ $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 require 'deployinator/version'
 
 Gem::Specification.new do |gem|
-  gem.name          = "deployinator"
+  gem.name          = "etsy-deployinator"
   gem.version       = Deployinator::VERSION
   gem.authors       = ["JPaul"]
   gem.email         = ["jpaul@etsy.com"]
   gem.description   = %q{Deployinator as a Gem}
-  gem.summary       = %q{Rewrite of deployinator to be a gem instead of repo to be forked}
+  gem.summary       = %q{Rewrite of deployinator to be a gem}
   gem.homepage      = ""
 
   gem.files         = `git ls-files`.split($/)
