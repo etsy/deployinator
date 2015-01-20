@@ -197,16 +197,16 @@ By default, you will see a button called "deploy _stackname_" where _stackname_ 
           {
             :name            => "qa",
             :method          => "qa_rsync",
-            :current_version => qa_version,
-            :current_build   => current_qa_build,
-            :next_build      => next_qa_build
+            :current_version => proc{send(:qa_version)},
+            :current_build   => proc{send(:current_qa_build)},
+            :next_build      => proc{send(:next_qa_build)}
           },
           {
             :name            => "production",
             :method          => "prod_rsync",
-            :current_version => prod_version,
-            :current_build   => current_prod_build,
-            :next_build      => next_prod_build
+            :current_version => proc{send(:prod_version)},
+            :current_build   => proc{send(:current_prod_build)},
+            :next_build      => proc{send(:next_prod_build)}
           }
         ]
       end
