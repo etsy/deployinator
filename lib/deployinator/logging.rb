@@ -13,4 +13,4 @@ module Deployinator
   end
 end
 
-Deployiantor.setup_logging
+Deployinator.setup_logging
