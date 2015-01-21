@@ -1,5 +1,5 @@
 module Deployinator
-  def setup_logging
+  def self.setup_logging
     if Deployinator.log_file?
       $deployinator_log_handle = File.new(Deployinator.log_file, "a")
       def $stdout.write(string)
