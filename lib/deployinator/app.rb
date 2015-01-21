@@ -182,12 +182,7 @@ module Deployinator
 
       fork {
         Signal.trap("HUP") { exit }
-        if Deployinator.log_file?
-          log = File.new(Deployinator.log_file, "a")
-          $stdout.sync = true
-          $stderr.sync = true
-          puts "Logging #{Deployinator.log_file}"
-        end
+        Deployinator.setup_logging
         $0 = get_deploy_process_title(params[:stack], params[:stage])
         controller = Deployinator.deploy_controller || Deployinator::Controller
         d = controller.new
