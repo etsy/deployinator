@@ -43,7 +43,7 @@ you can skip the bundler steps.
 
 ```ruby
     source 'https://rubygems.org'
-    gem 'deployinator', :git => 'https://github.com/etsy/deployinator.git', :branch => 'master'
+    gem 'deployinator', :git => 'https://github.com/etsy/deployinator.git', :branch => 'master', :require => 'deployinator'
 ```
 
 - Install all required gems with bundler:
