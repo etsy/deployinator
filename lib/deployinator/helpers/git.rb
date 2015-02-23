@@ -13,6 +13,14 @@ module Deployinator
       # How many seconds the head rev cache is good for
       @@rev_head_cache_ttl = 15
 
+      def build_git_cmd(cmd, extra_cmd)
+        unless extra_cmd.nil? or extra_cmd.empty?
+          "#{extra_cmd} '#{cmd}'"
+        else
+          cmd
+        end
+      end
+
       # Public: method to get the short rev of a git commit and create a
       # version tag from it. The tag is then dumped into a version text file.
       #
@@ -39,7 +47,7 @@ module Deployinator
         path ||= git_checkout_path(checkout_root, stack)
 
         cmd = "cd #{path} && git rev-parse --short=#{Deployinator.git_sha_length} #{rev}"
-        cmd = "#{extra_cmd} '#{cmd}'" unless extra_cmd.nil? or extra_cmd.empty?
+        cmd = build_git_cmd(cmd, extra_cmd)
         sha1 = run_cmd(cmd)[:stdout]
 
         version = "#{sha1.chomp}-#{ts}"
@@ -53,7 +61,7 @@ module Deployinator
         log_and_stream "Setting #{fullpaths} to #{version}"
 
         cmd = "cd #{path} && echo #{version} | #{tee_cmd} #{fullpaths}"
-        cmd = "#{extra_cmd} '#{cmd}'" unless extra_cmd.nil? or extra_cmd.empty?
+        cmd = build_git_cmd(cmd, extra_cmd)
         run_cmd cmd
 
         return version
@@ -88,7 +96,7 @@ module Deployinator
       def git_freshen_clone(stack, extra_cmd="", path=nil, branch="master")
         path ||= git_checkout_path(checkout_root, stack)
         cmd = "cd #{path} && git fetch --quiet origin +refs/heads/#{branch}:refs/remotes/origin/#{branch} && git reset --hard origin/#{branch} 2>&1"
-        cmd = "#{extra_cmd} '#{cmd}'" unless extra_cmd.nil? or extra_cmd.empty?
+        cmd = build_git_cmd(cmd, extra_cmd)
         run_cmd cmd
         yield "#{path}" if block_given?
       end
@@ -140,7 +148,7 @@ module Deployinator
         including_shas = []
         excluding_shas = []
         cmd = "cd #{path} && git log --no-merges --name-only --pretty=format:%H #{old_rev}..#{new_rev}"
-        cmd = "#{extra_cmd} '#{cmd}'" unless extra_cmd.nil? or extra_cmd.empty?
+        cmd = build_git_cmd(cmd, extra_cmd)
         committers = run_cmd(cmd)[:stdout]
         committers.split(/\n\n/).each { |commit|
           lines = commit.split(/\n/)
@@ -215,7 +223,7 @@ module Deployinator
       def git_clone(stack, repo_url, extra_cmd="", checkout_root=checkout_root, branch='master')
         path =  git_checkout_path(checkout_root, stack)
         cmd = "git clone #{repo_url} -b #{branch} #{path}"
-        cmd = "#{extra_cmd} '#{cmd}'" unless extra_cmd.nil? or extra_cmd.empty?
+        cmd = build_git_cmd(cmd, extra_cmd)
         run_cmd cmd
       end
 
