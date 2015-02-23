@@ -213,8 +213,9 @@ module Deployinator
       #
       # Returns nothing
       def git_clone(stack, repo_url, extra_cmd="", checkout_root=checkout_root, branch='master')
-        cmd = "cd #{checkout_root} && git clone #{repo_url} -b #{branch} #{stack}"
-        cmd = "#{extra_cmd} '#{cmd}'" if extra_cmd
+        path =  git_checkout_path(checkout_root, stack)
+        cmd = "git clone #{repo_url} -b #{branch} #{path}"
+        cmd = "#{extra_cmd} '#{cmd}'" unless extra_cmd.empty?
         run_cmd cmd
       end
 
