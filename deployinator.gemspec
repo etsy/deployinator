@@ -20,6 +20,7 @@ Gem::Specification.new do |gem|
   gem.required_ruby_version = '>= 1.9.3'
 
   gem.add_development_dependency "mocha", "~> 0.14"
+  gem.add_development_dependency "minitest", "<= 4.2.0"
 
   gem.add_runtime_dependency "rake", "~> 10", ">= 10.3.2"
   gem.add_runtime_dependency "json", "~> 1.8"
