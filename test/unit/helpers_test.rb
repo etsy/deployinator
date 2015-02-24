@@ -61,9 +61,9 @@ class HelpersTest < Test::Unit::TestCase
 
   def test_with_timeout_success
     res = with_timeout 3 do
-      `sleep 2 && echo -n "foo"`
+      `sleep 2 && echo "foo"`
     end
-    assert_equal "foo", res
+    assert_equal "foo\n", res
   end
 
   def test_strip_to_nil
