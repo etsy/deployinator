@@ -10,7 +10,8 @@ Gem::Specification.new do |gem|
   gem.email         = ["jpaul@etsy.com"]
   gem.description   = %q{Deployinator as a Gem}
   gem.summary       = %q{Rewrite of deployinator to be a gem}
-  gem.homepage      = ""
+  gem.homepage      = "http://github.com/etsy/Deployinator"
+  gem.licenses      = ["MIT"]
 
   gem.files         = `git ls-files`.split($/)
   gem.executables   = gem.files.grep(%r{^bin/}).map{ |f| File.basename(f) }
@@ -18,15 +19,15 @@ Gem::Specification.new do |gem|
   gem.require_paths = ["lib"]
   gem.required_ruby_version = '>= 1.9.3'
 
-  gem.add_development_dependency "mocha"
+  gem.add_development_dependency "mocha", "~> 0.14"
 
-  gem.add_runtime_dependency "rake"
-  gem.add_runtime_dependency "json"
+  gem.add_runtime_dependency "rake", "~> 10", ">= 10.3.2"
+  gem.add_runtime_dependency "json", "~> 1.8"
   gem.add_runtime_dependency "mustache", "~> 0.99"
-  gem.add_runtime_dependency "pony"
-  gem.add_runtime_dependency "tlsmail"
-  gem.add_runtime_dependency "eventmachine"
-  gem.add_runtime_dependency "eventmachine-tail"
-  gem.add_runtime_dependency "em-websocket"
-  gem.add_runtime_dependency "sinatra", ">=1.4.3"
+  gem.add_runtime_dependency "pony", "~> 1.5"
+  gem.add_runtime_dependency "tlsmail", "~> 0.0"
+  gem.add_runtime_dependency "eventmachine", "~> 1.0", ">= 1.0.4"
+  gem.add_runtime_dependency "eventmachine-tail", "~> 0.6", ">= 0.6.4"
+  gem.add_runtime_dependency "em-websocket", "~> 0.5", ">= 0.5.1"
+  gem.add_runtime_dependency "sinatra", "~> 1.4", ">=1.4.3"
 end
