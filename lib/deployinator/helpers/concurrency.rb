@@ -26,34 +26,8 @@ module Deployinator
         @@futures[name]
       end
 
-      def runlog_filename(name=nil)
-        if @filename
-          if Thread.main == Thread.current
-            @filename
-          elsif Thread.current[:logfile_name]
-            Thread.current[:logfile_name]
-          elsif name 
-            Thread.current[:logfile_name] = runlog_thread_filename(name)
-            Thread.current[:logfile_name]
-          else 
-            raise 'Logfile name not defined in thread. Expecting name parameter to be passed in.'
-          end
-        end
-      end
 
-      def runlog_thread_filename(name)
-        @filename + '-' + name.to_s
-      end
 
-      def log_and_stream(output)
-        write_file output, runlog_filename if runlog_filename
-        return @block.call(output) unless @block.nil?
-        ""
-      end
-
-      def remove_thread_logfile(file_path)
-        File.delete(file_path) if File.exists?(file_path)
-      end
       
       # Public: check if the reference name for future is taken
       #
@@ -63,14 +37,15 @@ module Deployinator
       end
       
       # Public: returns the value of the code block execution
-      #
+      # This also sends all the logged data in stream back to main 
+      # log file and removes the temporary log file created for the thread
       # Returns the return value of the last line executed in block 
       def get_value(future, timeout=nil)
         if @filename
           file_path = "#{RUN_LOG_PATH}" + runlog_thread_filename(future)
           return_value = @@futures[future.to_sym].value
           log_and_stream File.read(file_path) 
-          remove_thread_logfile(file_path)
+          File.delete(file_path) if File.exists?(file_path)
           return_value
         else
           @@futures[future.to_sym].value 
