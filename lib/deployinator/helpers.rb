@@ -75,9 +75,35 @@ module Deployinator
     #
     # Returns nothing
     def log_and_stream(output)
-      write_file output, @filename if @filename
+      write_file output, runlog_filename if runlog_filename
       return @block.call(output) unless @block.nil?
       ""
+    end
+
+    # gives the filename to send runlog to based on whether we are in the main thread or not
+    # We do this because we want to be able to use log_and_stream seamlessly in a 
+    # parallel thread. So, all log_and_stream calls in all but the main thread will 
+    # log to a seaparate file 
+    # output - String filename to log to
+    def runlog_filename(name=nil)
+      if @filename
+        if Thread.main == Thread.current
+          @filename
+        elsif Thread.current[:logfile_name]
+          Thread.current[:logfile_name]
+        elsif name 
+          Thread.current[:logfile_name] = runlog_thread_filename(name)
+          Thread.current[:logfile_name]
+        else 
+          raise 'Logfile name not defined in thread. Expecting name parameter to be passed in.'
+        end
+      end
+    end
+    
+    # gives us the filename to log to in thread
+    # output - String filename for thread
+    def runlog_thread_filename(name)
+      @filename + '-' + name.to_s
     end
 
     # Run external command with timing information
