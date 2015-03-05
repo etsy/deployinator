@@ -1,4 +1,8 @@
+require 'deployinator'
+require 'deployinator/helpers'
 require 'deployinator/helpers/concurrency'
+require 'test/unit'
+require 'mocha/setup'
 
 Celluloid.logger = nil
 class ConcurrencyTest < Test::Unit::TestCase

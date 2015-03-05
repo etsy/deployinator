@@ -4,7 +4,7 @@ require 'celluloid/autostart'
 module Deployinator
   module Helpers
     module ConcurrencyHelpers
-      include Celluloid
+      extend Celluloid
       # Hash of future objects that have been instantiated so far
       @@futures = {}
       # Public: run block of code in parallel
@@ -63,7 +63,7 @@ module Deployinator
         value_hash
       end
 
-      class DuplicateReferenceError < Error
+      class DuplicateReferenceError < StandardError
       end
     end
   end
