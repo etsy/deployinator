@@ -941,18 +941,28 @@ section#main.config{
 /*consol*/
 .code {
   background-color: #222;
-  color: #ccc;
-  font-family: monospace;
+  color: #ddd;
+  font-size: 16px;
   padding: 8px;
+
 }
 
 .code .command {
+  font-family: monospace;
+  font-size:14px;
+  margin-top:2px;
   border-top: 1px solid #555;
-  padding: 20px 0;
+  padding: 10px 20px 5px 10px;
 }
 .code .command h4 {
-  color: #fff;
+  color: #ccc;
   font-weight: normal;
+}
+
+.code .command h5 {
+    color: #abc;
+    font-size: 12px;
+    margin-bottom:10px;
 }
 .code .command p {
   margin: 10px;
