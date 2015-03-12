@@ -81,7 +81,7 @@ shipped with deployinator
 - Run the tailer as a background service (using whatever init flavor you like)
 
 ```sh
-    ./bin/deployinator-tailer.rb &
+    ./deployinator/deployinator-tailer.rb &
 ```
 
 
