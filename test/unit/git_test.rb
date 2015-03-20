@@ -27,7 +27,7 @@ class HelpersTest < Test::Unit::TestCase
     assert_equal('git@www.testmagic.com:construction/drills', GitHelpers.git_url(:stack, "git", true))
   end
 
-  def test_git_freshen_or_clone_https
+  def test_git_freshen_or_clone_https_passthrough
     GitHelpers.expects(:git_checkout_path).returns("/dev/null")
     GitHelpers.expects(:is_git_repo).with("/dev/null", "extra-ssh").returns(:missing)
     GitHelpers.expects(:log_and_stream).returns(nil)
@@ -36,5 +36,18 @@ class HelpersTest < Test::Unit::TestCase
     GitHelpers.git_freshen_or_clone(:stack, "extra-ssh", "/dev/null", "merge99", false, "https")
   end
 
-  # TODO: more test cases for git_freshen_or_clone
+  def test_git_freshen_or_clone_git_update
+    GitHelpers.expects(:git_checkout_path).returns("/dev/null")
+    GitHelpers.expects(:is_git_repo).with("/dev/null", "extra-ssh").returns(:true)
+    GitHelpers.expects(:log_and_stream).returns(nil)
+    GitHelpers.expects(:git_freshen_clone).with(:stack, "extra-ssh", "/dev/null", "merge99")
+    GitHelpers.git_freshen_or_clone(:stack, "extra-ssh", "/dev/null", "merge99", false, "https")
+  end
+
+  def test_git_freshen_or_clone_git_bad_repo
+    GitHelpers.expects(:git_checkout_path).returns("/dev/null")
+    GitHelpers.expects(:is_git_repo).with("/dev/null", "extra-ssh").returns(:false)
+    GitHelpers.expects(:log_and_stream).returns(nil)
+    GitHelpers.git_freshen_or_clone(:stack, "extra-ssh", "/dev/null", "merge99", false, "https")
+  end
 end
