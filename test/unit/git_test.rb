@@ -26,4 +26,15 @@ class HelpersTest < Test::Unit::TestCase
     GitHelpers.expects(:git_info_for_stack).returns({:stack => {:repository => 'drills', :user => 'construction'}})
     assert_equal('git@www.testmagic.com:construction/drills', GitHelpers.git_url(:stack, "git", true))
   end
+
+  def test_git_freshen_or_clone_https
+    GitHelpers.expects(:git_checkout_path).returns("/dev/null")
+    GitHelpers.expects(:is_git_repo).with("/dev/null", "extra-ssh").returns(:missing)
+    GitHelpers.expects(:log_and_stream).returns(nil)
+    GitHelpers.expects(:git_url).with(:stack, "https", false).returns("https://www.testmagic.com/construction/drills.git")
+    GitHelpers.expects(:git_clone).with(:stack, "https://www.testmagic.com/construction/drills.git", "extra-ssh", "/dev/null", "merge99")
+    GitHelpers.git_freshen_or_clone(:stack, "extra-ssh", "/dev/null", "merge99", false, "https")
+  end
+
+  # TODO: more test cases for git_freshen_or_clone
 end
