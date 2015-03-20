@@ -61,7 +61,7 @@ you can skip the bundler steps.
 - Create a binstub for the deploy log tailing backend:
 
 ```sh
-    bundle install --binstubs deployinator
+    bundle binstub etsy-deployinator
 ```
 
 - Initialize the project directory by running the following command replacing ___Company___ with the name of your company/organization. This must start with a capital letter.
