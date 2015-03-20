@@ -117,7 +117,7 @@ module Deployinator
       # read_write    - boolean; True means clone the repo read/write
       #
       # Returns stdout of the respective git command.
-      def git_freshen_or_clone(stack, extra_cmd, checkout_root, branch="master", read_write=false)
+      def git_freshen_or_clone(stack, extra_cmd, checkout_root, branch="master", read_write=false, protocol="git")
         path = git_checkout_path(checkout_root, stack)
         is_git = is_git_repo(path, extra_cmd)
         if is_git == :true
@@ -125,7 +125,7 @@ module Deployinator
           git_freshen_clone(stack, extra_cmd, path, branch)
         elsif is_git == :missing
           log_and_stream "</br>Cloning branch #{branch} of #{stack} repo into #{path}</br>"
-          git_clone(stack, git_url(stack, "git", read_write), extra_cmd, checkout_root, branch)
+          git_clone(stack, git_url(stack, protocol, read_write), extra_cmd, checkout_root, branch)
         else
           log_and_stream "</br><span class=\"stderr\">The path for #{stack} at #{path} exists but is not a git repo.</span></br>"
         end
