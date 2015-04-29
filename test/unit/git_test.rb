@@ -52,7 +52,7 @@ class HelpersTest < Test::Unit::TestCase
   end
 
   def test_git_head_rev_should_cache_results
-    FileUtils.rm('/tmp/rev_head_cache_some_stack')
+    FileUtils.rm_f('/tmp/rev_head_cache_some_stack')
 
     head_rev_sha = 'ba83f60523008e48950f77bd0d3a773f9cb2805c'
     GitHelpers.expects(:get_git_head_rev).with('some_stack', 'master').returns(head_rev_sha).once
