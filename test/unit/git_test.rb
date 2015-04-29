@@ -50,4 +50,14 @@ class HelpersTest < Test::Unit::TestCase
     GitHelpers.expects(:log_and_stream).returns(nil)
     GitHelpers.git_freshen_or_clone(:stack, "extra-ssh", "/dev/null", "merge99", false, "https")
   end
+
+  def test_git_head_rev_should_cache_results
+    FileUtils.rm('/tmp/rev_head_cache_some_stack')
+
+    head_rev_sha = 'ba83f60523008e48950f77bd0d3a773f9cb2805c'
+    GitHelpers.expects(:get_git_head_rev).with('some_stack', 'master').returns(head_rev_sha).once
+    assert_equal(head_rev_sha, GitHelpers.git_head_rev('some_stack'))
+    # Calling it a second time should just use the cached result on disk
+    assert_equal(head_rev_sha, GitHelpers.git_head_rev('some_stack'))
+  end
 end
