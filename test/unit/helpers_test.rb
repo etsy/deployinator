@@ -15,6 +15,7 @@ class HelpersTest < Test::Unit::TestCase
     @issue2 = "DEF-456"
     @issue1_linked = "#{@jurl % ([@issue1] * 2)}"
     @issue2_linked = "#{@jurl % ([@issue2] * 2)}"
+    @utf8_canary = 'Iñtërnâtiônàlizætiøn'
     Deployinator.default_user = "testuser"
     Deployinator.deploy_host = "deploytest.vm.ny4dev.etsy.com"
     Deployinator.issue_tracker = proc do |issue|
@@ -79,13 +80,12 @@ class HelpersTest < Test::Unit::TestCase
   end
 
   def test_get_from_cache
-    utf8_canary = 'Iñtërnâtiônàlizætiøn'
     Tempfile.open('cache_file', encoding: 'UTF-8') do |tf|
-      tf.write(utf8_canary)
+      tf.write(@utf8_canary)
       tf.flush
 
       cached_content = get_from_cache(tf.path)
-      assert_equal(utf8_canary, cached_content)
+      assert_equal(@utf8_canary, cached_content)
       assert_equal(Encoding.find('UTF-8'), cached_content.encoding)
     end
   end
@@ -103,6 +103,16 @@ class HelpersTest < Test::Unit::TestCase
       assert_equal(false, get_from_cache(tf.path))
       assert_not_equal(false, get_from_cache(tf.path, 30))
       assert_not_equal(false, get_from_cache(tf.path, -1))
+    end
+  end
+
+  def test_write_to_cache
+    Tempfile.open('cache_file') do |tf|
+      write_to_cache(tf.path, @utf8_canary)
+
+      cached_content = get_from_cache(tf.path)
+      assert_equal(@utf8_canary, cached_content)
+      assert_equal(Encoding.find('UTF-8'), cached_content.encoding)
     end
   end
 end
