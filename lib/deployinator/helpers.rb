@@ -369,7 +369,7 @@ module Deployinator
       end
     end
 
-    # Public: gets the contes from a cache file if it hasn't expired
+    # Public: gets the contents from a cache file if it hasn't expired
     #
     # Paramaters:
     #    cache_file: path to a cache file
