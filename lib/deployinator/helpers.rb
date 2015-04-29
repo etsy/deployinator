@@ -369,7 +369,7 @@ module Deployinator
       end
     end
 
-    # Public: gets the contes from a cache file if it hasn't expired
+    # Public: gets the contents from a cache file if it hasn't expired
     #
     # Paramaters:
     #    cache_file: path to a cache file
@@ -393,6 +393,20 @@ module Deployinator
       else
         # Return False if the cache file doesn't exist
         return false
+      end
+    end
+
+    # Public: writes the supplied contents to the cache file, ensuring that
+    # encoding is correct
+    #
+    # Parameters:
+    #    cache_file: path to the cache file
+    #    content: the data to write to the file
+    #
+    # Returns nothing
+    def write_to_cache(cache_file, contents)
+      File.open(cache_file, 'w:UTF-8') do |f|
+        f.write(contents.force_encoding('UTF-8'))
       end
     end
 

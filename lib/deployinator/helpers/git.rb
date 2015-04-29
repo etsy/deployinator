@@ -188,7 +188,7 @@ module Deployinator
 
         unless head_rev
           head_rev = get_git_head_rev(stack, branch)
-          File.open(filename, 'w') {|f| f.write(head_rev) }
+          write_to_cache(filename, head_rev)
         end
 
         return head_rev

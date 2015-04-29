@@ -1,6 +1,9 @@
+# encoding: utf-8
+
 require 'deployinator'
 require 'deployinator/helpers'
 require 'deployinator/helpers/dsh'
+require 'tempfile'
 
 class HelpersTest < Test::Unit::TestCase
   include Deployinator::Helpers,
@@ -12,6 +15,7 @@ class HelpersTest < Test::Unit::TestCase
     @issue2 = "DEF-456"
     @issue1_linked = "#{@jurl % ([@issue1] * 2)}"
     @issue2_linked = "#{@jurl % ([@issue2] * 2)}"
+    @utf8_canary = 'Iñtërnâtiônàlizætiøn'
     Deployinator.default_user = "testuser"
     Deployinator.deploy_host = "deploytest.vm.ny4dev.etsy.com"
     Deployinator.issue_tracker = proc do |issue|
@@ -73,5 +77,42 @@ class HelpersTest < Test::Unit::TestCase
     assert_equal('host01', strip_ws_to_nil('host01 '))
     assert_equal('host01,host02', strip_ws_to_nil(' host01 , host02 '))
     assert_equal('host01', strip_ws_to_nil('host01'))
+  end
+
+  def test_get_from_cache
+    Tempfile.open('cache_file', encoding: 'UTF-8') do |tf|
+      tf.write(@utf8_canary)
+      tf.flush
+
+      cached_content = get_from_cache(tf.path)
+      assert_equal(@utf8_canary, cached_content)
+      assert_equal(Encoding.find('UTF-8'), cached_content.encoding)
+    end
+  end
+
+  def test_get_from_cache_when_file_does_not_exist
+    assert_equal(false, get_from_cache('/does/not/exist'))
+    assert_equal(false, get_from_cache('/does/not/exist', -1))
+    assert_equal(false, get_from_cache('/does/not/exist', 10))
+  end
+
+  def test_get_from_cache_when_file_is_old
+    Tempfile.open('cache_file') do |tf|
+      File.stubs(:mtime).with(tf.path).returns(Time.now - 10)
+
+      assert_equal(false, get_from_cache(tf.path))
+      assert_not_equal(false, get_from_cache(tf.path, 30))
+      assert_not_equal(false, get_from_cache(tf.path, -1))
+    end
+  end
+
+  def test_write_to_cache
+    Tempfile.open('cache_file') do |tf|
+      write_to_cache(tf.path, @utf8_canary)
+
+      cached_content = get_from_cache(tf.path)
+      assert_equal(@utf8_canary, cached_content)
+      assert_equal(Encoding.find('UTF-8'), cached_content.encoding)
+    end
   end
 end
