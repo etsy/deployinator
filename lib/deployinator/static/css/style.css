@@ -977,6 +977,17 @@ section#main.config{
   font-size: 12px;
   white-space: pre;
 }
+.code .success_msg {
+  color: #7fbf4d;
+  font-size: 12px;
+  white-space: pre;
+}
+.code .warning_msg {
+  color: #f0ad4e;
+  font-size: 12px;
+  white-space: pre;
+}
+
 .hidden {
   display:none;
 }
