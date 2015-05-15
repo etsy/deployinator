@@ -115,7 +115,7 @@ module Deployinator
         state = deploy_instance.send(options[:method], options)
       rescue Exception => e
         deploy_instance.log_error("There was an exception during this deploy. Aborted!", e)
-        deploy_instance.raise_event(:deploy_error)
+        deploy_instance.raise_event(:deploy_error, {:exception => e})
       end
 
       if state.nil? || !state.is_a?(Hash)
