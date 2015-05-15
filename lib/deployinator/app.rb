@@ -97,6 +97,11 @@ module Deployinator
 
     get '/:thing' do
       @stack = params[:thing]
+
+      unless Deployinator.get_stacks.include?(@stack)
+        raise "No such stack #{@stack}"
+      end
+
       @params = params
       register_plugins(@stack)
       begin
