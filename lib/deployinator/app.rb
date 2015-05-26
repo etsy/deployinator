@@ -95,22 +95,6 @@ module Deployinator
       git_head_rev(params[:stack]).chomp
     end
 
-    get '/:thing' do
-      @stack = params[:thing]
-
-      unless Deployinator.get_stacks.include?(@stack)
-        raise "No such stack #{@stack}"
-      end
-
-      @params = params
-      register_plugins(@stack)
-      begin
-        mustache @stack
-      rescue Errno::ENOENT
-        pass
-      end
-    end
-
     get '/:stack/remove-lock' do
       stack = params[:stack]
       unlock_pushes(stack) if can_remove_stack_lock?
@@ -204,6 +188,22 @@ module Deployinator
       end
 
       200
+    end
+
+    get '/:thing' do
+      @stack = params[:thing]
+
+      unless Deployinator.get_stacks.include?(@stack)
+        raise "No such stack #{@stack}"
+      end
+
+      @params = params
+      register_plugins(@stack)
+      begin
+        mustache @stack
+      rescue Errno::ENOENT
+        pass
+      end
     end
   end
 end
