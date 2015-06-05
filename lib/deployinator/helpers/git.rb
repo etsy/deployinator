@@ -95,7 +95,7 @@ module Deployinator
       # Returns nothing
       def git_freshen_clone(stack, extra_cmd="", path=nil, branch="master")
         path ||= git_checkout_path(checkout_root, stack)
-        cmd = "cd #{path} && git fetch --quiet origin +refs/heads/#{branch}:refs/remotes/origin/#{branch} && git checkout --force #{branch} 2>&1 && git reset --hard origin/#{branch} 2>&1"
+        cmd = "cd #{path} && git fetch --quiet origin +refs/heads/#{branch}:refs/remotes/origin/#{branch} && git checkout #{branch} 2>&1 && git reset --hard origin/#{branch} 2>&1"
         cmd = build_git_cmd(cmd, extra_cmd)
         run_cmd cmd
         yield "#{path}" if block_given?
