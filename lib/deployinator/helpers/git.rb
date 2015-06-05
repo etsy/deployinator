@@ -93,9 +93,14 @@ module Deployinator
       # branch    - the branch to checkout after the fetch
       #
       # Returns nothing
-      def git_freshen_clone(stack, extra_cmd="", path=nil, branch="master")
+      def git_freshen_clone(stack, extra_cmd="", path=nil, branch="master", force_checkout=false)
         path ||= git_checkout_path(checkout_root, stack)
-        cmd = "cd #{path} && git fetch --quiet origin +refs/heads/#{branch}:refs/remotes/origin/#{branch} && git checkout #{branch} 2>&1 && git reset --hard origin/#{branch} 2>&1"
+        cmd = [
+          "cd #{path}",
+          "git fetch --quiet origin +refs/heads/#{branch}:refs/remotes/origin/#{branch}",
+          "git checkout #{'--force' if force_checkout} #{branch} 2>&1",
+          "git reset --hard origin/#{branch} 2>&1"
+        ].join(" && ")
         cmd = build_git_cmd(cmd, extra_cmd)
         run_cmd cmd
         yield "#{path}" if block_given?
@@ -117,12 +122,12 @@ module Deployinator
       # read_write    - boolean; True means clone the repo read/write
       #
       # Returns stdout of the respective git command.
-      def git_freshen_or_clone(stack, extra_cmd, checkout_root, branch="master", read_write=false, protocol="git")
+      def git_freshen_or_clone(stack, extra_cmd, checkout_root, branch="master", read_write=false, protocol="git", force_checkout=false)
         path = git_checkout_path(checkout_root, stack)
         is_git = is_git_repo(path, extra_cmd)
         if is_git == :true
           log_and_stream "</br>Refreshing repo #{stack} at #{path}</br>"
-          git_freshen_clone(stack, extra_cmd, path, branch)
+          git_freshen_clone(stack, extra_cmd, path, branch, force_checkout)
         elsif is_git == :missing
           log_and_stream "</br>Cloning branch #{branch} of #{stack} repo into #{path}</br>"
           git_clone(stack, git_url(stack, protocol, read_write), extra_cmd, checkout_root, branch)
