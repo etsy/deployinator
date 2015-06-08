@@ -40,10 +40,17 @@ class HelpersTest < Test::Unit::TestCase
     GitHelpers.expects(:git_checkout_path).returns("/dev/null")
     GitHelpers.expects(:is_git_repo).with("/dev/null", "extra-ssh").returns(:true)
     GitHelpers.expects(:log_and_stream).returns(nil)
-    GitHelpers.expects(:git_freshen_clone).with(:stack, "extra-ssh", "/dev/null", "merge99")
+    GitHelpers.expects(:git_freshen_clone).with(:stack, "extra-ssh", "/dev/null", "merge99", false)
     GitHelpers.git_freshen_or_clone(:stack, "extra-ssh", "/dev/null", "merge99", false, "https")
   end
 
+  def test_git_freshen_or_clone_git_update_force
+    GitHelpers.expects(:git_checkout_path).returns("/dev/null")
+    GitHelpers.expects(:is_git_repo).with("/dev/null", "extra-ssh").returns(:true)
+    GitHelpers.expects(:log_and_stream).returns(nil)
+    GitHelpers.expects(:git_freshen_clone).with(:stack, "extra-ssh", "/dev/null", "merge99", true)
+    GitHelpers.git_freshen_or_clone(:stack, "extra-ssh", "/dev/null", "merge99", false, "https", true)
+  end
   def test_git_freshen_or_clone_git_bad_repo
     GitHelpers.expects(:git_checkout_path).returns("/dev/null")
     GitHelpers.expects(:is_git_repo).with("/dev/null", "extra-ssh").returns(:false)
