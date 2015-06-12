@@ -532,7 +532,7 @@ module Deployinator
       raise "Must have stack" unless options[:stack]
 
       options[:env] ||= "PROD"
-      options[:nice_env] = nicify_env(options[:env])
+      options[:nice_env] ||= nicify_env(options[:env])
       options[:user] ||= @username
       options[:start] = @start_time unless options[:start] || ! @start_time
 
