@@ -169,7 +169,7 @@ module Deployinator
         return 403
       end
 
-      fork {
+      pid = fork {
         Signal.trap("HUP") { exit }
         Deployinator.setup_logging
         $0 = get_deploy_process_title(params[:stack], params[:stage])
@@ -177,6 +177,7 @@ module Deployinator
         d = controller.new
         d.run(params)
       }
+      Process.detach(pid)
       200
     end
 
