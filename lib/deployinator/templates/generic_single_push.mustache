@@ -50,8 +50,9 @@
     <div class="push-topic">
         <div class="title"></div>
         <span class="log-run">
-            <form action="/run_logs">
+            <form action="/log">
                 <button class="button small" type="submit">See run logs</button>
+                <input type="hidden" name="stack" value="{{stack}}" />
             </form>
         </span>
     </div>
