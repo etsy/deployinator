@@ -143,6 +143,10 @@ module Deployinator
       send_file "#{File.dirname(__FILE__)}/static/js/jquery.timed_bar.js"
     end
 
+    get '/js/stats_load.js' do
+      send_file "#{File.dirname(__FILE__)}/static/js/stats_load.js"
+    end
+
     get '/deploys_status' do
         mustache Deployinator::Views::DeploysStatus
     end

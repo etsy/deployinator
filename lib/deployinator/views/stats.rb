@@ -1,9 +1,10 @@
 require 'json'
 require 'time'
-require './views/etsy-layout'
 
 module Deployinator::Views
-  class Stats < EtsyLayout
+  class Stats < Layout
+
+    self.template_file = "#{File.dirname(__FILE__)}/../templates/stats.mustache"
 
     @@get_these_stacks = ['web', 'photos', 'blog', 'search', 'xsearch', 'supergrep', 'graphite' ]
     @@ignore_these_stacks = ['webs','LOG MESSAGE', 'deploy', 'api', 'imagestorage' , 'storque', 'atlas' ]
