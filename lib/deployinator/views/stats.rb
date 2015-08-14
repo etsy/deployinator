@@ -6,7 +6,7 @@ module Deployinator::Views
 
     self.template_file = "#{File.dirname(__FILE__)}/../templates/stats.mustache"
 
-    @@ignored_stacks = Deployinator.stats_ignored_stacks
+    @@ignored_stacks = Deployinator.stats_ignored_stacks || []
 
     def deploys
       @deploys ||= begin
@@ -26,7 +26,25 @@ module Deployinator::Views
       deploys
     end
 
+    def inject_renamed_stacks(renamed_stacks)
+      return if nil == renamed_stacks
+      
+      renamed_stacks.each do |ops|
+        previous_stack = ops[:previous_stack]
+        new_name = ops[:new_name]
+
+        renamed_stack_data = log_to_hash(previous_stack)
+
+        renamed_stack_data.inject({}) do |h, cfg|
+          cfg[:stack] = new_name
+          deploys.push(cfg)
+        end
+      end
+    end
+
     def per_day
+      inject_renamed_stacks(Deployinator.stats_renamed_stacks)
+
       original_zone = ENV["TZ"]
       ENV["TZ"] = "US/Eastern"
 

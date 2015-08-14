@@ -67,6 +67,8 @@ module Deployinator
     # log entries must contain this to appear in /stats
     attr_accessor :stats_extra_grep
 
+    attr_accessor :stats_renamed_stacks
+    @@stats_renamed_stacks = []
 
     def initialize
       @stack_plugins = {}
