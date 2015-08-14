@@ -28,16 +28,16 @@ module Deployinator::Views
 
     def inject_renamed_stacks(renamed_stacks)
       return if nil == renamed_stacks
-      
+
       renamed_stacks.each do |ops|
         previous_stack = ops[:previous_stack]
-        new_name = ops[:new_name]
+        new_stack_name = ops[:new_name]
 
         renamed_stack_data = log_to_hash(previous_stack)
 
-        renamed_stack_data.inject({}) do |h, cfg|
-          cfg[:stack] = new_name
-          deploys.push(cfg)
+        renamed_stack_data.each do |data|
+          data[:stack] = new_stack_name
+          deploys.push(data)
         end
       end
     end
