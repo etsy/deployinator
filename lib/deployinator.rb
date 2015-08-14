@@ -64,9 +64,10 @@ module Deployinator
     # exclude stacks in /stats, even if present in stats_included_stacks
     attr_accessor :stats_ignored_stacks
 
-    # log entries must contain this to appear in /stats
+    # filter log entries in /stats
     attr_accessor :stats_extra_grep
 
+    # list of configurations for grouping historical / renamed stacks in /stats
     attr_accessor :stats_renamed_stacks
     @@stats_renamed_stacks = []
 
