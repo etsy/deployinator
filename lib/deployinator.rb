@@ -58,6 +58,19 @@ module Deployinator
     # if you override this it should be a subclass of Deployinator::Controller
     attr_accessor :deploy_controller
 
+    # include stacks in /stats
+    attr_accessor :stats_included_stacks
+
+    # exclude stacks in /stats, even if present in stats_included_stacks
+    attr_accessor :stats_ignored_stacks
+
+    # filter log entries in /stats
+    attr_accessor :stats_extra_grep
+
+    # list of configurations for grouping historical / renamed stacks in /stats
+    attr_accessor :stats_renamed_stacks
+    @@stats_renamed_stacks = []
+
     def initialize
       @stack_plugins = {}
       @global_plugins = []

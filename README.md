@@ -359,6 +359,30 @@ Next, on every code change, you can install from the checked out gem by running 
     $ bundle install --no-deployment && bundle install --deployment
 ```
 
+### Stats dashboard
+The `/stats` page pulls from `log/deployinator.log` to show a graph of deployments per day for each stack over time. By default, it shows all stacks. To blacklist or whitelist certain stacks, update `config/base.rb` with:
+```rb
+  Deployinator.stats_included_stacks = ['my_whitelisted_stack', 'another_whitelisted_stack']
+  Deployinator.stats_ignored_stacks = ['my_stack_to_ignore', 'another_stack_to_ignore']
+  Deployinator.stats_extra_grep = 'Production deploy' # filter out log entries matching this string 
+```
+
+Whitelisting stacks or applying a custom extra grep can help speed up graph rendering when you have a large log file. 
+
+If at some point you change the name of a stack, you can group the old log entries with the new by adding the following to `config/base.rb`:
+
+```rb
+ Deployinator.stats_renamed_stacks = [
+   {
+     :previous_stack => {
+       :stack => [ "old_stack_name" ]
+     },
+     :new_name => "new_stack_name"
+   }
+ ]
+```
+
+
 ### Contributing
 
 1. Fork it

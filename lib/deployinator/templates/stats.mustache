@@ -1,0 +1,180 @@
+<!-- content -->
+<section id="main" class="info stats">
+    <!-- heading -->
+    <div class="heading clearfix">
+        <h2>Deployments Per Day (US/Eastern)</h2>
+    </div>
+    <div class="stats-main">
+        <button id="scatterOrLine">Line</button>
+        <label><input type="checkbox" id="combined"> Combined</label>
+        <div id="placeholder" style="width:940px;height:300px;"></div>
+        <div id="overview" style="width:940px;height:120px;"></div>
+        <script>var data = {}</script>
+
+        <p id="choices"></p>
+
+        <div class="holder">
+
+            {{# per_day}}
+            <div class="stats">
+                <table class="stats">
+                    <tr>
+                        <th>Day</th>
+                        <th>Count</th>
+                    </tr>
+                    {{# data}}
+                    <tr>
+                        <td>{{date}}</td>
+                        <td class="count">{{count}}</td>
+                    </tr>
+                    {{/ data}}
+                </table>
+                <h3>{{stack}}</h3>
+                <script type="text/javascript" charset="utf-8">
+                    data["{{stack}}"] = {data: {{json}}, label: "{{stack}}"}
+                </script>
+            </div>
+            {{/ per_day}}
+
+        </div>
+    </div>
+    
+</section>
+
+<script type="text/javascript" charset="utf-8">
+    var x1, x2;
+
+    function getData(ignoreX) {
+        var d = [];
+        var c = { data: [], label: "combined" };
+
+        $("#choices").find("input:checked").each(function() {
+            if ($(this).attr("id") == "combined") { return; }
+
+            var key = $(this).attr("name");
+
+            if (key && data[key]) {
+                // combine all the data points if requested
+                if ($("#combined")[0].checked) {
+                    for (var i=0; i<data[key].data.length; i++) {
+                        var found = false;
+                        var m = data[key].data[i];
+                        for (var j=0; j<c.data.length; j++) {
+                            var n = c.data[j];
+                            if (n[0] == m[0]) {
+                                n[1] += m[1];
+                                found = true;
+                                break;
+                            }
+                        }
+
+                        if (! found) { c.data[i] = [m[0], m[1]]; }
+                    }
+                }
+
+                d.push(data[key]);
+            }
+        });
+
+        if ($("#combined")[0].checked) { d = [c]; }
+
+        var newD = [];
+        for (var i=0; i<d.length; i++) {
+            var dAr = [];
+            for (var j=0; j<d[i].data.length; j++) {
+                n = d[i].data[j];
+                dAr.push(n);
+            }
+            newD[i] = { label: d[i].label, data: dAr };
+        }
+
+        if ($("#combined")[0].checked) { outputTable(c); }
+        return newD;
+    }
+
+    function outputTable(c) {
+        $("#holderCombined").remove();
+
+        var table = $("<table id='holderCombined'>")
+          .html("<tr><th>Date</th><th>Combined</th></tr>")
+          .appendTo(".stats-main");
+
+        for (var i=0; i<c.data.length; i++) {
+            var m = c.data[i];
+            var dO = new Date(m[0]);
+            var dateS = (dO.getYear() + 1900) + "-" + dO.getMonth() + "-" + dO.getDate();
+            $("<tr><td>" + dateS + "</td><td>" + m[1] + "</td></tr>")
+              .appendTo(table);
+        }
+    }
+
+    function options() {
+        return {
+            xaxis: { mode: "time", timeformat: "%y/%m/%d", minTickSize: [1, "day"] },
+            legend: { position: "nw" },
+            points: { show: ($("#scatterOrLine").html() == "Scatter") },
+            lines: { show: ($("#scatterOrLine").html() == "Line") },
+            selection: { mode: "x" }
+        }
+    };
+
+    function sliceD(d, msg) {
+        return d.slice(d.slice(d.indexOf(x1), d.indexOf(x2)));
+    }
+
+    function drawGraphs() {
+        var d = getData();
+
+        var plot = $.plot($("#placeholder"), sliceD(d, "main"), options());
+
+        var overview = $.plot($("#overview"), d, {
+            legend: { show: false },
+            selection: { mode: "x" },
+            lines: { show: true },
+            xaxis: { mode: "time", timeformat: "%y/%m/%d" }
+        });
+
+        $("#placeholder").unbind("plotselected");
+        $("#placeholder").bind("plotselected", function (event, cRanges) {
+            ranges = cRanges;
+            x1 = Math.floor(ranges.xaxis.from);
+            x2 = Math.floor(ranges.xaxis.to);
+
+            // do the zooming
+            plot = $.plot($("#placeholder"), sliceD(d, "zoom"),
+                $.extend(true, {}, options(), {
+                    xaxis: { min: ranges.xaxis.from, max: ranges.xaxis.to },
+                    yaxis: { min: ranges.yaxis.from, max: ranges.yaxis.to }
+            }));
+
+            // don't fire event on the overview to prevent eternal loop
+            overview.setSelection(ranges, true);
+        });
+
+        $("#overview").unbind("plotselected");
+        $("#overview").bind("plotselected", function (event, ranges) {
+            plot.setSelection(ranges);
+
+            x1 = Math.floor(ranges.xaxis.from);
+            x2 = Math.floor(ranges.xaxis.to);
+        });
+
+        if (x1 && x2) {
+            ranges = {xaxis: {from: x1, to: x2}};
+
+            overview.setSelection(ranges);
+            plot.setSelection(ranges);
+        }
+    }
+
+    $("#scatterOrLine").live("click", function () {
+        $(this).html(($(this).html() == "Line") ? "Scatter" : "Line");
+
+        drawGraphs();
+    });
+
+    $("#combined").live("click", function () {
+        drawGraphs();
+    });
+</script>
+<script src="/js/stats_load.js"></script>

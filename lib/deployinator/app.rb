@@ -12,6 +12,7 @@ require 'deployinator/views/log'
 require 'deployinator/views/run_logs'
 require 'deployinator/views/log_table'
 require 'deployinator/views/deploys_status'
+require 'deployinator/views/stats'
 
 module Deployinator
   class DeployinatorApp < Sinatra::Base
@@ -45,6 +46,10 @@ module Deployinator
 
     get '/' do
         mustache Deployinator::Views::Index
+    end
+
+    get '/stats' do
+        mustache Deployinator::Views::Stats
     end
 
     get '/run_logs/view/:log' do
@@ -136,6 +141,10 @@ module Deployinator
 
     get '/js/jquery.timed_bar.js' do
       send_file "#{File.dirname(__FILE__)}/static/js/jquery.timed_bar.js"
+    end
+
+    get '/js/stats_load.js' do
+      send_file "#{File.dirname(__FILE__)}/static/js/stats_load.js"
     end
 
     get '/deploys_status' do
