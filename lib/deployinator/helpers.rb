@@ -473,7 +473,7 @@ module Deployinator
     #   with_timeout 30 do; system("curl -s http://google.com"); end
     #
     # Returns nothing
-    def with_timeout(seconds, description=nil,  &block)
+    def with_timeout(seconds, description=nil, throw_exception=false, &block)
       begin
         Timeout.timeout(seconds) do
           yield
@@ -490,6 +490,9 @@ module Deployinator
           :info => info
         }
         raise_event(:timeout, state)
+        if throw_exception
+          raise e
+        end
         ""
       end
     end
