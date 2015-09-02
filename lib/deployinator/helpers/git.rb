@@ -334,11 +334,12 @@ module Deployinator
       #   ssh_cmd: string ssh cmd to get to a host where you've got this repo checked out
       #   extra: string any extra cmds like cd that you need to do on the remote host to get to your checkout
       #   quiet: boolean - if true we make no additional output and just return the files
+      #   diff_filter: string to pass to git to make it only show certain types of changes (added/removed)
       #
       # Returns:
       #   Array of files names changed between these revs
-      def git_show_changed_files(rev1, rev2, ssh_cmd, extra=nil, quiet=false)
-        cmd = %Q{git log --name-only --pretty=oneline --full-index #{rev1}..#{rev2} | grep -vE '^[0-9a-f]{40} ' | sort | uniq}
+      def git_show_changed_files(rev1, rev2, ssh_cmd, extra=nil, quiet=false, diff_filter="")
+        cmd = %Q{git log --name-only --pretty=oneline --full-index #{rev1}..#{rev2} --diff-filter=#{diff_filter} | grep -vE '^[0-9a-f]{40} ' | sort | uniq}
         extra = "#{extra} &&" unless extra.nil?
         if quiet
           list_of_touched_files = %x{#{ssh_cmd} "#{extra} #{cmd}"}
