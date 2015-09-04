@@ -54,8 +54,8 @@ EM.run do
         if stack && @@channels.key?(stack)
           @@channels[stack].unsubscribe(session_id)
           @@channels_count[stack] -= 1
-          if @@channels_count[stack] == 0
-            @@tailers[stack].close
+          if @@channels_count[stack] == 0 && @@tailers.has_key?(stack)
+            @@tailers[stack].close 
             @@tailers.delete(stack)
           end
         end
