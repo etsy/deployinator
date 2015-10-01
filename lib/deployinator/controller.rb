@@ -102,7 +102,11 @@ module Deployinator
       deploy_instance = deploy_class.new(options)
       deploy_instance.register_plugins(options[:stack])
 
-      deploy_instance.lock_pushes(options[:stack], options[:username], options[:method])
+      locked = deploy_instance.lock_pushes(options[:stack], options[:username], options[:method])
+
+      unless locked
+        return deploy_instance
+      end
 
       @start_time = Time.now
       deploy_instance.log_and_stream "Push started at #{@start_time.to_i}\n"
