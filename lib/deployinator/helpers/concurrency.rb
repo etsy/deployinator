@@ -43,7 +43,7 @@ module Deployinator
       def get_value(future, timeout=nil)
         if @filename
           file_path = "#{RUN_LOG_PATH}" + runlog_thread_filename(future)
-          return_value = @@futures[future.to_sym].value
+          return_value = @@futures[future.to_sym].value(timeout)
           log_and_stream File.read(file_path) 
           File.delete(file_path) if File.exists?(file_path)
           return_value
