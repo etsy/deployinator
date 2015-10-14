@@ -2,7 +2,7 @@
 <html>
     <head>
         <meta http-equiv="Content-type" content="text/html; charset=utf-8">
-        <title>Deployinator</title>
+        <title>Deployinator{{#stack}} - {{stack}}{{/stack}}</title>
         <link rel="shortcut icon" href="/favicon.ico">
         <link rel="stylesheet" href="/static/css/highlight.css" type="text/css" media="screen">
         <link rel="stylesheet" href="/static/css/style.css?v=11" type="text/css" media="screen">
@@ -100,7 +100,7 @@ _  __  / _  _ \___  __ \__  / _  __ \__  / / /__  / __  __ \_  __ `/_  __/_  __ 
                     window.location = '/' + stack;
                 });
 
-                // listen for changes on the watch button 
+                // listen for changes on the watch button
                 $('.watch').click(function () {
                     $.ajax({
                         url : '/{{stack}}/can-deploy',
@@ -111,7 +111,7 @@ _  __  / _  _ \___  __ \__  / _  __ \__  / / /__  / __  __ \_  __ `/_  __/_  __ 
                             console.log(form);
                             if (form.length == 1) {
                                 stream_log_websocket(form[0]);
-                            } 
+                            }
                         }
                     });
                 });
