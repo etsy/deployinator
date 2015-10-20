@@ -170,6 +170,7 @@ module Deployinator
     # the background.
     post '/deploys/?' do
       params[:username] = @username
+      params[:groups] = @groups
       params[:block] = Proc.new { |line| foo = line }
       deploy_running = is_deploy_active?(params[:stack], params[:stage])
 
