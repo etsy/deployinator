@@ -3,7 +3,12 @@
         <tr>
             <th>
                 {{# prev_page }}
-                  <a href="?page={{prev_page}}">prev</a>
+                <form action="/log">
+                    {{#prev_page_params}}
+                    <input type="hidden" name="{{name}}" value="{{value}}" />
+                    {{/prev_page_params}}
+                    <button class="button small">Prev</button>
+                </form>
                 {{/ prev_page }}
             </th>
             <th></th>
@@ -11,9 +16,13 @@
             <th></th>
             <th></th>
             <th></th>
-            <th></th>
             <th>
-                <a href="?page={{next_page}}">next</a>
+                <form action="/log">
+                    {{#next_page_params}}
+                    <input type="hidden" name="{{name}}" value="{{value}}" />
+                    {{/next_page_params}}
+                    <button class="button small">Next</button>
+                </form>
             </th>
         </tr>
         <tr>
@@ -67,7 +76,9 @@
             <th>
                 {{# prev_page }}
                 <form action="/log">
-                    <input type="hidden" name="page" value="{{prev_page}}" />
+                    {{#prev_page_params}}
+                    <input type="hidden" name="{{name}}" value="{{value}}" />
+                    {{/prev_page_params}}
                     <button class="button small">Prev</button>
                 </form>
                 {{/ prev_page }}
@@ -79,7 +90,9 @@
             <th></th>
             <th>
                 <form action="/log">
-                    <input type="hidden" name="page" value="{{next_page}}" />
+                    {{#next_page_params}}
+                    <input type="hidden" name="{{name}}" value="{{value}}" />
+                    {{/next_page_params}}
                     <button class="button small">Next</button>
                 </form>
 
