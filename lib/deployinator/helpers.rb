@@ -645,7 +645,24 @@ module Deployinator
       log_msg = e.nil? ? msg : "#{msg} (#{e.message})"
       log_and_stream "<div class=\"stderr\">#{log_msg}</div>"
       if !e.nil?
-        log_and_stream e.backtrace.inspect
+        begin
+          template = open("#{File.dirname(__FILE__)}/templates/exception.mustache").read
+
+          regex = /(?<file>.*?):(?<line>\d+):.*?`(?<method>.*)'/
+          context = e.backtrace.map do |line|
+            match = regex.match(line)
+            {
+              :file => match['file'],
+              :line => match['line'],
+              :method => match['method']
+            }
+          end
+
+          output = Mustache.render(template, {:exceptions => context})
+          log_and_stream output
+        rescue
+          log_and_stream e.backtrace.inspect
+        end
       end
       # This is so we have something in the log if/when this fails
       puts log_msg
