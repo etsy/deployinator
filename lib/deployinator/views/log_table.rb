@@ -17,6 +17,42 @@ module Deployinator::Views
       @params[:show_counts] == "true"
     end
 
+    def next_page_params
+      params = [
+        {
+          :name  => "page",
+          :value => next_page
+        }
+      ]
+
+      unless @params[:stack].nil?
+        params << {
+          :name   => "stack",
+          :value  => @params[:stack]
+        }
+      end
+
+      return params
+    end
+
+    def prev_page_params
+      params = [
+        {
+          :name  => "page",
+          :value => prev_page
+        }
+      ]
+
+      unless @params[:stack].nil?
+        params << {
+          :name   => "stack",
+          :value  => @params[:stack]
+        }
+      end
+
+      return params
+    end
+
     def prev_page
       return unless @params && @params[:page]
       page = @params[:page].to_i
