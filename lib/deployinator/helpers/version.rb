@@ -25,7 +25,7 @@ module Deployinator
       #
       # Returns the full version of the current software running on the host
       def get_version(host)
-        host_url = "http://#{host}/"
+        host_url = "https://#{host}/"
         get_version_by_url("#{host_url}version.txt")
       end
       module_function :get_version
