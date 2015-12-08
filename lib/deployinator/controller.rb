@@ -38,7 +38,7 @@ module Deployinator
 
       # This gets the runlog output on the console; is used by log_and_stream
       @block = args[:block] || Proc.new do |output|
-        $stdout.write output.gsub!(/(<[^>]*>)|\n|\t/s) {" "}
+        $stdout.write output.gsub!(/(<[^>]*>)|\n|\t/m) {" "}
         $stdout.write "\n"
       end
     end
