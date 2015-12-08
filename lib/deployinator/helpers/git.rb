@@ -98,10 +98,11 @@ module Deployinator
         cmd = [
           "cd #{path}",
           "git fetch --quiet origin +refs/heads/#{branch}:refs/remotes/origin/#{branch}",
+          "git reset --hard origin/#{branch} 2>&1",
           "git checkout #{'--force' if force_checkout} #{branch} 2>&1",
-          "git reset --hard origin/#{branch} 2>&1"
-        ].join(" && ")
-        cmd = build_git_cmd(cmd, extra_cmd)
+        ]
+        cmd << "git reset --hard origin/#{branch} 2>&1" if force_checkout
+        cmd = build_git_cmd(cmd.join(" && "), extra_cmd)
         run_cmd cmd
         yield "#{path}" if block_given?
       end
