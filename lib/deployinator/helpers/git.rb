@@ -101,7 +101,7 @@ module Deployinator
           "git reset --hard origin/#{branch} 2>&1",
           "git checkout #{'--force' if force_checkout} #{branch} 2>&1",
         ]
-        cmd << "git reset --hard origin/#{branch} 2>&1" if force_checkout
+        cmd << "git reset --hard origin/#{branch} 2>&1"
         cmd = build_git_cmd(cmd.join(" && "), extra_cmd)
         run_cmd cmd
         yield "#{path}" if block_given?
