@@ -1,4 +1,3 @@
-
 require 'rake/testtask'
 require 'rdoc/task'
 require 'bundler/gem_tasks'

@@ -466,16 +466,19 @@ module Deployinator
 
     # Public: wrap a block into a timeout
     #
-    # seconds     - timeout in seconds
-    # description - optional description for logging (default:"")
-    # &block      - block to call
+    # seconds         - timeout in seconds
+    # description     - optional description for logging (default:"")
+    # throw_exception - options param to throw exception back up stack
+    # quiet           - optional boolean for logging as a big red warning using the stderr div class
+    # extra_opts      - optional hash to pass along to plugins
+    # &block          - block to call
     #
     # Example
     #   with_timeout(20){system("curl -s http://google.com")}
     #   with_timeout 30 do; system("curl -s http://google.com"); end
     #
     # Returns nothing
-    def with_timeout(seconds, description=nil, throw_exception=false, &block)
+    def with_timeout(seconds, description=nil, throw_exception=false, quiet=false, extra_opts={}, &block)
       begin
         Timeout.timeout(seconds) do
           yield
@@ -485,11 +488,17 @@ module Deployinator
         info += " for #{description}" unless description.nil?
         # log and stream if log filename is not undefined
         if (/undefined/ =~ @filename).nil?
-          log_and_stream "<div class=\"stderr\">#{info}</div>"
+          if quiet
+            log_and_stream "#{info}<br>"
+          else
+            log_and_stream "<div class=\"stderr\">#{info}</div>"
+          end
         end
         state = {
           :seconds => seconds,
-          :info => info
+          :info => info,
+          :stack => stack,
+          :extra_opts => extra_opts
         }
         raise_event(:timeout, state)
         if throw_exception
