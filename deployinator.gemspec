@@ -28,7 +28,7 @@ Gem::Specification.new do |gem|
   gem.add_runtime_dependency "pony", "~> 1.5"
   gem.add_runtime_dependency "tlsmail", "~> 0.0"
   gem.add_runtime_dependency "eventmachine", "~> 1.0", ">= 1.0.4"
-  gem.add_runtime_dependency "eventmachine-tail", "~> 0.6", ">= 0.6.4"
+  gem.add_runtime_dependency "eventmachine-tail", "~> 0.6", ">= 0.6.3"
   gem.add_runtime_dependency "em-websocket", "~> 0.5", ">= 0.5.1"
   gem.add_runtime_dependency "sinatra", "~> 1.4", ">=1.4.3"
   gem.add_runtime_dependency "celluloid", "~> 0.16"
