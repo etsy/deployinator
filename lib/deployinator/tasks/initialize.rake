@@ -4,7 +4,7 @@
 
 require 'erb'
 
-if defined?(ENV['TEMPLATE_PATH'])
+if ENV['TEMPLATE_PATH'].to_s.strip.length > 0
   template_list = [ "app.rb.erb", "config.ru.erb", "helper.rb.erb",
                   "stack.rb.erb", "template.mustache", "view.rb.erb" ]
 
