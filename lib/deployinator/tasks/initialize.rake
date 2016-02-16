@@ -11,7 +11,7 @@ if defined?(ENV['TEMPLATE_PATH'])
   custom_templates = ENV['TEMPLATE_PATH']
 
   #Prevent accidents / annoyances
-  custom_templates << '/' unless custom_templates.endwith?('/')
+  custom_templates << '/' unless custom_templates.end_with?('/')
 
   # Test for core templates in custom path
   template_list.each do |template|
