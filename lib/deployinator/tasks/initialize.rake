@@ -4,11 +4,11 @@
 
 require 'erb'
 
-if defined?(args[:templates])
+if defined?(ENV['TEMPLATE_PATH'])
   template_list = [ "app.rb.erb", "config.ru.erb", "helper.rb.erb",
                   "stack.rb.erb", "template.mustache", "view.rb.erb" ]
 
-  custom_templates = args[:templates]
+  custom_templates = ENV['TEMPLATE_PATH']
 
   # Test for core templates in custom path
   template_list.each do |template|
