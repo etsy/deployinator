@@ -4,7 +4,26 @@
 
 require 'erb'
 
-TEMPLATE_PATH="#{File.dirname(__FILE__)}/../../../templates/"
+if defined?(args[:templates])
+  template_list = [ "app.rb.erb", "config.ru.erb", "helper.rb.erb",
+                  "stack.rb.erb", "template.mustache", "view.rb.erb" ]
+
+  custom_templates = args[:templates]
+
+  # Test for core templates in custom path
+  template_list.each do |template|
+    if File.exist?("#{custom_templates}#{template}")
+    else
+      puts "#{custom_templates}#{template} is missing."
+      puts "This is a required template."
+      exit 1
+    end
+  end
+
+  TEMPLATE_PATH="#{custom_templates}"
+else
+  TEMPLATE_PATH="#{File.dirname(__FILE__)}/../../../templates/"
+end
 
 namespace :deployinator do
 
