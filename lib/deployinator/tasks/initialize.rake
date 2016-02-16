@@ -10,6 +10,9 @@ if defined?(ENV['TEMPLATE_PATH'])
 
   custom_templates = ENV['TEMPLATE_PATH']
 
+  #Prevent accidents / annoyances
+  custom_templates << '/' unless custom_templates.endwith?('/')
+
   # Test for core templates in custom path
   template_list.each do |template|
     if File.exist?("#{custom_templates}#{template}")
