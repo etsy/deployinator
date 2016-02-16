@@ -8,7 +8,7 @@ if defined?(ENV['TEMPLATE_PATH'])
   template_list = [ "app.rb.erb", "config.ru.erb", "helper.rb.erb",
                   "stack.rb.erb", "template.mustache", "view.rb.erb" ]
 
-  custom_templates = ENV['TEMPLATE_PATH']
+  custom_templates = ENV['TEMPLATE_PATH'].dup
 
   #Prevent accidents / annoyances
   custom_templates << '/' unless custom_templates.end_with?('/')
