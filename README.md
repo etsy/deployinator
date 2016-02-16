@@ -2,8 +2,8 @@
 _________               ______                _____                 _____
 ______  /_____ ________ ___  /______ _____  _____(_)_______ ______ ___  /_______ ________
 _  __  / _  _ \___  __ \__  / _  __ \__  / / /__  / __  __ \_  __ `/_  __/_  __ \__  ___/
-/ /_/ /  /  __/__  /_/ /_  /  / /_/ /_  /_/ / _  /  _  / / // /_/ / / /_  / /_/ /_  / 
-\__,_/   \___/ _  .___/ /_/   \____/ _\__, /  /_/   /_/ /_/ \__,_/  \__/  \____/ /_/ 
+/ /_/ /  /  __/__  /_/ /_  /  / /_/ /_  /_/ / _  /  _  / / // /_/ / / /_  / /_/ /_  /
+\__,_/   \___/ _  .___/ /_/   \____/ _\__, /  /_/   /_/ /_/ \__,_/  \__/  \____/ /_/
                 /_/                   /____/             Deploy with style!
 </pre>
 
@@ -28,9 +28,9 @@ Deployinator is a deployment framework extracted from Etsy. We've been using it 
 ## Stacks
 Deployments are grouped by "stacks". You might have a "web" and "search" stack.
 
-Each of those stacks might have different deployment environments, such as "staging" or "production". 
+Each of those stacks might have different deployment environments, such as "staging" or "production".
 
-You can map a button to each of these environments,  to create multi-stage pushes within each stack. 
+You can map a button to each of these environments,  to create multi-stage pushes within each stack.
 
 ## Installation
 
@@ -96,6 +96,10 @@ underscores but if you forget the rake task will convert from camelcase for you.
 ```sh
     $ bundle exec rake 'deployinator:new_stack[test_stack]'
 ```
+- If you have many similar stacks it might be useful to create reusable templates. You can copy the default [templates](templates) to another directory and specify an environment variable TEMPLATE_PATH like so:
+```sh
+    $ TEMPLATE_PATH=$(pwd)/custom_templates bundle exec rake 'deployinator:new_stack[test_stack]'
+```
 
 - We need a server to run our Sinatra application. For the purpose of this demo, we will use [shotgun](https://github.com/rtomayko/shotgun). Let's install shotgun into our bundle. Add the following to your Gemfile:
 
@@ -116,7 +120,7 @@ underscores but if you forget the rake task will convert from camelcase for you.
     $ bundle exec shotgun --host localhost -p 7777 config.ru
 ```
 
-- You will probably want a robust server like apache to handle production traffic. 
+- You will probably want a robust server like apache to handle production traffic.
 
 - The `config/base.rb` file is the base config for the application. Replace all
 occurences of ___test_stack___ with the name you chose above. Also the example
@@ -232,7 +236,7 @@ For example you could wrap your capistrano deploy:
     run_cmd %Q{cap deploy}
 
 
-#### log_and_stream 
+#### log_and_stream
 
 Output information to the log file, and the streaming output handler.
 The real time output console renders HTML so you should use markup here.
@@ -349,7 +353,7 @@ This can be done on a global layout that extends the gem's default layout or on
 a stack by stack basis in their own view.
 
 ## Hacking on the gem
-If you find issues with the gem, or would like to play around with it, you can check it out from git and start hacking on it. 
+If you find issues with the gem, or would like to play around with it, you can check it out from git and start hacking on it.
 First tell bundler to use your local copy instead by running:
 ```sh
     $ bundle config local.deployinator /path/to/DeployinatorGem
@@ -364,10 +368,10 @@ The `/stats` page pulls from `log/deployinator.log` to show a graph of deploymen
 ```rb
   Deployinator.stats_included_stacks = ['my_whitelisted_stack', 'another_whitelisted_stack']
   Deployinator.stats_ignored_stacks = ['my_stack_to_ignore', 'another_stack_to_ignore']
-  Deployinator.stats_extra_grep = 'Production deploy' # filter out log entries matching this string 
+  Deployinator.stats_extra_grep = 'Production deploy' # filter out log entries matching this string
 ```
 
-Whitelisting stacks or applying a custom extra grep can help speed up graph rendering when you have a large log file. 
+Whitelisting stacks or applying a custom extra grep can help speed up graph rendering when you have a large log file.
 
 If at some point you change the name of a stack, you can group the old log entries with the new by adding the following to `config/base.rb`:
 
