@@ -81,9 +81,9 @@ module Deployinator
     end
 
     # gives the filename to send runlog to based on whether we are in the main thread or not
-    # We do this because we want to be able to use log_and_stream seamlessly in a 
-    # parallel thread. So, all log_and_stream calls in all but the main thread will 
-    # log to a seaparate file 
+    # We do this because we want to be able to use log_and_stream seamlessly in a
+    # parallel thread. So, all log_and_stream calls in all but the main thread will
+    # log to a seaparate file
     # output - String filename to log to
     def runlog_filename(name=nil)
       if @filename
@@ -91,15 +91,15 @@ module Deployinator
           @filename
         elsif Thread.current[:logfile_name]
           Thread.current[:logfile_name]
-        elsif name 
+        elsif name
           Thread.current[:logfile_name] = runlog_thread_filename(name)
           Thread.current[:logfile_name]
-        else 
+        else
           raise 'Logfile name not defined in thread. Expecting name parameter to be passed in.'
         end
       end
     end
-    
+
     # gives us the filename to log to in thread
     # output - String filename for thread
     def runlog_thread_filename(name)
@@ -675,6 +675,31 @@ module Deployinator
       end
       # This is so we have something in the log if/when this fails
       puts log_msg
+    end
+
+    # Public: helper method to check if the current user is part of
+    # an group. This method let's you pass in groups for explicitness and
+    # testing but will fall back on @group and Deployinator.admin_groups.
+    #
+    # Param:
+    #  user_groups  - groups a user is part of
+    #  admin_groups - admin groups
+    #
+    # Returns true if the current user is part of and admin group and false
+    # otherwise
+    def is_admin?(user_groups=nil, admin_groups=nil)
+      user_groups  ||= @groups
+      admin_groups ||= Deployinator.admin_groups
+
+      return false if user_groups.nil?
+      return false if admin_groups.nil?
+
+      intersected_groups = user_groups & admin_groups
+
+      # if we found an intersection between admin and user groups, the current
+      # user is an admin
+      return (intersected_groups.length > 0)
+
     end
 
   end

@@ -42,6 +42,13 @@ module Deployinator
       register_plugins(nil)
       init(env)
       @disabled_override = params[:override].nil? ? false : true
+      pass if request.path_info == "/maintenance"
+      if Deployinator.maintenance_mode == true && !is_admin?
+        redirect "/maintenance"
+      end
+    end
+
+    before do
     end
 
     get '/' do
@@ -50,6 +57,10 @@ module Deployinator
 
     get '/stats' do
         mustache Deployinator::Views::Stats
+    end
+
+    get '/maintenance' do
+        mustache Deployinator::Views::Maintenance
     end
 
     get '/run_logs/view/:log' do
