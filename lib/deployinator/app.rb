@@ -43,7 +43,12 @@ module Deployinator
       register_plugins(nil)
       init(env)
       @disabled_override = params[:override].nil? ? false : true
-      pass if request.path_info == "/maintenance"
+      pass if [
+        "/maintenance",
+        "/css/maintenance.css",
+        "/images/maintenance.gif",
+        "/static/css/style.css"
+      ].include? request.path_info
       if Deployinator.maintenance_mode == true && !is_admin?
         redirect "/maintenance"
       end
