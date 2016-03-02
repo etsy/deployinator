@@ -115,4 +115,22 @@ class HelpersTest < Test::Unit::TestCase
       assert_equal(Encoding.find('UTF-8'), cached_content.encoding)
     end
   end
+
+  def test_is_admin_groups_nil
+    assert_false(is_admin?)
+  end
+
+  def test_is_admin_groups_true
+    assert_true(is_admin?(["foo", "bar"], ["bar"]))
+  end
+
+  def test_is_admin_groups_false
+    assert_false(is_admin?(["foo", "bar"], ["bla"]))
+  end
+
+  def test_is_admin_groups_true_with_fallback
+    @groups = ["foo", "bar"]
+    Deployinator.admin_groups = ["bar"]
+    assert_true(is_admin?(["foo", "bar"], ["bar"]))
+  end
 end

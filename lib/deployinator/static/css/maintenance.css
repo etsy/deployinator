@@ -1,0 +1,9 @@
+#maintenance {
+  position: relative;
+  font-size: 18pt;
+  text-align: center;
+}
+
+#maintenance h1 {
+  margin: 35px;
+}

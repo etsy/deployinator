@@ -13,6 +13,7 @@ require 'deployinator/views/run_logs'
 require 'deployinator/views/log_table'
 require 'deployinator/views/deploys_status'
 require 'deployinator/views/stats'
+require 'deployinator/views/maintenance'
 
 module Deployinator
   class DeployinatorApp < Sinatra::Base
@@ -42,6 +43,18 @@ module Deployinator
       register_plugins(nil)
       init(env)
       @disabled_override = params[:override].nil? ? false : true
+      pass if [
+        "/maintenance",
+        "/css/maintenance.css",
+        "/images/maintenance.gif",
+        "/static/css/style.css"
+      ].include? request.path_info
+      if Deployinator.maintenance_mode == true && !is_admin?
+        redirect "/maintenance"
+      end
+    end
+
+    before do
     end
 
     get '/' do
@@ -50,6 +63,10 @@ module Deployinator
 
     get '/stats' do
         mustache Deployinator::Views::Stats
+    end
+
+    get '/maintenance' do
+        mustache Deployinator::Views::Maintenance
     end
 
     get '/run_logs/view/:log' do
@@ -123,6 +140,10 @@ module Deployinator
       send_file "#{File.dirname(__FILE__)}/static/css/highlight.css"
     end
 
+    get '/css/maintenance.css' do
+      send_file "#{File.dirname(__FILE__)}/static/css/maintenance.css"
+    end
+
     get '/js/flot/jquery.flot.min.js' do
       send_file "#{File.dirname(__FILE__)}/static/js/flot/jquery.flot.min.js"
     end
@@ -145,6 +166,10 @@ module Deployinator
 
     get '/js/stats_load.js' do
       send_file "#{File.dirname(__FILE__)}/static/js/stats_load.js"
+    end
+
+    get '/images/maintenance.gif' do
+      send_file "#{File.dirname(__FILE__)}/static/images/maintenance.gif"
     end
 
     get '/deploys_status' do

@@ -54,6 +54,10 @@ module Deployinator
     attr_accessor :admin_groups
     @admin_groups = []
 
+    attr_accessor :maintenance_mode
+
+    attr_accessor :maintenance_contact
+
     # the controller class. defaults to Deployinator::Controller
     # if you override this it should be a subclass of Deployinator::Controller
     attr_accessor :deploy_controller
@@ -114,6 +118,8 @@ end
 Deployinator.root_dir = Dir.pwd
 Deployinator.app_context = {}
 Deployinator.admin_groups = []
+Deployinator.maintenance_mode = false
+Deployinator.maintenance_contact = "admin@deployinator.example.com"
 Deployinator.global_plugins = []
 Deployinator.log_file = Deployinator.root(["log", "development.log"])
 Deployinator.log_path = Deployinator.root(["log", "deployinator.log"])
