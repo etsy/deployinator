@@ -602,7 +602,7 @@ module Deployinator
       # stack should be the last part of the log line from the last pipe to the end
       # modified this to take into account the run_log entry at the end
       unless stacks.empty? && env.empty?
-        grep = "| egrep '#{env}.*\\|\(#{stacks.join("|")}\)(|(\\||$))?'"
+        grep = "| egrep '#{env}.*\\|\(#{stacks.join("|")}\)\\|'"
       end
 
       # extra grep does another filter to the line, needed to get CONFIG PRODUCTION
