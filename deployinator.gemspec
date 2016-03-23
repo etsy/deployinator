@@ -25,6 +25,8 @@ Gem::Specification.new do |gem|
   gem.add_runtime_dependency "rake", "~> 10", ">= 10.3.2"
   gem.add_runtime_dependency "json", "~> 1.8"
   gem.add_runtime_dependency "mustache", "~> 0.99"
+  # pony pulls in mail >2.0. mail 3.0 needs ruby 2 or greater. to maintain ruby 1.9 compat we're pinning mail here
+  gem.add_runtime_dependency "mail", "2.6.3"
   gem.add_runtime_dependency "pony", "~> 1.5"
   gem.add_runtime_dependency "tlsmail", "~> 0.0"
   gem.add_runtime_dependency "eventmachine", "~> 1.0", ">= 1.0.4"
