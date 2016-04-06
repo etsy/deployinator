@@ -55,6 +55,7 @@ you can skip the bundler steps.
 - Run the following command to make deployinator gem's rake tasks available to you:
 
 ```sh
+    $ shopt -s xpg_echo
     $ echo "require 'deployinator'\nload 'deployinator/tasks/initialize.rake' " > Rakefile
 ```
 
