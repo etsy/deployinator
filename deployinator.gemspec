@@ -21,6 +21,7 @@ Gem::Specification.new do |gem|
 
   gem.add_development_dependency "mocha", "~> 0.14"
   gem.add_development_dependency "test-unit", ">= 3"
+  gem.add_development_dependency "rdoc", "~> 4.2"
 
   gem.add_runtime_dependency "rake", "~> 10", ">= 10.3.2"
   gem.add_runtime_dependency "json", "~> 1.8"
