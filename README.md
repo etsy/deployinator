@@ -37,7 +37,7 @@ You can map a button to each of these environments,  to create multi-stage pushe
 This demo assumes you are using bundler to install deployinator. If you aren't
 you can skip the bundler steps.
 
-- Create a directory for your project. `mkdir test_stacks`
+- Create a directory for your project to hold your specific code (outside of the gem and this will be your own internal repository). `mkdir test_stacks`
 
 - Create a Gemfile for bundler:
 
