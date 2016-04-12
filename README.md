@@ -149,13 +149,15 @@ module Deployinator
 
       def test_stack_production(options={})
         # save old version for announcement
-        old_version = test_stack_production_version
+        old_version   = test_stack_production_version
+        checkout_path = Deployinator.app_context['test_stack_config'][:checkout_path]
+        prod_host     = Deployinator.app_context['test_stack_config'][:prod_host]
 
         # Clone and update copy of git repository
-        git_freshen_or_clone(stack, "ssh #{Deployinator.app_context['test_stack_info'][:prod_host]}", stack_config[:checkout_path], "master")
+        git_freshen_or_clone(stack, "ssh #{prod_host}", checkout_path, "master")
 
         # bump version
-        version = git_bump_version(stack, checkout_path, "ssh #{Deployinator.app_context['test_stack_info'][:prod_host]}", checkout_path)
+        version = git_bump_version(stack, checkout_path, "ssh #{prod_host}", checkout_path)
 
         # Write the sha1s of the different versions out to the logs for safe keeping.
         log_and_stream "Updating application to #{version} from #{old_version}"
