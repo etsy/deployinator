@@ -246,9 +246,12 @@ module Deployinator
       def git_url(stack, protocol="git", read_write=false)
         stack = stack.intern
         repo = git_info_for_stack[stack][:repository]
+        git_protocol = git_info_for_stack[stack][:git_protocol] || nil
         github_host = which_github_host(stack)
         repo += ".git" if protocol != "git"
-        if (read_write)
+        if (!git_protocol.nil?)
+          return "#{git_protocol}#{github_host}:#{git_info_for_stack[stack][:user]}/#{repo}"
+        elsif (read_write)
           return "git@#{github_host}:#{git_info_for_stack[stack][:user]}/#{repo}"
         else
           return "#{protocol}://#{github_host}/#{git_info_for_stack[stack][:user]}/#{repo}"
