@@ -94,6 +94,14 @@ module Deployinator
       log_file
     end
 
+    def log_path?
+      log_path
+    end
+
+    def timing_log_path?
+      timing_log_path
+    end
+
     # Running environment for deployinator
     # This is taken from RACK_ENV or RAILS_ENV
     # *note* this is different from deployinator's concept of stacks/environments
