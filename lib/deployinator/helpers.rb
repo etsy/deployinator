@@ -1,5 +1,6 @@
 require 'benchmark'
 require 'timeout'
+require 'cgi'
 require 'deployinator/helpers/version'
 require 'deployinator/helpers/plugin'
 
@@ -158,12 +159,12 @@ module Deployinator
             output << chr
             ret << chr
             if chr == "\n" || chr == "\r"
-              log_and_stream output + "<br>"
+              log_and_stream CGI::escapeHTML(output) + "<br>"
               output = ""
             end
           end
           error_message = nil
-          log_and_stream(output) unless output.empty?
+          log_and_stream(CGI::escapeHTML(output)) unless output.empty?
 
           error_message = err.read unless err.eof?
           if (log_errors) then
