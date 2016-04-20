@@ -10,6 +10,15 @@ module Deployinator
       $stderr.reopen($deployinator_log_handle)
       puts "Logging #{Deployinator.log_file}"
     end
+
+    if Deployinator.log_path?
+      $deployinator_log_path = File.new(Deployinator.log_path, "a")
+    end
+
+    if Deployinator.timing_log_path?
+      $deployinator_timing_log_path = File.new(Deployinator.timing_log_path, "a")
+    end
+
   end
 end
 
