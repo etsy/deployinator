@@ -45,7 +45,7 @@ module Deployinator
         # is not running
         def is_deploy_active?(stack, stage)
           if deployname = get_deploy_process_title(stack,stage)
-            return system("pgrep -f '#{deployname}'")
+            return system("pgrep -c '#{deployname}'")
           end
           false
         end
