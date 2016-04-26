@@ -71,14 +71,6 @@ you can skip the bundler steps.
     $ bundle exec rake 'deployinator:init[Company]'
 ```
 
-- If you are using bundler add the following to the top of the config.ru that
-shipped with deployinator
-```ruby
-    require 'rubygems'
-    require 'bundler'
-    Bundler.require
-```
-
 - Run the tailer as a background service (using whatever init flavor you like)
 
 ```sh
@@ -98,10 +90,10 @@ underscores but if you forget the rake task will convert from camelcase for you.
     $ bundle exec rake 'deployinator:new_stack[test_stack]'
 ```
 
-- We need a server to run our Sinatra application. For the purpose of this demo, we will use [shotgun](https://github.com/rtomayko/shotgun). Let's install shotgun into our bundle. Add the following to your Gemfile:
+- We need a server to run our Sinatra application. For the purpose of this demo, we will use [puma](https://github.com/puma/puma). Let's install puma into our bundle. Add the following to your Gemfile:
 
 ```ruby
-    gem 'shotgun'
+    gem 'puma'
 ```
 
 - Now update your bundler:
@@ -114,7 +106,7 @@ underscores but if you forget the rake task will convert from camelcase for you.
   - The host could be localhost or the dns name (or ip address of the server you are using). You can set any port you want that's not in use using the `-p` flag.
 
 ```sh
-    $ bundle exec shotgun --host localhost -p 7777 config.ru
+    $ bundle exec puma -b tcp://0.0.0.0:7777 config.ru
 ```
 
 - You will probably want a robust server like apache to handle production traffic.
