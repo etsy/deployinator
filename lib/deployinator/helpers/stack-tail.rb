@@ -25,7 +25,7 @@ module Deployinator
 
       # Returns the websocket port for the stack tailer
       def stack_tail_websocket_port
-        Deployinator.stack_tailer_port
+        Deployinator.stack_tailer_websocket_port
       end
     end
   end

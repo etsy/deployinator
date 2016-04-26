@@ -51,6 +51,8 @@ module Deployinator
 
     attr_accessor :stack_tailer_port
 
+    attr_accessor :stack_tailer_websocket_port
+
     attr_accessor :admin_groups
     @admin_groups = []
 
@@ -134,7 +136,8 @@ Deployinator.log_path = Deployinator.root(["log", "deployinator.log"])
 Deployinator.timing_log_path = Deployinator.root(["log", "deployinator-timing.log"])
 Deployinator.git_sha_length = "10"
 Deployinator.default_user = `/usr/bin/whoami`
-Deployinator.stack_tailer_port = 7778
+Deployinator.stack_tailer_port = 7778 # backend port, tailer listens here
+Deployinator.stack_tailer_websocket_port = 7778 # frontend port, proxy listens here
 Deployinator.github_host = 'github.com'
 Deployinator.app_context['context'] = 'dev'
 
