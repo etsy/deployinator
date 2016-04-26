@@ -133,7 +133,8 @@ _  __  / _  _ \___  __ \__  / _  __ \__  / / /__  / __  __ \_  __ `/_  __/_  __ 
                 function connect_web_socket(stack, rnd_id, bar, button) {
                   var bufferedMsg = '';
                   var append;
-                  var ws = new WebSocket('ws://' + window.location.hostname + ':{{stack_tail_websocket_port}}');
+                  var ws_scheme = (location.protocol === 'http:') ? 'ws:' : 'wss:';
+                  var ws = new WebSocket(ws_scheme + '//' + window.location.hostname + ':{{stack_tail_websocket_port}}');
                   var show = function(el) {
                     return function(msg) {
                       bufferedMsg = bufferedMsg + msg;
