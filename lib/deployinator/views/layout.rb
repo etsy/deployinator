@@ -1,5 +1,7 @@
 require 'deployinator/helpers/git'
 require 'deployinator/helpers/stack-tail'
+require 'mustache/sinatra'
+require 'deployinator/helpers/version'
 
 module Deployinator
   module Views

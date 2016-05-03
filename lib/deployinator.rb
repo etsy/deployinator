@@ -1,4 +1,5 @@
 require 'deployinator/version'
+require 'deployinator/views/index'
 # = Deployinator
 #
 # This is the main entry point for all things in the Deployination.
@@ -73,6 +74,9 @@ module Deployinator
     # filter log entries in /stats
     attr_accessor :stats_extra_grep
 
+    # Default Index View Class
+    attr_accessor :index_view_class
+
     # list of configurations for grouping historical / renamed stacks in /stats
     attr_accessor :stats_renamed_stacks
     @@stats_renamed_stacks = []
@@ -139,6 +143,7 @@ Deployinator.default_user = `/usr/bin/whoami`
 Deployinator.stack_tailer_port = 7778 # backend port, tailer listens here
 Deployinator.stack_tailer_websocket_port = 7778 # frontend port, proxy listens here
 Deployinator.github_host = 'github.com'
+Deployinator.index_view_class = Deployinator::Views::Index
 Deployinator.app_context['context'] = 'dev'
 
 

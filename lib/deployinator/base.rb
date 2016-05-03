@@ -32,6 +32,7 @@ require 'resolv'
 
 require "deployinator/helpers"
 require "deployinator/views/layout"
+require "deployinator/views/index"
 require "deployinator/helpers/view"
 require "deployinator/app"
 

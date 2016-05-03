@@ -7,7 +7,6 @@ require 'deployinator/helpers/deploy'
 require 'deployinator/helpers/version'
 require 'deployinator/helpers/git'
 require 'deployinator/helpers/plugin'
-require 'deployinator/views/index'
 require 'deployinator/views/log'
 require 'deployinator/views/run_logs'
 require 'deployinator/views/log_table'
@@ -58,7 +57,7 @@ module Deployinator
     end
 
     get '/' do
-        mustache Deployinator::Views::Index
+        mustache Deployinator.index_view_class
     end
 
     get '/stats' do

@@ -1,3 +1,5 @@
+require 'deployinator/views/layout'
+
 module Deployinator::Views
   class Index < Layout
 
