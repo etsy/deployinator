@@ -47,6 +47,10 @@ module Deployinator
       @filename
     end
 
+    def push_order
+      %w[production]
+    end
+
     def get_deploy_time
       @deploy_time
     end
