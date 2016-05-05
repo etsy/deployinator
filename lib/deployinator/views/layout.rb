@@ -22,6 +22,10 @@ module Deployinator
         end
       end
 
+      def push_order
+        %w[production]
+      end
+
       def set_stack(stack)
         @stack = stack
       end
