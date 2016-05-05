@@ -225,6 +225,17 @@ module Deployinator
       200
     end
 
+    get %r{/(\w+)/(versions|builds)} do |stack, type|
+      type = type.gsub(/s$/, '')
+      content_type :json
+      inst = mustache_class(stack, settings.mustache).new
+      # Sinatra's mustache helper usually shoves all instance variables into the view but we aren't using that here
+      inst.set_stack(stack)
+
+      meth = "#{stack}_%s_#{type}"
+      inst.push_order.collect {|env| [env, inst.send(meth % env)]}.to_json
+    end
+
     get '/:thing' do
       @stack = params[:thing]
 
