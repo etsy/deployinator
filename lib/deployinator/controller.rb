@@ -137,7 +137,7 @@ module Deployinator
       elsif options[:method].match(/force_builda/)
         env = "force asset rebuild"
       else
-        env = options[:method][/(dev|qa|production|princess|prod|webs|stage|config)/i, 1] || "other"
+        env = options[:method][/(dev|qa|production|princess|prod|webs|stage|staging|config)/i, 1] || "other"
         env = "production" if env.match(/prod|webs/)
       end
 
