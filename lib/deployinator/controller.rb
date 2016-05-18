@@ -85,7 +85,7 @@ module Deployinator
     #             }
     #
     # Returns nothing
-    def run(options)
+    def run(options, requires_lock = true)
       options[:method] = stage_to_method(options[:stack], options[:stage])
       if options[:method].nil?
         raise "No method defined for me to call: #{options[:stack]}, #{options[:stage]}"
@@ -107,10 +107,12 @@ module Deployinator
       deploy_instance = deploy_class.new(options)
       deploy_instance.register_plugins(options[:stack])
 
-      locked = deploy_instance.lock_pushes(options[:stack], options[:username], options[:method])
+      if requires_lock
+        locked = deploy_instance.lock_pushes(options[:stack], options[:username], options[:method])
 
-      unless locked
-        return deploy_instance
+        unless locked
+          return deploy_instance
+        end
       end
 
       @start_time = Time.now
