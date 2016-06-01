@@ -92,7 +92,7 @@ module Deployinator
       #             an argument if one is provided
       # branch    - the branch to checkout after the fetch
       #
-      # Returns nothing
+      # Returns a hash containing the stdout and return code of the git commands
       def git_freshen_clone(stack, extra_cmd="", path=nil, branch="master", force_checkout=false)
         path ||= git_checkout_path(checkout_root, stack)
         cmd = [
@@ -103,8 +103,9 @@ module Deployinator
         ]
         cmd << "git reset --hard origin/#{branch} 2>&1"
         cmd = build_git_cmd(cmd.join(" && "), extra_cmd)
-        run_cmd cmd
+        ret = run_cmd cmd
         yield "#{path}" if block_given?
+        ret
       end
 
       # Public: wrapper function which can be used to clone a non-existing repo
@@ -122,7 +123,7 @@ module Deployinator
       #                 when the repo is refreshed). (default: master)
       # read_write    - boolean; True means clone the repo read/write
       #
-      # Returns stdout of the respective git command.
+      # Returns a hash containing the stdout and return code of the git commands
       def git_freshen_or_clone(stack, extra_cmd, checkout_root, branch="master", read_write=false, protocol="git", force_checkout=false)
         path = git_checkout_path(checkout_root, stack)
         is_git = is_git_repo(path, extra_cmd)
@@ -134,6 +135,7 @@ module Deployinator
           git_clone(stack, git_url(stack, protocol, read_write), extra_cmd, checkout_root, branch)
         else
           log_and_stream "</br><span class=\"stderr\">The path for #{stack} at #{path} exists but is not a git repo.</span></br>"
+          {}
         end
       end
 
@@ -225,7 +227,7 @@ module Deployinator
       # checkout_root - base directory to clone into
       # branch        - Git branch to checkout. Defaults to 'master'.
       #
-      # Returns nothing
+      # Returns a hash containing the stdout and return code of the git commands
       def git_clone(stack, repo_url, extra_cmd="", local_checkout_root=checkout_root, branch='master')
         path =  git_checkout_path(local_checkout_root, stack)
         cmd = "git clone #{repo_url} -b #{branch} #{path}"
