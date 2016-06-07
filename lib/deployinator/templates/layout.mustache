@@ -7,6 +7,7 @@
         <link rel="stylesheet" href="/static/css/highlight.css" type="text/css" media="screen">
         <link rel="stylesheet" href="/static/css/style.css?v=11" type="text/css" media="screen">
         <link rel="stylesheet" href="/static/css/diff_style.css" type="text/css" media="screen">
+        <link rel="stylesheet" href="/static/css/jquery-ui-1.8.24.css" type="text/css" media="screen">
         <script src="/js/jquery-1.8.3.min.js"></script>
         <script src="/js/jquery-ui-1.8.24.min.js"></script>
         {{{ additional_header_html }}}
@@ -200,6 +201,8 @@ _  __  / _  _ \___  __ \__  / _  __ \__  / / /__  / __  __ \_  __ `/_  __/_  __ 
                     autoScroll = false; },
                     function() { autoScroll = true;
                     });
+
+
                   return frame;
                 }
 
@@ -212,6 +215,7 @@ _  __  / _  _ \___  __ \__  / _  __ \__  / / /__  / __  __ \_  __ `/_  __/_  __ 
                     whole_shell_frame.append(name);
                     var frame = create_iframe (rnd_id);
                     whole_shell_frame.append(frame)
+
                     $("#shell_deploys").append(whole_shell_frame);
                     massage_iframe (rnd_id)
                     connect_web_socket(stack, rnd_id, null, null);
@@ -226,7 +230,17 @@ _  __  / _  _ \___  __ \__  / _  __ \__  / / /__  / __  __ \_  __ `/_  __/_  __ 
                     var button = $(form).find('button');
                     var method = $(form).find('input[name="method"]').val();
                     var rnd_id = "r_" + (Math.random() + "").replace('.', '');
+                    var resize_frame = $("<div id=resize-frame-" + rnd_id  + "></div>");
                     var frame = create_iframe (rnd_id);
+                    resize_frame.append(frame)
+                    resize_frame.resizable({
+                        handles: "s",
+                        start: function(event, ui) { frame.css({pointerEvents: "none"}); },
+                        stop: function(event, ui) {
+                            frame.css({pointerEvents: "auto"});
+                            resize_frame.css({width: "100%"});
+                        }
+                    });
 
                     var bar = $('<div>').addClass('push-progress');
 
@@ -236,9 +250,9 @@ _  __  / _  _ \___  __ \__  / _  __ \__  / / /__  / __  __ \_  __ `/_  __/_  __ 
                         $panel.removeClass("hide");
                         $(".progress-panel", $panel).show();
                         $(".complete-panel", $panel).hide();
-                        $panel.find('.run-log-console').html(frame);
+                        $panel.find('.run-log-console').html(resize_frame);
                     } else {
-                        $("#main").prepend(frame);
+                        $("#main").prepend(resize_frame);
                     }
 
                     var doc = frames[rnd_id].document;
@@ -599,6 +613,7 @@ _  __  / _  _ \___  __ \__  / _  __ \__  / / /__  / __  __ \_  __ `/_  __/_  __ 
                         evt.preventDefault();
                     }
                 });
+
             </script>
         </div>
         {{{ additional_bottom_body_html }}}

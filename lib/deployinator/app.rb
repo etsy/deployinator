@@ -159,6 +159,14 @@ module Deployinator
       send_file "#{File.dirname(__FILE__)}/static/js/jquery-ui-1.8.24.min.js"
     end
 
+    get '/static/css/jquery-ui-1.8.24.css' do
+      send_file "#{File.dirname(__FILE__)}/static/css/jquery-ui-1.8.24.css"
+    end
+
+    get '/static/css/images/ui-icons_0078ae_256x240.png' do
+      send_file "#{File.dirname(__FILE__)}/static/css/images/ui-icons_0078ae_256x240.png"
+    end
+
     get '/js/jquery.timed_bar.js' do
       send_file "#{File.dirname(__FILE__)}/static/js/jquery.timed_bar.js"
     end
