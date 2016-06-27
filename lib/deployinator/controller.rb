@@ -145,7 +145,7 @@ module Deployinator
 
       # display a message that the deploy is done and call the JavaScript
       # deploy done function
-      msg = "<h4>#{env.to_s.upcase} deploy in #{options[:stack]} stack complete</h4>"
+      msg = options[:deploy_complete_message] || "<h4>#{env.to_s.upcase} deploy in #{options[:stack]} stack complete</h4>"
       deploy_instance.log_and_stream(msg+"<p class='output'>")
       deploy_instance.log_and_stream("<script id='deploy-done'>window.deploy_done('#{msg}', '#{options[:stage]}');</script>")
 
