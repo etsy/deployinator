@@ -10,7 +10,7 @@ module Deployinator::Views
     #
     # Retuns an array of non-pinned stacks!
     def get_other_stack_list
-      Deployinator.get_stacks
+      Deployinator.get_visible_stacks
     end
   end
 end

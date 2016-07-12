@@ -16,7 +16,7 @@ EM.run do
   # reload the list of stacks from Deployinator without affecting
   # existing channels. does not remove stacks that no longer exist`
   def refresh_stacks
-    Deployinator.get_stacks.each do |stack|
+    Deployinator.get_visible_stacks.each do |stack|
       unless @@channels.key?(stack)
         @@channels[stack] = EM::Channel.new
         @@channels_count[stack] = 0

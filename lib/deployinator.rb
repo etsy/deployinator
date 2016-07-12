@@ -81,6 +81,8 @@ module Deployinator
     attr_accessor :stats_renamed_stacks
     @@stats_renamed_stacks = []
 
+    attr_accessor :invisible_stacks
+
     def initialize
       @stack_plugins = {}
       @global_plugins = []
@@ -126,6 +128,13 @@ module Deployinator
         File.basename(file, ".rb")
       end
     end
+
+    def get_visible_stacks
+      invisible = self.invisible_stacks.map(&:to_s)
+
+      # array subtraction
+      self.get_stacks - invisible
+    end
   end
 end
 
@@ -145,5 +154,6 @@ Deployinator.stack_tailer_websocket_port = 7778 # frontend port, proxy listens h
 Deployinator.github_host = 'github.com'
 Deployinator.index_view_class = Deployinator::Views::Index
 Deployinator.app_context['context'] = 'dev'
+Deployinator.invisible_stacks = []
 
 

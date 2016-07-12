@@ -447,7 +447,7 @@ module Deployinator
     # Returns an array of hashes with the fields "stack" and "current"
     # where "current" is true for the currently selected stack.
     def get_stack_select
-      stacks = Deployinator.get_stacks
+      stacks = Deployinator.get_visible_stacks
       output = Array.new
       stacks.each do |s|
         current = stack == s

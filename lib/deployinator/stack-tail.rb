@@ -25,7 +25,7 @@ module Tailer
 
   # Checks if stack log symlink exists and creates Tailer for it
   def self.stack_tail(stack, channel, channel_count)
-    if Deployinator.get_stacks.include?(stack)
+    if Deployinator.get_visible_stacks.include?(stack)
       filename = "#{Deployinator::Helpers::RUN_LOG_PATH}current-#{stack}"
       start_pos = (channel_count == 0) ? 0 : -1
       File.exists?(filename) ? StackTail.new(filename, channel, start_pos) : false
