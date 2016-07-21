@@ -24,7 +24,7 @@ class HelpersTest < Test::Unit::TestCase
 
     # mock out the run_cmd. this should move.
     Deployinator::Helpers.module_eval do
-      define_method "run_cmd" do |cmd|
+      define_method "run_cmd" do |cmd, arg2 = nil, arg3 = nil|
         return { :stdout => cmd, :exit_code => 0 }
       end
     end
