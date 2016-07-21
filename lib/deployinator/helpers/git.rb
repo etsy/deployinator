@@ -7,6 +7,15 @@ module Deployinator
     # repositories and extracting information from them.
     module GitHelpers
 
+      class AmbiguousRemoteBranchesError < StandardError
+        attr_accessor :requested_branch, :git_ls_output
+
+        def initialize(git_ls_output, requested_branch)
+          self.requested_branch = requested_branch
+          self.git_ls_output = git_ls_output
+        end
+      end
+
       # Where we cache the current head rev. stack name wil be appended
       @@rev_head_cache = "/tmp/rev_head_cache"
 
@@ -213,7 +222,19 @@ module Deployinator
       #
       # Returns the rev as a string
       def get_git_head_rev(stack, branch='master', protocol='git')
-        cmd = %x{git ls-remote -h #{git_url(stack, protocol)} #{branch} | cut -c1-#{Deployinator.git_sha_length}}.chomp
+        git_ls_output = run_cmd("git ls-remote -h #{git_url(stack, 'git')} #{branch.strip}")
+        get_git_head_rev_from_ls_output(git_ls_output[:stdout], branch)
+      end
+
+      def get_git_head_rev_from_ls_output(output, branch)
+        lines = output.lines
+
+        if lines.count > 1
+          raise AmbiguousRemoteBranchesError.new(output, branch),
+            "More than one ref exists remotely matching #{branch}"
+        end
+
+        lines.first.strip[0, Deployinator.git_sha_length.to_i]
       end
 
       # Public: helper method which wraps git clone

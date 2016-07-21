@@ -64,4 +64,26 @@ class HelpersTest < Test::Unit::TestCase
     # Calling it a second time should just use the cached result on disk
     assert_equal(head_rev_sha, GitHelpers.git_head_rev('some_stack'))
   end
+
+  def test_git_get_head_rev_ls_output
+    good_ls_output = <<-EOM
+    724fe11d3d3afd1fe7e0bfa8cd9f34b90d038599        refs/heads/master
+    EOM
+
+    good_first_10_sha = '724fe11d3d'
+
+    bad_ls_output = <<-EOM
+    724fe11d3d3afd1fe7e0bfa8cd9f34b90d038599        refs/heads/master
+    724fe11d3d3afd1fe7e0bfa8cd9f34b90d038599        refs/heads/origin/master
+    EOM
+
+    assert_equal(
+      good_first_10_sha,
+      GitHelpers.get_git_head_rev_from_ls_output(good_ls_output, 'master')
+    )
+
+    assert_raise(GitHelpers::AmbiguousRemoteBranchesError) do
+      GitHelpers.get_git_head_rev_from_ls_output(bad_ls_output, 'master')
+    end
+  end
 end
