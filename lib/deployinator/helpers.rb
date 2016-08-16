@@ -143,10 +143,11 @@ module Deployinator
       start = Time.now.to_i
       timestamp = Time.now.to_s
       plugin_state = {
-        :cmd => cmd,
-        :timing_metric => timing_metric,
-        :start_time => start,
-        :log_errors => log_errors
+        :cmd            => cmd,
+        :timing_metric  => timing_metric,
+        :start_time     => start,
+        :log_errors     => log_errors,
+        :filename       => @filename,
       }
       raise_event(:run_command_start, plugin_state)
       log_and_stream "<div class='command'><h4>#{timestamp}: Running #{cmd}</h4>\n<p class='output'>"
