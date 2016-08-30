@@ -530,9 +530,10 @@ module Deployinator
 
       if options[:send_email] && options[:send_email] == true
         stack = options[:stack]
+        subject = options[:subject] || "#{stack} deployed #{options[:env]} by #{@username}"
 
         send_email({
-          :subject => "#{stack} deployed #{options[:env]} by #{@username}",
+          :subject => subject,
           :html_body => announcement
         })
       end
