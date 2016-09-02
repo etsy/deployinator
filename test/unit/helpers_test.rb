@@ -24,7 +24,7 @@ class HelpersTest < Test::Unit::TestCase
 
     # mock out the run_cmd. this should move.
     Deployinator::Helpers.module_eval do
-      define_method "run_cmd" do |cmd|
+      define_method "run_cmd" do |cmd, arg2 = nil, arg3 = nil|
         return { :stdout => cmd, :exit_code => 0 }
       end
     end
@@ -132,5 +132,19 @@ class HelpersTest < Test::Unit::TestCase
     @groups = ["foo", "bar"]
     Deployinator.admin_groups = ["bar"]
     assert_true(is_admin?(["foo", "bar"], ["bar"]))
+  end
+
+  def test_run_cmd_safely
+    safe_command = %Q!cd /var/hudson/.hudson/workspace/EtsyApp!
+    unsafe_command = %Q!cd /var/hudson/.hu\ndson/workspace/EtsyApp!
+
+    assert_equal(
+      {:exit_code => 0, :stdout => safe_command},
+      run_cmd_safely(safe_command)
+    )
+
+    assert_raise Deployinator::Helpers::CommandContainsNewlinesError do
+      run_cmd_safely(unsafe_command)
+    end
   end
 end

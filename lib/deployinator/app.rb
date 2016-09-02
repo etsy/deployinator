@@ -247,7 +247,7 @@ module Deployinator
     get '/:thing' do
       @stack = params[:thing]
 
-      unless Deployinator.get_stacks.include?(@stack)
+      unless Deployinator.get_visible_stacks.include?(@stack)
         raise "No such stack #{@stack}"
       end
 

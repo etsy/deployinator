@@ -43,6 +43,8 @@ module Deployinator
       end
     end
 
+    attr_accessor :filename
+
     def get_filename
       @filename
     end
@@ -132,6 +134,12 @@ module Deployinator
       if state.nil? || !state.is_a?(Hash)
         state = {}
       end
+
+      state.merge!(
+        :deploy_instance  => deploy_instance,
+        :filename         => deploy_instance.get_filename,
+      )
+
       deploy_instance.raise_event(:deploy_end, state)
 
       if options[:method].match(/config_push/)
@@ -151,6 +159,8 @@ module Deployinator
 
       deploy_instance.unlock_pushes(options[:stack])
       deploy_instance.move_stack_logfile(options[:stack])
+
+      deploy_instance.raise_event(:log_file_retired, state)
 
       return deploy_instance
     end

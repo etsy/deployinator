@@ -262,6 +262,7 @@ modify the gem code. Here is a list of current pluggable events:
 - __:logout_url__ for defining your own authentications logout url
 - __:deploy_start__ for any actions to be performed at the start of a deploy
 - __:deploy_end__ for any actions to be performed at the end of a deploy
+- __:log_file_retired__ for when the symlink for the current log is retired
 - __:deploy_error__ for any actions to be performed when an error occurs during a
 deploy
 - __:run_command_start__ for any actions to be performed at the start of a run_cmd

@@ -6,6 +6,14 @@ require 'deployinator/helpers/plugin'
 
 module Deployinator
   module Helpers
+    class CommandContainsNewlinesError < StandardError
+      attr_accessor :original_command
+
+      def initialize(original_command = nil)
+        self.original_command = original_command
+      end
+    end
+
     include Deployinator::Helpers::VersionHelpers,
       Deployinator::Helpers::PluginHelpers
 
@@ -132,6 +140,20 @@ module Deployinator
       end
 
       raise "Unable to execute `#{cmd}` after retrying #{num_retries} times"
+    end
+
+    def check_command_safety(command)
+      if command.include? "\n"
+        raise CommandContainsNewlinesError.new(command),
+          "Command contains newlines and may not execute as intended: #{command}"
+      end
+
+      command
+    end
+
+    def run_cmd_safely(command, timing_metric = nil, log_errors = true)
+      command = check_command_safety(command)
+      run_cmd(command, timing_metric, log_errors)
     end
 
     # Run external command with timing information
@@ -447,7 +469,7 @@ module Deployinator
     # Returns an array of hashes with the fields "stack" and "current"
     # where "current" is true for the currently selected stack.
     def get_stack_select
-      stacks = Deployinator.get_stacks
+      stacks = Deployinator.get_visible_stacks
       output = Array.new
       stacks.each do |s|
         current = stack == s
