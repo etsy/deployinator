@@ -275,7 +275,13 @@ module Deployinator
     # Returns the return code of log_string_to_file
     def log(env, who, msg, stack)
       s = stack
-      log_string_to_file("#{now}|#{env}|#{clean(who)}|#{clean(msg)}|#{s}|#{@filename}", Deployinator.log_path)
+      string_to_log = "#{now}|#{env}|#{clean(who)}|#{clean(msg)}|#{s}|#{@filename}"
+
+      # remove any newline characters, in case someone passed us something with
+      # unintentional \n's
+      string_to_log = string_to_log.lines.map(&:chomp).join('')
+
+      log_string_to_file(string_to_log, Deployinator.log_path)
     end
 
     # Public: wrapper method around appending stdout to a logfile.
