@@ -83,6 +83,8 @@ module Deployinator
 
     attr_accessor :invisible_stacks
 
+    attr_accessor :disabled_stacks
+
     def initialize
       @stack_plugins = {}
       @global_plugins = []
@@ -136,6 +138,8 @@ module Deployinator
       self.get_stacks - invisible
     end
   end
+
+  class StackDowntimeInfo < Struct.new(:name, :message, :channel, :contact); end
 end
 
 Deployinator.root_dir = Dir.pwd
@@ -154,6 +158,10 @@ Deployinator.stack_tailer_websocket_port = 7778 # frontend port, proxy listens h
 Deployinator.github_host = 'github.com'
 Deployinator.index_view_class = Deployinator::Views::Index
 Deployinator.app_context['context'] = 'dev'
+
+#adding stacks causes them to be hidden from the main index page and causes a
+#404 when loading their deploy page
 Deployinator.invisible_stacks = []
 
-
+#add instances of StackDowntimeInfo causes the deploy page to show a "down" view
+Deployinator.disabled_stacks = []

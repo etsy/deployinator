@@ -13,6 +13,7 @@ require 'deployinator/views/log_table'
 require 'deployinator/views/deploys_status'
 require 'deployinator/views/stats'
 require 'deployinator/views/maintenance'
+require 'deployinator/views/stack_down'
 
 module Deployinator
   class DeployinatorApp < Sinatra::Base
@@ -248,10 +249,16 @@ module Deployinator
       @stack = params[:thing]
 
       unless Deployinator.get_visible_stacks.include?(@stack)
-        raise "No such stack #{@stack}"
+        raise Sinatra::NotFound, "No such stack #{@stack}"
       end
 
       @params = params
+      found_stack_info = Deployinator.disabled_stacks.find {|ds| ds.name.to_s == @stack}
+      unless found_stack_info.nil?
+        @stack_info = found_stack_info
+        next mustache Deployinator::Views::StackDown
+      end
+
       register_plugins(@stack)
       begin
         mustache @stack
