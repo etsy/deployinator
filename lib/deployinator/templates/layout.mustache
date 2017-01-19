@@ -113,6 +113,9 @@ _  __  / _  _ \___  __ \__  / _  __ \__  / / /__  / __  __ \_  __ `/_  __/_  __ 
                             if (form.length == 1) {
                                 stream_log_websocket(form[0]);
                             }
+                        },
+                        error: function (xhrObj, textStatus, errorThrown) {
+                            alert("Error processing your request. Please refresh the page. If this problem persists contact an admin.");
                         }
                     });
                 });
@@ -313,13 +316,13 @@ _  __  / _  _ \___  __ \__  / _  __ \__  / / /__  / __  __ \_  __ `/_  __/_  __ 
                         async: false,  // makes the parent wait for the response
                         success: function (data) {
                         },
-                        error: function (data) {
+                        error: function (xhrObj, textStatus, errorThrown) {
                           error_deploying = true;
                         }
                     });
 
                     if (error_deploying) {
-                      alert('There was an error deploying. Please try again in a moment or there is already a deploy going');
+                      alert("Error processing your request. There might be a deploy in progress. Please refresh the page and try again in a moment.");
                       is_deploying = false;
                       enableDeploys();
                       return false;
@@ -350,7 +353,7 @@ _  __  / _  _ \___  __ \__  / _  __ \__  / / /__  / __  __ \_  __ `/_  __/_  __ 
                                 success: function (data) {
                                     ircnick = data['irc_nick'];
                                 },
-                                error: function (data) {
+                                error: function (xhrObj, textStatus, errorThrown) {
                                     ircnick = deployer;
                                 }
                             });
@@ -456,6 +459,9 @@ _  __  / _  _ \___  __ \__  / _  __ \__  / / /__  / __  __ \_  __ `/_  __/_  __ 
                                             addStackLockStatus(data.method, data.who, data.lock_time);
                                         }
                                     }
+                                },
+                                error: function (xhrObj, textStatus, errorThrown) {
+                                    alert("Error getting the deploy status. Please refresh the page. If this problem persists contact an admin.");
                                 }
                             });
                         }
