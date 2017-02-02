@@ -31,6 +31,14 @@ module Deployinator
       RUN_LOG_PATH
     end
 
+    def help_url?
+      ! Deployinator.help_url.nil?
+    end
+
+    def help_url
+      "#{Deployinator.help_url}"
+    end
+
     def init(env)
       @username = 'nobody'
       @groups = ['nogroup']
