@@ -16,6 +16,9 @@ module Deployinator
     # Hostname where deployinator runs
     attr_accessor :hostname
 
+    # Link to a help page
+    attr_accessor :help_url
+
     # Default username for passwordless ssh
     attr_accessor :default_user
 
