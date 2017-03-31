@@ -1,0 +1,15 @@
+<div id="maintenance">
+  <h1>the <em>{{stack_info.name}}</em> stack is disabled</h1>
+  <img src="/images/maintenance.gif"></img>
+  {{#stack_info.message}}
+  <h1>{{.}}</h1>
+  {{/stack_info.message}}
+
+  {{#stack_info.contact}}
+  <h1>For help, reach out to {{.}}</h1>
+  {{/stack_info.contact}}
+
+  {{#stack_info.channel}}
+  <h1>Follow along in &#35;{{.}}</h1>
+  {{/stack_info.channel}}
+</div>
