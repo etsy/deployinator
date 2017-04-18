@@ -33,7 +33,7 @@ EM.run do
     # This attempts to attach a tailer to the stack symlink. If it doesn't
     # exist yet it will attempt next tick of the EventMachine
     def attach_tailer(stack)
-      if @@channels.key?(stack) 
+      if @@channels.key?(stack)
         tailer = Tailer.stack_tail(stack, @@channels[stack], @@channels_count[stack])
         if tailer
           @@tailers[stack] = tailer
@@ -55,7 +55,7 @@ EM.run do
           @@channels[stack].unsubscribe(session_id)
           @@channels_count[stack] -= 1
           if @@channels_count[stack] == 0 && @@tailers.has_key?(stack)
-            @@tailers[stack].close 
+            @@tailers[stack].close
             @@tailers.delete(stack)
           end
         end

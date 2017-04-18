@@ -89,6 +89,10 @@ underscores but if you forget the rake task will convert from camelcase for you.
 ```sh
     $ bundle exec rake 'deployinator:new_stack[test_stack]'
 ```
+- If you have many similar stacks it might be useful to create reusable templates. You can copy the default [templates](templates) to another directory and specify an **absolute path** as an environment variable TEMPLATE_PATH like so:
+```sh
+    $ TEMPLATE_PATH=$(pwd)/custom_templates bundle exec rake 'deployinator:new_stack[test_stack]'
+```
 
 - We need a server to run our Sinatra application. For the purpose of this demo, we will use [puma](https://github.com/puma/puma). Let's install puma into our bundle. Add the following to your Gemfile:
 
