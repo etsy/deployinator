@@ -71,6 +71,15 @@ _  __  / _  _ \___  __ \__  / _  __ \__  / / /__  / __  __ \_  __ `/_  __/_  __ 
                        <span><a href="{{ help_url }}" target="_blank">Deployinator Runbook</a></span>
                    </div>
                    {{/help_url?}}
+                   {{#is_admin?}}
+                   <div class="line">
+                       <span class="label">Hold All Stacks:</span>
+                       <span>
+                           <button id="holdallstacks" class="{{#all_pushes_locked?}}hidden{{/all_pushes_locked?}}">&nbsp;Hold All Stacks&nbsp;</button>
+                           <button id="unholdallstacks" class="{{^all_pushes_locked?}}hidden{{/all_pushes_locked?}}">&nbsp;Unhold All Stacks&nbsp;</button>
+                       </span>
+                   </div>
+                   {{/is_admin?}}
                </div>
             </header>
 
@@ -465,6 +474,15 @@ _  __  / _  _ \___  __ \__  / _  __ \__  / / /__  / __  __ \_  __ `/_  __/_  __ 
                                             addStackLockStatus(data.method, data.who, data.lock_time);
                                         }
                                     }
+
+                                    // Update Hold All Stacks buttons
+                                    if (data.all_locked) {
+                                        $('#holdallstacks').hide();
+                                        $('#unholdallstacks').show();
+                                    } else {
+                                        $('#holdallstacks').show();
+                                        $('#unholdallstacks').hide();
+                                    }
                                 }
                             });
                         }
@@ -618,6 +636,30 @@ _  __  / _  _ \___  __ \__  / _  __ \__  / / /__  / __  __ \_  __ `/_  __/_  __ 
                     if (confirmed) {
                         clearing_deploy_lock = true;
                         window.location='/{{stack}}/remove-lock';
+                    } else {
+                        evt.preventDefault();
+                    }
+                });
+
+                // Hold all stacks
+                $('.line').on('click', '#holdallstacks', function(evt) {
+                    var msg = 'Are you sure you want to hold all stacks?';
+
+                    var confirmed = confirm(msg);
+                    if (confirmed) {
+                        window.location='/lockall?stack={{stack}}';
+                    } else {
+                        evt.preventDefault();
+                    }
+                });
+
+                // Unhold all stacks
+                $('.line').on('click', '#unholdallstacks', function(evt) {
+                    var msg = 'Are you sure you want to unhold all stacks?';
+
+                    var confirmed = confirm(msg);
+                    if (confirmed) {
+                        window.location='/unlockall?stack={{stack}}';
                     } else {
                         evt.preventDefault();
                     }

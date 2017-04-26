@@ -98,8 +98,9 @@ module Deployinator
     end
 
     get '/:stack/can-deploy' do
-      lock_info = push_lock_info(params["stack"]) || {}
+      lock_info = pushes_locked?(params["stack"]) || {}
       lock_info[:can_deploy] = lock_info.empty?
+      lock_info[:all_locked] = !(all_pushes_locked? == nil)
       content_type "application/json"
       lock_info.to_json
     end
@@ -121,6 +122,28 @@ module Deployinator
       stack = params[:stack]
       unlock_pushes(stack) if can_remove_stack_lock?
       redirect "/#{stack}"
+    end
+
+    # lock all stacks
+    get '/lockall' do
+      lock_all_pushes(@username)
+
+      if params[:stack]
+        redirect "/#{params[:stack]}"
+      else
+        redirect "/"
+      end
+    end
+
+    # unlock all stacks
+    get '/unlockall' do
+      unlock_all_pushes()
+
+      if params[:stack]
+        redirect "/#{params[:stack]}"
+      else
+        redirect "/"
+      end
     end
 
     # return a list of all deploys as JSON
