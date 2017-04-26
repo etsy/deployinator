@@ -128,6 +128,11 @@ module Deployinator
     get '/lockall' do
       lock_all_pushes(@username)
 
+      channels = Deployinator.stack_to_pushbot_channel.values.uniq
+      channels.each do |stack, channel|
+        Deployinator::Helpers::Pushbot::pushbot_channel_perform_command(channel, "hold 'all queues held by #{@username}'", @username)
+      end
+
       if params[:stack]
         redirect "/#{params[:stack]}"
       else
@@ -138,6 +143,11 @@ module Deployinator
     # unlock all stacks
     get '/unlockall' do
       unlock_all_pushes()
+
+      channels = Deployinator.stack_to_pushbot_channel.values.uniq
+      channels.each do |stack, channel|
+        Deployinator::Helpers::Pushbot::pushbot_channel_perform_command(channel, "unhold 'all queues unheld by #{@username}'", @username)
+      end
 
       if params[:stack]
         redirect "/#{params[:stack]}"
