@@ -464,17 +464,46 @@ module Deployinator
       system(%Q{rm #{push_lock_path(stack)}})
     end
 
+    def lock_all_pushes(who)
+      log_and_stream("LOCKING ALL STACKS<br>")
+      if lock_info = all_pushes_locked?
+        log_and_stream("All pushes locked by #{lock_info[:who]}")
+        return false
+      end
+
+      dt = Time.now.strftime("%m/%d/%Y %H:%M")
+      log_string_to_file("#{who}|#{dt}", push_lock_all_path);
+      return true
+    end
+
+    def unlock_all_pushes
+        system(%Q{rm #{push_lock_all_path}});
+    end
+
+    def all_pushes_locked?
+        all_push_lock_info
+    end
+
     def push_lock_info(stack)
       d = `test -f #{push_lock_path(stack)} && cat #{push_lock_path(stack)}`.chomp
       d.empty? ? nil : Hash[*[:who, :method, :lock_time].zip(d.split("|")).flatten]
     end
 
+    def all_push_lock_info
+      d = `test -f #{push_lock_all_path} && cat #{push_lock_all_path}`.chomp
+      d.empty? ? nil : Hash[*[:who, :lock_time].zip(d.split("|")).flatten]
+    end
+
     def pushes_locked?(stack)
-        push_lock_info(stack)
+      all_pushes_locked? || push_lock_info(stack)
     end
 
     def push_lock_path(stack)
       "#{Deployinator.root(["log"])}/#{stack}-push-lock"
+    end
+
+    def push_lock_all_path
+      "#{Deployinator.root(["log"])}/all-push-lock"
     end
 
     # Public: Outputs stack data for use in templating
@@ -547,8 +576,8 @@ module Deployinator
     end
 
     def can_remove_stack_lock?
-      unless @groups.nil? then
-        Deployinator.admin_groups.each { |cg| return true if @groups.include?(cg) }
+      if is_admin?
+        return true
       end
 
       # get the lock info to see if the user is the locker
@@ -556,6 +585,14 @@ module Deployinator
       return true if info.empty?
       if info[:who] == @username
         return true
+      end
+
+      return false
+    end
+
+    def is_admin?
+      unless @groups.nil? then
+        Deployinator.admin_groups.each { |cg| return true if @groups.include?(cg) }
       end
 
       return false
