@@ -19,12 +19,22 @@ module Deployinator
       # run dsh against a given host or array of hosts
       def run_dsh_hosts(hosts, cmd, extra_opts='', only_stdout=true, &block)
         hosts = [hosts] unless hosts.is_a?(Array)
+        run_dsh_to_dest("-m #{hosts.join(',')}", cmd, extra_opts, &block)
+      end
+
+      # run dsh against a given host or array of hosts
+      def run_dsh_from_file(hosts_file, cmd, extra_opts='', only_stdout=true, &block)
+        run_dsh_to_dest("-f #{hosts_file}", cmd, extra_opts, &block)
+      end
+
+      def run_dsh_to_dest(dest, cmd, extra_opts='', &block)
         if extra_opts.length > 0
-          run_cmd %Q{ssh #{Deployinator.default_user}@#{Deployinator.deploy_host} 'dsh -m #{hosts.join(',')} -r ssh -F #{dsh_fanout} #{extra_opts} -- "#{cmd}"'}, &block
+          run_cmd %Q{ssh #{Deployinator.default_user}@#{Deployinator.deploy_host} 'dsh #{dest} -r ssh -F #{dsh_fanout} #{extra_opts} -- "#{cmd}"'}, &block
         else
-          run_cmd %Q{ssh #{Deployinator.default_user}@#{Deployinator.deploy_host} 'dsh -m #{hosts.join(',')} -r ssh -F #{dsh_fanout} -- "#{cmd}"'}, &block
+          run_cmd %Q{ssh #{Deployinator.default_user}@#{Deployinator.deploy_host} 'dsh #{dest} -r ssh -F #{dsh_fanout} -- "#{cmd}"'}, &block
         end
       end
+
 
       def run_dsh_extra(dsh_group, cmd, extra_opts, only_stdout=true, &block)
         # runs dsh to a single group with extra args to dsh
