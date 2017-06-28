@@ -164,11 +164,24 @@ module Deployinator
       run_cmd(command, timing_metric, log_errors)
     end
 
+    def all_eof(files)
+      files.find { |f| !f.eof }.nil?
+    end
+
+    def log_and_stream_error(erroutput, log_errors = true)
+      if (log_errors) then
+        log_and_stream("<span class='stderr'>STDERR: #{CGI::escapeHTML(erroutput)}</span><br>")
+      else
+        log_and_stream("STDERR:#{CGI::escapeHTML(erroutput)}<br>")
+      end
+    end
+
     # Run external command with timing information
     # streams and logs the output of the command as well
     # does not (currently) check exit status codes
     def run_cmd(cmd, timing_metric=nil, log_errors=true)
       ret = ""
+      error_message = ""
       exit_code = 0
       start = Time.now.to_i
       timestamp = Time.now.to_s
@@ -184,31 +197,54 @@ module Deployinator
       time = Benchmark.measure do
         Open3.popen3(cmd) do |inn, out, err, wait_thr|
           output = ""
-          until out.eof?
-            # raise "Timeout" if output.empty? && Time.now.to_i - start > 300
-            chr = out.read(1)
-            output << chr
-            ret << chr
-            if chr == "\n" || chr == "\r"
-              log_and_stream CGI::escapeHTML(output) + "<br>"
-              output = ""
-            end
-          end
-          error_message = nil
+          erroutput = ""
+          waserror = false
+          inn.close_write
+          begin
+            files = [out, err]
+            until files.empty? do
+              ready = IO.select(files)
+              if ready
+                readable = ready[0]
+                readable.each do |f|
+                  fileno = f.fileno
+                  begin
+                    chr = f.read_nonblock(1)
+                    if fileno == out.fileno
+                      output << chr
+                      ret << chr
+                      if chr == "\n" || chr == "\r"
+                        log_and_stream CGI::escapeHTML(output) + "<br>"
+                        output = ""
+                      end
+                    elsif fileno == err.fileno
+                      waserror = true
+                      erroutput <<  chr
+                      error_message << chr
+                      if chr == "\n" || chr == "\r"
+                        log_and_stream_error(erroutput, log_errors)
+                        erroutput = ""
+                      end
+                    else
+                      raise "unknown fileno, was expecting either standardout(#{out.fileno}, or standarderror(#{err.fileno} but got #{fileno}"
+                    end
+                  rescue EOFError => e
+                    # not an error - we just reached the end of file
+                    files.delete f # closes it it looks like
+                  end
+                end # readable.each
+              end #if ready
+            end #until files
+          rescue IOError => e
+            puts "IOError: #{e}"
+          end # begin
+
           log_and_stream(CGI::escapeHTML(output)) unless output.empty?
-
-          error_message = err.read unless err.eof?
-          if (log_errors) then
-            log_and_stream("<span class='stderr'>STDERR: #{error_message}</span><br>") unless error_message.nil?
-          else
-            log_and_stream("STDERR:" + error_message + "<br>") unless error_message.nil?
+          log_and_stream_error(erroutput, log_errors) unless erroutput.empty?
+          if waserror
+              plugin_state[:error_message] = error_message
+              raise_event(:run_command_error, plugin_state)
           end
-
-          unless error_message.nil? then
-            plugin_state[:error_message] = error_message
-            raise_event(:run_command_error, plugin_state)
-          end
-
           # Log non-zero exits
           if wait_thr.value.exitstatus != 0 then
             log_and_stream("<span class='stderr'>DANGER! #{cmd} had an exit value of: #{wait_thr.value.exitstatus}</span><br>")
