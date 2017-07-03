@@ -5,9 +5,13 @@ module Deployinator
         @dsh_fanout || 30
       end
 
-      def run_dsh(groups, cmd, only_stdout=true, &block)
+      def group_option_for_dsh(groups)
         groups = [groups] unless groups.is_a?(Array)
-        dsh_groups = groups.map {|group| "-g #{group} "}.join("")
+        groups.map {|group| "-g #{group} "}.join("")
+      end
+
+      def run_dsh(groups, cmd, only_stdout=true, &block)
+        dsh_groups = group_option_for_dsh(groups)
         cmd_return = run_cmd(%Q{ssh #{Deployinator.default_user}@#{Deployinator.deploy_host} dsh #{dsh_groups} -r ssh -F #{dsh_fanout} "#{cmd}"}, &block)
         if only_stdout
           cmd_return[:stdout]
@@ -26,9 +30,9 @@ module Deployinator
         end
       end
 
-      def run_dsh_extra(dsh_group, cmd, extra_opts, only_stdout=true, &block)
-        # runs dsh to a single group with extra args to dsh
-        cmd_return = run_cmd(%Q{ssh #{Deployinator.default_user}@#{Deployinator.deploy_host} dsh -g #{dsh_group} -r ssh #{extra_opts} -F #{dsh_fanout} "#{cmd}"}, &block)
+      def run_dsh_extra(groups, cmd, extra_opts, only_stdout=true, &block)
+        dsh_groups = group_option_for_dsh(groups)
+        cmd_return = run_cmd(%Q{ssh #{Deployinator.default_user}@#{Deployinator.deploy_host} dsh #{dsh_groups} -r ssh #{extra_opts} -F #{dsh_fanout} "#{cmd}"}, &block)
         if only_stdout
           cmd_return[:stdout]
         else
