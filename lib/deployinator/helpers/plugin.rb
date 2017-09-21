@@ -30,7 +30,7 @@ module Deployinator
                 ret = new_ret
               end
             rescue => e
-              raise "Error running plugin #{plugin} with exception #{e.to_s}"
+              raise "Error running plugin #{plugin.class.name} with exception #{e.to_s}"
             end
           end
         end
