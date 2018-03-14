@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 require "em-websocket"
 require "eventmachine-tail"
 
@@ -12,11 +13,13 @@ module Tailer
       @buffer = BufferedTokenizer.new
     end
 
-    # This method is called whenever FileTail receives and inotify event for
+    # This method is called whenever FileTail receives an inotify event for
     # the tailed file. It breaks up the data per line and pushes a line at a
     # time. This is to prevent the last javascript line from being broken up
     # over 2 pushes thus breaking the eval on the front end.
     def receive_data(data)
+      # replace non UTF-8 characters with ?
+      data.encode!('UTF-8', invalid: :replace, undef: :replace, replace: '�')
       @buffer.extract(data).each do |line|
         @channel.push line
       end
