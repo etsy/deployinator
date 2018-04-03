@@ -33,20 +33,22 @@ module Deployinator
       # Public: method to get the short rev of a git commit and create a
       # version tag from it. The tag is then dumped into a version text file.
       #
-      # stack       - String representing the stack, which determines where the
-      #               version file should be located
-      # version_dir - String (or Array of Strings) representing the
-      #               directories to contain the version file
-      # extra_cmd   - String representing an additional command to prepend to
-      #               the version echo command (default: "")
-      # path        - String containing the base path where the version file is
-      #               located (default: nil)
-      # rev         - String containing the rev to parse for the short SHA id
-      #               (default: "HEAD")
+      # stack        - String representing the stack, which determines where the
+      #                version file should be located
+      # version_dir  - String (or Array of Strings) representing the
+      #                directories to contain the version file
+      # extra_cmd    - String representing an additional command to prepend to
+      #                the version echo command (default: "")
+      # path         - String containing the base path where the version file is
+      #                located (default: nil)
+      # rev          - String containing the rev to parse for the short SHA id
+      #                (default: "HEAD")
+      # version_file - String representing the name of the file to contain
+      #                the version
       #
       #
       # Returns STDOUT of the echo command
-      def git_bump_version(stack, version_dir, extra_cmd="", path, rev="HEAD", tee_cmd="tee")
+      def git_bump_version(stack, version_dir, extra_cmd="", path, rev="HEAD", tee_cmd="tee", version_file="version.txt")
         unless version_dir.kind_of?(Array)
           version_dir = [version_dir]
         end
@@ -61,7 +63,7 @@ module Deployinator
 
         fullpaths = ""
         version_dir.each do |dir|
-          fullpath = File.join(dir, "version.txt")
+          fullpath = File.join(dir, version_file)
           fullpaths << fullpath + " "
         end
 
