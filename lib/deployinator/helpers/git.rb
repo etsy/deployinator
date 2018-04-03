@@ -46,14 +46,12 @@ module Deployinator
       #
       #
       # Returns STDOUT of the echo command
-      def git_bump_version(stack, version_dir, extra_cmd="", path=nil, rev="HEAD", tee_cmd="tee")
+      def git_bump_version(stack, version_dir, extra_cmd="", path, rev="HEAD", tee_cmd="tee")
         unless version_dir.kind_of?(Array)
           version_dir = [version_dir]
         end
 
         ts = Time.now.strftime("%Y%m%d-%H%M%S-%Z")
-
-        path ||= git_checkout_path(checkout_root, stack)
 
         cmd = "cd #{path} && git rev-parse --short=#{Deployinator.git_sha_length} #{rev}"
         cmd = build_git_cmd(cmd, extra_cmd)
@@ -102,8 +100,7 @@ module Deployinator
       # branch    - the branch to checkout after the fetch
       #
       # Returns a hash containing the stdout and return code of the git commands
-      def git_freshen_clone(stack, extra_cmd="", path=nil, branch="master", force_checkout=false)
-        path ||= git_checkout_path(checkout_root, stack)
+      def git_freshen_clone(stack, extra_cmd="", path, branch="master", force_checkout=false)
         cmd = [
           "cd #{path}",
           "git fetch --quiet origin +refs/heads/#{branch}:refs/remotes/origin/#{branch}",
@@ -160,8 +157,7 @@ module Deployinator
       # including     - Should the returned list of filters include the filter_file commits, or all other commits
       #
       # Returns an array of shas
-      def git_filter_shas(stack, extra_cmd, old_rev, new_rev, path=nil, filter_files=[], including=false)
-        path ||= git_checkout_path(checkout_root, stack)
+      def git_filter_shas(stack, extra_cmd, old_rev, new_rev, path, filter_files=[], including=false)
         including_shas = []
         excluding_shas = []
         cmd = "cd #{path} && git log --no-merges --name-only --pretty=format:%H #{old_rev}..#{new_rev}"
@@ -249,8 +245,8 @@ module Deployinator
       # branch        - Git branch to checkout. Defaults to 'master'.
       #
       # Returns a hash containing the stdout and return code of the git commands
-      def git_clone(stack, repo_url, extra_cmd="", local_checkout_root=checkout_root, branch='master')
-        path =  git_checkout_path(local_checkout_root, stack)
+      def git_clone(stack, repo_url, extra_cmd="", checkout_root, branch='master')
+        path =  git_checkout_path(checkout_root, stack)
         cmd = "git clone #{repo_url} -b #{branch} #{path}"
         cmd = build_git_cmd(cmd, extra_cmd)
         run_cmd cmd
