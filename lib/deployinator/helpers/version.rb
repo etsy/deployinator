@@ -24,9 +24,9 @@ module Deployinator
       # host - String of the hostname to check
       #
       # Returns the full version of the current software running on the host
-      def get_version(host)
+      def get_version(host, version_file="version.txt")
         host_url = "https://#{host}/"
-        get_version_by_url("#{host_url}version.txt")
+        get_version_by_url("#{host_url}#{version_file}")
       end
       module_function :get_version
 
