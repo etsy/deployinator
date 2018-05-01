@@ -10,6 +10,8 @@ _  __  / _  _ \___  __ \__  / _  __ \__  / / /__  / __  __ \_  __ `/_  __/_  __ 
 Deployinator - Deploy code like Etsy
 ====================================
 
+[![Build Status](https://travis-ci.org/etsy/deployinator.svg?branch=master)](https://travis-ci.org/etsy/deployinator)
+
 Deployinator is a deployment framework extracted from Etsy. We've been using it since late 2009 / early 2010. This has been revamped into a ruby gem.
 
 **Table of Contents**
