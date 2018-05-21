@@ -118,8 +118,8 @@ module Deployinator
       end
 
       @start_time = Time.now
-      deploy_instance.log_and_stream "Push started at #{@start_time.to_i}\n"
-      deploy_instance.log_and_stream "Calling #{options[:method]}\n";
+      deploy_instance.log_and_stream "Push started at #{@start_time.to_i}<br>"
+      deploy_instance.log_and_stream "Calling #{options[:method]}<br>";
       deploy_instance.link_stack_logfile(deploy_instance.get_filename, options[:stack])
 
       deploy_instance.raise_event(:deploy_start)
