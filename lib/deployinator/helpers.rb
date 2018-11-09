@@ -129,39 +129,41 @@ module Deployinator
     # This defaults to 5, but can be specified with the num_retries parameter
     # If all the retries fail, an exception is thrown
     # Between retries it will sleep for a given period, defaulting to 2 seconds
-    def run_cmd_with_retries(cmd, num_retries=5, sleep_seconds=2, timing_metric=nil)
+    def run_cmd_with_retries(cmd, num_retries=5, sleep_seconds=2, timing_metric=nil, secrets=[])
+      censored_cmd = censor_cmd(cmd, secrets)
       for i in 1..num_retries
         if i == num_retries then
-          result = run_cmd(cmd, timing_metric)
+          result = run_cmd(cmd, timing_metric, true, secrets)
         else
-          result = run_cmd(cmd, timing_metric, false)
+          result = run_cmd(cmd, timing_metric, false, secrets)
         end
         if result[:exit_code] == 0
           return result
         else
           retries_remaining = num_retries - i
           unless i == num_retries
-            log_and_stream("`#{cmd}` failed, will retry #{retries_remaining} more times<br>")
+            log_and_stream("`#{censored_cmd}` failed, will retry #{retries_remaining} more times<br>")
             sleep sleep_seconds
           end
         end
       end
 
-      raise "Unable to execute `#{cmd}` after retrying #{num_retries} times"
+      raise "Unable to execute `#{censored_cmd}` after retrying #{num_retries} times"
     end
 
-    def check_command_safety(command)
+    def check_command_safety(command, secrets = [])
       if command.include? "\n"
+        censored_cmd = censor_cmd(command, secrets)
         raise CommandContainsNewlinesError.new(command),
-          "Command contains newlines and may not execute as intended: #{command}"
+          "Command contains newlines and may not execute as intended: #{censored_cmd}"
       end
 
       command
     end
 
-    def run_cmd_safely(command, timing_metric = nil, log_errors = true)
-      command = check_command_safety(command)
-      run_cmd(command, timing_metric, log_errors)
+    def run_cmd_safely(command, timing_metric = nil, log_errors = true, secrets=[])
+      command = check_command_safety(command, secrets = [])
+      run_cmd(command, timing_metric, log_errors, secrets)
     end
 
     def all_eof(files)
@@ -179,21 +181,22 @@ module Deployinator
     # Run external command with timing information
     # streams and logs the output of the command as well
     # does not (currently) check exit status codes
-    def run_cmd(cmd, timing_metric=nil, log_errors=true)
+    def run_cmd(cmd, timing_metric=nil, log_errors=true, secrets=[])
       ret = ""
       error_message = ""
       exit_code = 0
       start = Time.now.to_i
       timestamp = Time.now.to_s
+      censored_cmd = censor_cmd(cmd, secrets)
       plugin_state = {
-        :cmd            => cmd,
+        :cmd            => censored_cmd,
         :timing_metric  => timing_metric,
         :start_time     => start,
         :log_errors     => log_errors,
         :filename       => @filename,
       }
       raise_event(:run_command_start, plugin_state)
-      log_and_stream "<div class='command'><h4>#{timestamp}: Running #{cmd}</h4>\n<p class='output'>"
+      log_and_stream "<div class='command'><h4>#{timestamp}: Running #{censored_cmd}</h4>\n<p class='output'>"
       time = Benchmark.measure do
         Open3.popen3(cmd) do |inn, out, err, wait_thr|
           output = ""
@@ -247,7 +250,7 @@ module Deployinator
           end
           # Log non-zero exits
           if wait_thr.value.exitstatus != 0 then
-            log_and_stream("<span class='stderr'>DANGER! #{cmd} had an exit value of: #{wait_thr.value.exitstatus}</span><br>")
+            log_and_stream("<span class='stderr'>DANGER! #{censored_cmd} had an exit value of: #{wait_thr.value.exitstatus}</span><br>")
             exit_code = wait_thr.value.exitstatus
           end
         end
@@ -259,6 +262,13 @@ module Deployinator
       plugin_state[:time] = time.real
       raise_event(:run_command_end, plugin_state)
       return { :stdout => ret, :exit_code => exit_code }
+    end
+
+    # Strips out the secrets from the command and replaces with *******
+    def censor_cmd(cmd, secrets=[])
+      censored = cmd.dup
+      secrets.each { |secret| censored.gsub!(secret, "*******") }
+      return censored
     end
 
     def nicify_env(env)
