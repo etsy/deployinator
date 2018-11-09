@@ -24,7 +24,7 @@ class HelpersTest < Test::Unit::TestCase
 
     # mock out the run_cmd. this should move.
     Deployinator::Helpers.module_eval do
-      define_method "run_cmd" do |cmd, arg2 = nil, arg3 = nil|
+      define_method "run_cmd" do |cmd, arg2 = nil, arg3 = nil, arg4 = nil|
         return { :stdout => cmd, :exit_code => 0 }
       end
     end
@@ -146,5 +146,26 @@ class HelpersTest < Test::Unit::TestCase
     assert_raise Deployinator::Helpers::CommandContainsNewlinesError do
       run_cmd_safely(unsafe_command)
     end
+  end
+
+  def test_censor_cmd
+    cmd = "something between alice and bob"
+
+    censored = censor_cmd(cmd)
+    assert_equal("something between alice and bob", cmd, "cmd should be unchanged")
+    assert_equal("something between alice and bob", censored, "censored should be unchanged as no secrets")
+
+    censored = censor_cmd(cmd, ["alice"])
+    assert_equal("something between alice and bob", cmd, "cmd should be unchanged")
+    assert_equal("something between ******* and bob", censored, "censored should have alice censored")
+
+    censored = censor_cmd(cmd, ["alice", "bob"])
+    assert_equal("something between alice and bob", cmd, "cmd should be unchanged")
+    assert_equal("something between ******* and *******", censored, "censored should have alice censored")
+
+    cmd = "something between alice and bob, not between alice and charlie"
+    censored = censor_cmd(cmd, ["alice"])
+    assert_equal("something between alice and bob, not between alice and charlie", cmd, "cmd should be unchanged")
+    assert_equal("something between ******* and bob, not between ******* and charlie", censored, "censored should have alice censored twice")
   end
 end
