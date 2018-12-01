@@ -118,8 +118,8 @@ module Deployinator
       end
 
       @start_time = Time.now
-      deploy_instance.log_and_stream "Push started at #{@start_time.to_i}\n"
-      deploy_instance.log_and_stream "Calling #{options[:method]}\n";
+      deploy_instance.log_and_stream "Push started at #{@start_time.to_i}<br>"
+      deploy_instance.log_and_stream "Calling #{options[:method]}<br>";
       deploy_instance.link_stack_logfile(deploy_instance.get_filename, options[:stack])
 
       deploy_instance.raise_event(:deploy_start)
@@ -153,8 +153,13 @@ module Deployinator
 
       # display a message that the deploy is done and call the JavaScript
       # deploy done function
-      msg = options[:deploy_complete_message] || "#{env.to_s.upcase} deploy in #{options[:stack]} stack complete"
-      deploy_instance.log_and_stream("<h4>#{msg}</h4><p class='output'>")
+      msg = ''
+      if state[:exception]
+        msg = "ERROR: #{state[:exception].message}"
+      else
+        msg = options[:deploy_complete_message] || "#{env.to_s.upcase} deploy in #{options[:stack]} stack complete"
+        deploy_instance.log_and_stream("<h4>#{msg}</h4><p class='output'>")
+      end
       deploy_instance.log_and_stream("<script id='deploy-done'>window.deploy_done('#{msg}', '#{options[:stage]}');</script>")
 
       deploy_instance.unlock_pushes(options[:stack])
