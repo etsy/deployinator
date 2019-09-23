@@ -12,4 +12,6 @@ end
 
 task :default => 'deployinator:test:unit'
 
+task :character => 'deployinator:test:character'
+
 load 'deployinator/tasks/tests.rake'
