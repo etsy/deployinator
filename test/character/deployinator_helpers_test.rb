@@ -6,22 +6,14 @@ require File.expand_path('../../lib/deployinator/helpers.rb',__dir__)
 
 class DeployinatorHelpersTest < Test::Unit::TestCase
 
-  def test_run_cmd_succeeds
+  def test_run_cmd_calls_popen3_once_with_expected_command
     # arrange
-    cmd = 'dummy_command_exits_with_success'
-
+    cmd = 'fakecommand'
     deployinator_helper = Class.new.extend(Deployinator::Helpers)
-    deployinator_helper.expects(:run_cmd)
-      .returns({
-        :exit_code => 0
-      })
-      .once
+    Open3.expects(:popen3).with(cmd).once
 
-    # act
-    actual = deployinator_helper.run_cmd(cmd)
-
-    # assert
-    assert_equal({:exit_code => 0}, actual)
+    # act & assert
+    deployinator_helper.run_cmd(cmd)
   end
 
   def test_run_cmd_fails_while_log_errors_is_false
