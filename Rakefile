@@ -10,6 +10,12 @@ def command?(command)
   system("type #{command} &> /dev/null")
 end
 
-task :default => 'deployinator:test:unit'
+task :default => 'test:unit'
+
+namespace :test do
+  task :default => 'deployinator:test:unit'
+  task :character => 'deployinator:test:character'
+  task :unit => 'deployinator:test:unit'
+end
 
 load 'deployinator/tasks/tests.rake'

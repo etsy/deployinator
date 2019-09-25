@@ -18,5 +18,12 @@ namespace :deployinator do
       t.pattern = "#{File.dirname(__FILE__)}/../../../test/functional/**/*_test.rb"
       t.verbose = false
     end
+
+    desc 'Run deployinator characterization tests'
+    Rake::TestTask.new :character do |t|
+      t.libs << 'lib'
+      t.pattern = "#{File.dirname(__FILE__)}/../../../test/character/**/*_test.rb"
+      t.verbose = false
+    end
   end
 end
