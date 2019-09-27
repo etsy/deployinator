@@ -16,7 +16,7 @@ class DeployinatorHelpersTest < Test::Unit::TestCase
     deployinator_helper.run_cmd(cmd)
   end
 
-  def test_run_cmd_succeeds_while_log_errors_is_false
+  def test_run_cmd_calls_log_and_stream_4_times_when_command_succeeds_and_log_errors_is_false
     # arrange
     cmd = 'echo -n epicsuccess && exit 0'
     deployinator_helper = Class.new.extend(Deployinator::Helpers)
@@ -35,7 +35,7 @@ class DeployinatorHelpersTest < Test::Unit::TestCase
     assert_equal(expected, actual)
   end
 
-  def test_run_cmd_succeeds_while_log_errors_is_true
+  def test_run_cmd_calls_log_and_stream_4_times_when_command_succeeds_and_log_errors_is_true
     # arrange
     cmd = 'echo -n epicsuccess && exit 0'
     deployinator_helper = Class.new.extend(Deployinator::Helpers)
@@ -54,7 +54,7 @@ class DeployinatorHelpersTest < Test::Unit::TestCase
     assert_equal(expected, actual)
   end
 
-  def test_run_cmd_fails_while_log_errors_is_false
+  def test_run_cmd_calls_log_and_stream_5_times_when_command_fails_and_log_errors_is_false
     # arrange
     cmd = 'echo -n epicfail && exit 1'
     deployinator_helper = Class.new.extend(Deployinator::Helpers)
@@ -73,7 +73,7 @@ class DeployinatorHelpersTest < Test::Unit::TestCase
     assert_equal(expected, actual)
   end
 
-  def test_run_cmd_fails_while_log_errors_is_true
+  def test_run_cmd_calls_log_and_stream_5_times_when_command_fails_and_log_errors_is_true
     # arrange
     cmd = 'echo -n epicfail && exit 1'
     deployinator_helper = Class.new.extend(Deployinator::Helpers)
