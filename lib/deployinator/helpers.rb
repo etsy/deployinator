@@ -249,10 +249,10 @@ module Deployinator
               raise_event(:run_command_error, plugin_state)
           end
           # Log non-zero exits
-          if wait_thr.value.exitstatus != 0 then
+          if wait_thr.value.exitstatus != 0 and log_errors then
             log_and_stream("<span class='stderr'>DANGER! #{censored_cmd} had an exit value of: #{wait_thr.value.exitstatus}</span><br>")
-            exit_code = wait_thr.value.exitstatus
           end
+          exit_code = wait_thr.value.exitstatus
         end
       end
       log_and_stream "</p>"
